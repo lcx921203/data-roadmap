@@ -13,53 +13,45 @@
 - [x] Scale Lab families
 
 ## V0.3 Interview Evidence Model
-- [x] Source reliability
-- [x] Evidence independence
-- [x] Normalization / dedup rules
-- [x] Evidence schema
-- [x] Publishing gate
-- [x] Seed corpus
-- [x] 32-source expansion
-- [x] Add non-NowCoder source diversity
-- [x] Canonical question refinement
-- [x] Direct-only question-level recalibration
-- [x] Freeze Interview Answer V1
-- [x] Curate first 10 answer-ready questions
-- [x] Freeze Frequency Band V1
-- [x] Select Interview Bank V1 first 30
-- [x] Close V0.3 Evidence Model milestone
+- [x] Evidence / canonical / frequency model
+- [x] Interview Answer V1
+- [x] First 30 Interview Bank scope
+- [x] Close V0.3 model milestone
 
 ### Continuing content pipeline
-- [ ] Curate the remaining 20 selected answers
-- [ ] Continue adding independent first-hand sources
-- [ ] Run Project Fact Check when project claims are published
+- [ ] Curate remaining 20 selected answers
+- [ ] Continue independent evidence intake
+- [ ] Project Fact Check when claims are published
 
 ## V0.4 Design System
 
 ### V0.4.0 Foundation
-- [x] Review Mintlify reference
-- [x] Review Notion reference
-- [x] Review Apple reference
-- [x] Review Linear reference
-- [x] Review WIRED reference
-- [x] Define Technical Editorial direction
-- [x] Define typography
-- [x] Define spacing / radius / surfaces
-- [x] Define Signal Blue accent policy
-- [x] Define mobile-first navigation
-- [x] Define Information Architecture
-- [x] Define Technical Diagram language
-- [x] Update Agent design rules
+- [x] Reference synthesis
+- [x] Technical Editorial direction
+- [x] Typography / spacing / surfaces
+- [x] Signal Blue policy
+- [x] Mobile-first navigation
+- [x] Information Architecture
+- [x] Technical Diagram language
 
-### Next: V0.4.1 Product Prototypes
-- [ ] Prototype Learn Home / Stage List
-- [ ] Prototype Knowledge Detail
-- [ ] Prototype Interview List
-- [ ] Prototype Interview Detail
-- [ ] Prototype Scale Lab Detail
-- [ ] Prototype Project Case Detail
-- [ ] Validate on 390px mobile viewport
+### V0.4.1 Product Prototypes
+- [x] Learn Home prototype
+- [x] Knowledge Detail prototype
+- [x] Interview List prototype
+- [x] Interview Detail prototype
+- [x] Scale Lab Detail prototype
+- [x] Project Case Detail prototype
+- [x] Validate structural layout at 390px
+- [x] Draft component inventory
+
+### Next: V0.4.2 Component Freeze
+- [ ] Interaction states
+- [ ] Evidence disclosure
+- [ ] Filter / bottom sheet
+- [ ] Code expand / collapse
+- [ ] Accessibility state rules
 - [ ] Freeze component inventory
+- [ ] Freeze Design System V1
 
 ## V0.5 Web Foundation
 - [ ] React + TypeScript + Vite
@@ -67,6 +59,7 @@
 - [ ] Taxonomy / Interview registry loader
 - [ ] Routing
 - [ ] GitHub Pages
+- [ ] Implement frozen Design System
 
 ## V0.6 First Vertical Slice
 - [ ] Iceberg knowledge path

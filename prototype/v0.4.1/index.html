@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DataRoadmap V0.4.1 Prototype</title>
+<style>
+:root{
+ --canvas:#FCFCFA;--surface:#F6F6F3;--raised:#fff;--strong:#EEEDE8;
+ --ink:#171717;--soft:#5F5F5B;--muted:#8A8A84;--faint:#B4B4AE;
+ --line:#E4E4DE;--line2:#D2D2CB;--signal:#315DDC;--signal2:#2346B5;
+ --signalsoft:#EEF2FF;--success:#19714A;--successsoft:#EDF8F2;
+ --warning:#A15C00;--warningsoft:#FFF6E8;--code:#111318;
+}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:#ECECE8;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.viewer{padding:24px;min-height:100vh}.head{max-width:1100px;margin:0 auto 18px;display:flex;justify-content:space-between;gap:20px;align-items:end}
+.head h1{font-size:22px;margin:0}.head p{font-size:13px;color:var(--soft);margin:4px 0 0}
+.tabs{display:flex;gap:7px;flex-wrap:wrap}.tabs button{border:1px solid var(--line2);background:#fff;border-radius:999px;padding:7px 11px;color:var(--soft)}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.wrap{display:flex;justify-content:center}.phone{width:390px;height:844px;background:var(--canvas);border-radius:34px;overflow:hidden;border:1px solid #D2D2CE;box-shadow:0 18px 48px rgba(20,20,18,.15);position:relative}
+.screen{display:none;height:100%;overflow:auto;padding-bottom:84px;scrollbar-width:none}.screen::-webkit-scrollbar{display:none}.screen.on{display:block}
+.top{height:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(252,252,250,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(228,228,222,.75);z-index:4}
+.brand{font-size:17px;font-weight:730;letter-spacing:-.3px}.icon{width:44px;height:44px;border:0;background:transparent;font-size:20px;color:var(--soft)}
+.page{padding:24px 20px 34px}.eyebrow{font-size:12px;font-weight:750;letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+h1{font-size:28px;line-height:1.18;letter-spacing:-.55px;margin:8px 0 10px}h2{font-size:21px;line-height:1.3;margin:30px 0 10px}h3{font-size:17px;margin:22px 0 8px}
+p{font-size:16px;line-height:1.7;color:var(--soft);margin:0 0 14px}.lead{line-height:1.62}.meta{font-size:12px;color:var(--muted)}
+.row{padding:17px 0;border-bottom:1px solid var(--line);display:flex;gap:13px;align-items:flex-start}.row:last-child{border-bottom:0}
+.num{width:28px;flex:none;font-size:13px;font-weight:700;color:var(--muted);padding-top:2px}.main{flex:1;min-width:0}.title{font-size:16px;font-weight:690;line-height:1.4;letter-spacing:-.15px}
+.sub{font-size:13px;color:var(--muted);line-height:1.5;margin-top:5px}.chev{font-size:19px;color:var(--faint)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{font-size:11px;font-weight:680;padding:5px 7px;border-radius:6px;background:var(--surface);color:var(--soft)}
+.badge.signal{background:var(--signalsoft);color:var(--signal2)}.badge.success{background:var(--successsoft);color:var(--success)}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin-top:30px}.sectionhead h2{margin:0}.link{font-size:13px;font-weight:650;color:var(--signal)}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}.quick{background:var(--signalsoft);border-color:#CDD8FF}.quick label{font-size:12px;font-weight:760;color:var(--signal2)}
+.quick p{color:#273454;margin:8px 0 0}.continue{margin-top:14px;padding:19px;border:1px solid var(--line);background:#fff;border-radius:12px}.continue b{display:block;font-size:18px;margin-top:5px}
+.progress{height:4px;background:var(--strong);border-radius:999px;margin-top:14px;overflow:hidden}.progress i{display:block;width:42%;height:100%;background:var(--signal)}
+.search{height:44px;margin-top:16px;border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;align-items:center;gap:9px;padding:0 13px;color:var(--muted);font-size:14px}
+.filters{display:flex;gap:8px;overflow:auto;padding:12px 20px 5px;scrollbar-width:none}.chip{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 11px;font-size:13px;color:var(--soft)}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.question{padding:19px 0;border-bottom:1px solid var(--line)}.qtop{display:flex;justify-content:space-between;gap:12px}.rank{font-size:11px;font-weight:760;color:var(--signal)}.evidence{font-size:11px;color:var(--muted)}
+.qtitle{font-size:17px;font-weight:690;line-height:1.45;margin-top:7px}.qmeta{font-size:12px;color:var(--muted);margin-top:8px}
+.segment{margin:18px 0;display:flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px}.segment span{flex:1;text-align:center;padding:9px;border-radius:7px;font-size:13px;font-weight:650;color:var(--muted)}.segment span.on{background:#fff;color:var(--ink)}
+.anchors{display:flex;gap:16px;overflow:auto;padding:4px 0 10px;margin:17px 0;border-bottom:1px solid var(--line);scrollbar-width:none}.anchors span{white-space:nowrap;font-size:13px;color:var(--muted)}.anchors span.on{color:var(--signal);font-weight:680}
+.diagram{display:grid;gap:7px;margin:15px 0}.node{border:1px solid var(--line);border-radius:9px;background:#fff;padding:12px 13px}.node.on{background:var(--signalsoft);border-color:#BFCBFF}.node b{font-size:14px}.node small{display:block;color:var(--muted);font-size:12px;margin-top:3px}.arrow{text-align:center;color:var(--muted)}
+.code{background:var(--code);color:#F3F4F6;border-radius:10px;padding:14px 15px;overflow:auto;font:13px/1.65 ui-monospace,"SFMono-Regular",Menlo,monospace}
+.bottom{position:absolute;bottom:0;left:0;right:0;height:76px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(252,252,250,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:650;color:var(--muted)}.nav i{font-style:normal;font-size:18px}.nav.on{color:var(--signal)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}.kpis div{border:1px solid var(--line);border-radius:9px;background:#fff;padding:11px}.kpis b{display:block;font-size:15px}.kpis span{font-size:10px;color:var(--muted)}
+.callout{background:var(--warningsoft);border:1px solid #F0D8B7;color:#70480E;border-radius:9px;padding:13px 14px;font-size:13px;line-height:1.55}.todo{display:flex;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.55}.todo i{width:18px;height:18px;flex:none;border:1px solid var(--line2);border-radius:50%}
+.fact{border-left:3px solid var(--success);padding:11px 0 11px 14px}.fact strong{font-size:12px;color:var(--success)}.fact p{margin:5px 0 0}.scale{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+@media(max-width:700px){.viewer{padding:0}.head{display:none}.phone{width:100vw;height:100dvh;border:0;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="viewer">
+  <div class="head"><div><h1>DataRoadmap · V0.4.1</h1><p>390px mobile-first structural prototype</p></div><div class="tabs" id="tabs"></div></div>
+  <div class="wrap"><main class="phone">
+
+<section class="screen" data-id="learn-home">
+<header class="top"><div class="brand">DataRoadmap</div><button class="icon">⌕</button></header>
+<div class="page"><div class="eyebrow">Learn</div><h1>From Data Engineering<br>to AI</h1><p class="lead">按系统能力学习，而不是按工具列表刷课程。</p>
+<div class="continue"><span class="meta">CONTINUE · 04 LAKEHOUSE</span><b>Apache Iceberg</b><div class="sub">Snapshot · Manifest · Write Ordering · Schema Evolution</div><div class="progress"><i></i></div></div>
+<div class="sectionhead"><h2>Roadmap</h2><span class="link">12 stages</span></div>
+<div class="row"><div class="num">00</div><div class="main"><div class="title">数据工程基础</div><div class="sub">SQL · Python · Linux · Distributed Systems</div><div class="badges"><span class="badge">SQL L5</span><span class="badge">Python L4</span></div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">01</div><div class="main"><div class="title">数据接入与消息系统</div><div class="sub">CDC · Kafka · Schema Management</div><div class="badges"><span class="badge signal">CDC L5</span><span class="badge signal">Kafka L5</span></div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">02</div><div class="main"><div class="title">计算引擎</div><div class="sub">Spark · Flink · Batch vs Streaming</div><div class="badges"><span class="badge signal">Spark L5</span><span class="badge signal">Flink L5</span></div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">03</div><div class="main"><div class="title">数仓建模</div><div class="sub">Dimensional Modeling · Grain · Metrics</div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">04</div><div class="main"><div class="title">湖仓与查询引擎</div><div class="sub">Iceberg · Trino · Hudi / Delta / Paimon</div><div class="badges"><span class="badge signal">Iceberg L5</span><span class="badge signal">Trino L5</span></div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">10</div><div class="main"><div class="title">AI 数据智能体</div><div class="sub">Agent · MCP · Skill · RAG · Governance</div></div><div class="chev">›</div></div>
+<div class="row"><div class="num">11</div><div class="main"><div class="title">生产架构与规模化能力</div><div class="sub">SLO · Capacity · Multi-tenancy · Incidents</div></div><div class="chev">›</div></div></div>
+<nav class="bottom"><div class="nav on"><i>⌂</i>Learn</div><div class="nav"><i>◫</i>Interview</div><div class="nav"><i>△</i>Scale</div><div class="nav"><i>▱</i>Projects</div></nav></section>
+
+<section class="screen" data-id="knowledge-detail">
+<header class="top"><button class="icon">‹</button><div class="brand">Knowledge</div><button class="icon">⌕</button></header>
+<div class="page"><div class="eyebrow">04 · Lakehouse & Query Engine</div><h1>Apache Iceberg</h1><p class="lead">开放表格式如何把对象存储上的文件变成具备 Snapshot、事务提交和演进能力的逻辑表。</p>
+<div class="badges"><span class="badge signal">L5 Core</span><span class="badge">Lakehouse</span><span class="badge">Production First</span></div>
+<div class="anchors"><span class="on">30 秒理解</span><span>原理</span><span>生产</span><span>故障</span><span>项目</span><span>面试</span></div>
+<div class="card quick"><label>30 秒理解</label><p>Iceberg 不是文件格式，而是 Table Format（表格式）。它通过 Metadata、Snapshot、Manifest List、Manifest 管理一组 Parquet/ORC 文件，让多个计算引擎看到一致的表状态。</p></div>
+<h2>它在架构中的位置</h2><div class="diagram"><div class="node"><b>CDC / Batch / Events</b><small>source changes</small></div><div class="arrow">↓</div><div class="node"><b>Spark / Flink</b><small>compute & write</small></div><div class="arrow">↓</div><div class="node on"><b>Apache Iceberg</b><small>table metadata + snapshots</small></div><div class="arrow">↓</div><div class="node"><b>Trino / Serving</b><small>query & consumption</small></div></div>
+<h2>核心原理</h2><p>Reader 读取的是一个已提交 Snapshot，而不是根据对象存储目录里“现在有哪些文件”猜测表状态。</p><div class="code">Table Metadata
+  ↓
+Snapshot
+  ↓
+Manifest List
+  ↓
+Manifest
+  ↓
+Data File</div>
+<h2>Production</h2>
+<div class="row"><div class="main"><div class="title">Commit & Concurrency</div><div class="sub">并发 Writer、冲突检测与重试。</div></div><div class="chev">›</div></div>
+<div class="row"><div class="main"><div class="title">Small Files & Metadata</div><div class="sub">Compaction、Manifest Rewrite、Snapshot Expiration。</div></div><div class="chev">›</div></div>
+<div class="row"><div class="main"><div class="title">Schema Evolution</div><div class="sub">字段 ID、兼容演进与历史数据读取。</div></div><div class="chev">›</div></div></div>
+<nav class="bottom"><div class="nav on"><i>⌂</i>Learn</div><div class="nav"><i>◫</i>Interview</div><div class="nav"><i>△</i>Scale</div><div class="nav"><i>▱</i>Projects</div></nav></section>
+
+<section class="screen" data-id="interview-list">
+<header class="top"><div class="brand">Interview</div><button class="icon">⌕</button></header>
+<div class="page" style="padding-bottom:8px"><div class="eyebrow">REAL EVIDENCE · V1</div><h1>30 high-value questions</h1><p class="lead">真实面经证据排序。不是随机刷题，也不使用“99% 必问”标签。</p><div class="search">⌕ <span>搜索 Spark、Kafka、Iceberg...</span></div></div>
+<div class="filters"><span class="chip on">All</span><span class="chip">Core</span><span class="chip">L5</span><span class="chip">Spark</span><span class="chip">Warehouse</span></div>
+<div class="page" style="padding-top:8px">
+<div class="question"><div class="qtop"><span class="rank">#01 · CORE VERIFIED</span><span class="evidence">11 direct · 5 companies</span></div><div class="qtitle">数仓为什么要分层？ODS、DWD/DWM、DWS/ADS 等层分别解决什么问题？</div><div class="qmeta">Warehouse · L5 · Curated</div></div>
+<div class="question"><div class="qtop"><span class="rank">#02 · CORE VERIFIED</span><span class="evidence">10 direct · 6 companies</span></div><div class="qtitle">如何建立数据质量体系？某个指标突然不准时如何快速定位？</div><div class="qmeta">Data Quality · L5 · Curated</div></div>
+<div class="question"><div class="qtop"><span class="rank">#03 · CORE VERIFIED</span><span class="evidence">7 direct · 6 companies</span></div><div class="qtitle">Spark 数据倾斜如何定位和解决？什么时候使用 Salting？</div><div class="qmeta">Spark · L5 · Curated</div></div>
+<div class="question"><div class="qtop"><span class="rank">#04 · CORE VERIFIED</span><span class="evidence">6 direct · 4 companies</span></div><div class="qtitle">Data Lake 和 Data Warehouse 有什么区别？湖仓一体解决了什么问题？</div><div class="qmeta">Lakehouse · L4 · Curated</div></div>
+<div class="question"><div class="qtop"><span class="rank">#07 · REPEATED</span><span class="evidence">4 direct · 2 companies</span></div><div class="qtitle">Flink Exactly-once 如何实现？Checkpoint、State 与 Barrier 分别做什么？</div><div class="qmeta">Flink · L5 · Curated</div></div>
+<div class="question"><div class="qtop"><span class="rank">#13 · CROSS-COMPANY</span><span class="evidence">2 direct · 2 companies</span></div><div class="qtitle">HDFS 读取一份文件时，Client、NameNode、DataNode 的完整流程是什么？</div><div class="qmeta">HDFS · L4 · To curate</div></div></div>
+<nav class="bottom"><div class="nav"><i>⌂</i>Learn</div><div class="nav on"><i>◫</i>Interview</div><div class="nav"><i>△</i>Scale</div><div class="nav"><i>▱</i>Projects</div></nav></section>
+
+<section class="screen" data-id="interview-detail">
+<header class="top"><button class="icon">‹</button><div class="brand">Interview #01</div><button class="icon">⋯</button></header>
+<div class="page"><div class="eyebrow">CORE VERIFIED · WAREHOUSE · L5</div><h1>数仓为什么要分层？</h1><div style="display:flex;justify-content:space-between;margin:12px 0 16px"><span class="meta">11 direct · 5 companies</span><span class="link">查看 Evidence ›</span></div>
+<div class="card quick"><label>30 秒回答</label><p>数仓分层的核心是解耦、复用和治理。ODS 保留源系统语义，DWD 形成标准原子事实，DWS 沉淀公共主题能力，ADS 面向具体消费。生产上不机械要求五层齐全，而是保证 Raw → Conformed → Reusable Model → Serving 的职责边界清楚。</p></div>
+<div class="segment"><span class="on">Interview</span><span>Learn</span></div>
+<h2>这道题在考什么</h2><p>不是背层名，而是解释为什么解耦、什么时候复用、如何做回溯、质量、血缘和变更管理。</p>
+<h2>答题框架</h2><div class="diagram"><div class="node"><b>Why</b><small>解耦 · 复用 · 治理</small></div><div class="arrow">↓</div><div class="node on"><b>Layer Responsibility</b><small>一行数据代表什么</small></div><div class="arrow">↓</div><div class="node"><b>Production Boundary</b><small>增量 · 回溯 · 质量 · 血缘</small></div></div>
+<h2>常见错误</h2><div class="row"><div class="num">01</div><div class="main"><div class="title">只背 ODS / DWD / DWS</div><div class="sub">没有解释每层解决的工程问题。</div></div></div><div class="row"><div class="num">02</div><div class="main"><div class="title">五层必须齐全</div><div class="sub">现代架构更重要的是职责边界，而不是层数。</div></div></div>
+<h2>真实追问</h2><div class="row"><div class="main"><div class="title">DWS 和 Semantic Layer 有什么区别？</div></div><div class="chev">›</div></div><div class="row"><div class="main"><div class="title">Lakehouse 时代还需要传统分层吗？</div></div><div class="chev">›</div></div></div>
+<nav class="bottom"><div class="nav"><i>⌂</i>Learn</div><div class="nav on"><i>◫</i>Interview</div><div class="nav"><i>△</i>Scale</div><div class="nav"><i>▱</i>Projects</div></nav></section>
+
+<section class="screen" data-id="scale-lab">
+<header class="top"><button class="icon">‹</button><div class="brand">Scale Lab</div><button class="icon">⋯</button></header>
+<div class="page"><div class="eyebrow">LAKEHOUSE · BACKFILL</div><h1>10B rows historical backfill</h1><p class="lead">假设生产规模化练习。不是项目经历。</p>
+<div class="kpis"><div><b>10B</b><span>rows</span></div><div><b>24h</b><span>window</span></div><div><b>99.9%</b><span>read SLO</span></div></div>
+<div class="callout"><b>Constraint</b><br>回填期间线上 Trino 查询不能被大规模 Shuffle 与对象存储扫描拖垮。</div>
+<h2>Where it breaks</h2><div class="diagram"><div class="node"><b>Backfill Spark Jobs</b><small>10B rows · parallel writes</small></div><div class="arrow">↓</div><div class="node on"><b>Iceberg Commit Layer</b><small>commit contention · small files</small></div><div class="arrow">↓</div><div class="node"><b>Object Storage</b><small>IO / request pressure</small></div><div class="arrow">↓</div><div class="node"><b>Trino Queries</b><small>planning + scan latency</small></div></div>
+<h2>Design</h2><div class="todo"><i></i><span>按时间窗口切 Backfill，限制同时运行 Writer 数量。</span></div><div class="todo"><i></i><span>控制目标文件大小，避免制造海量小文件。</span></div><div class="todo"><i></i><span>在线查询与回填计算隔离资源池。</span></div><div class="todo"><i></i><span>观察 Commit retries、Manifest 增长和 Query P95。</span></div>
+<h2>Trade-off</h2><p>更高并行度缩短 Backfill 时间，但会提高 Commit 冲突、对象存储请求和线上查询干扰。目标是在 Recovery Window 与 Serving SLO 之间取平衡。</p></div>
+<nav class="bottom"><div class="nav"><i>⌂</i>Learn</div><div class="nav"><i>◫</i>Interview</div><div class="nav on"><i>△</i>Scale</div><div class="nav"><i>▱</i>Projects</div></nav></section>
+
+<section class="screen" data-id="project-case">
+<header class="top"><button class="icon">‹</button><div class="brand">Project Case</div><button class="icon">⋯</button></header>
+<div class="page"><div class="eyebrow">PROJECT · FACT BOUNDARY</div><h1>North America Project</h1><p class="lead">项目页首先告诉用户：哪些是实际事实，哪些是边界，哪些只是规模化推演。</p>
+<h2>Actual</h2><div class="fact"><strong>VERIFIED PROJECT FACT</strong><p>真实项目事实只在核验后进入这个区域。UI 不允许 Scale Lab 混进来。</p></div>
+<div class="row"><div class="main"><div class="title">Architecture</div><div class="sub">由项目源码与用户确认生成，不在原型阶段虚构。</div></div><span class="badge success">Actual</span></div>
+<div class="row"><div class="main"><div class="title">Problems solved</div><div class="sub">真实问题、真实边界、真实实现。</div></div><span class="badge success">Actual</span></div>
+<h2>Knowledge Mapping</h2><div class="row"><div class="main"><div class="title">CDC & Consistency</div><div class="sub">01 · Data Ingestion & Messaging</div></div><div class="chev">›</div></div><div class="row"><div class="main"><div class="title">Iceberg & Trino</div><div class="sub">04 · Lakehouse & Query Engine</div></div><div class="chev">›</div></div><div class="row"><div class="main"><div class="title">Semantic Layer</div><div class="sub">06 · MetricFlow / Unified Metrics</div></div><div class="chev">›</div></div>
+<h2>Boundary</h2><div class="callout">这里明确写“没有做到哪里”。Boundary 是正式内容，避免把生产方案包装成个人经历。</div>
+<h2>Scale Extension</h2><div class="scale"><div class="eyebrow">HYPOTHETICAL SCALE LAB</div><div class="title" style="margin-top:7px">如果日增数据 ×100，会先出现什么瓶颈？</div><div class="sub">Volume · Commit Concurrency · Serving Latency · Cost</div></div></div>
+<nav class="bottom"><div class="nav"><i>⌂</i>Learn</div><div class="nav"><i>◫</i>Interview</div><div class="nav"><i>△</i>Scale</div><div class="nav on"><i>▱</i>Projects</div></nav></section>
+
+</main></div></div>
+<script>
+const items=[["learn-home","Learn Home"],["knowledge-detail","Knowledge"],["interview-list","Interview List"],["interview-detail","Interview Detail"],["scale-lab","Scale Lab"],["project-case","Project Case"]];
+const tabs=document.getElementById("tabs");let current=new URLSearchParams(location.search).get("screen")||"learn-home";
+function show(id){current=id;document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("on",x.dataset.id===id));document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x.dataset.id===id))}
+items.forEach(([id,label])=>{const b=document.createElement("button");b.textContent=label;b.dataset.id=id;b.onclick=()=>show(id);tabs.appendChild(b)});show(current);
+</script>
+</body></html>

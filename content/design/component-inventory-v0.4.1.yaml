@@ -1,0 +1,61 @@
+version: 0.4.1
+status: prototype
+viewport_baseline:
+  width: 390
+  height: 844
+screens:
+- learn-home
+- knowledge-detail
+- interview-list
+- interview-detail
+- scale-lab
+- project-case
+component_candidates:
+- id: app-shell
+  priority: core
+- id: compact-top-bar
+  priority: core
+- id: bottom-navigation
+  priority: core
+- id: stage-row
+  priority: core
+- id: question-row
+  priority: core
+- id: metadata-line
+  priority: core
+- id: badge
+  priority: core
+- id: filter-chip
+  priority: support
+- id: quick-answer
+  priority: core
+- id: reading-segment
+  priority: core
+- id: quick-navigation
+  priority: support
+- id: evidence-summary
+  priority: core
+- id: evidence-disclosure
+  priority: next_round
+- id: code-block
+  priority: core
+- id: diagram-node
+  priority: core
+- id: diagram-edge
+  priority: core
+- id: scale-kpi
+  priority: support
+- id: constraint-callout
+  priority: support
+- id: project-fact-state
+  priority: core
+- id: scale-extension-state
+  priority: core
+validated:
+  row_over_card: true
+  single_accent: true
+  default_shadow_none: true
+  mobile_vertical_diagram: true
+  evidence_visible: true
+  project_scale_boundary_visible: true
+  single_content_source_dual_reading_mode: true
