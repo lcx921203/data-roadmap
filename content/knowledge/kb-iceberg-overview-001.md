@@ -62,9 +62,9 @@ Semantic / Serving / BI / Agent
 
 Spark、Flink、Trino 是 Engine（引擎）；S3、OSS、HDFS 是 Storage（存储）；Iceberg 处在两者之间，定义表的元数据、快照、文件集合和提交协议。
 
-## L5 学习主线
+## Iceberg 的完整链路
 
-本章不是把十个概念孤立背下来，而是按一条读写链学习：
+Iceberg 的读写与运维可以沿下面这条链理解：
 
 ```text
 表状态
@@ -91,12 +91,6 @@ Spark、Flink、Trino 是 Engine（引擎）；S3、OSS、HDFS 是 Storage（存
 - Schema / Partition 如何无停机演进；
 - Query 如何利用 Manifest 与文件统计裁剪；
 - 监控哪些指标能提前发现小文件、元数据膨胀和 Commit Contention（提交争用）。
-
-## 项目案例
-
-当前 DataRoadmap 只把 `north-america` 标为 **project relevance（项目相关）**，不在这里写“项目实际使用了哪些 Iceberg 参数、规模和故障案例”。
-
-这些事实必须经过 Project Fact Check 后才能进入 `Actual`。
 
 ## 大规模下会发生什么
 
