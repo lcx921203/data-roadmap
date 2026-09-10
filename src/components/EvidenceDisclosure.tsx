@@ -35,17 +35,10 @@ export function EvidenceDisclosure({
       map.set(company, current)
     }
 
-    return Array.from(map.entries())
-      .map(([company, groupedItems]) => ({
-        company,
-        items: groupedItems,
-      }))
-      .sort((left, right) => {
-        const countCompare = right.items.length - left.items.length
-        return countCompare !== 0
-          ? countCompare
-          : left.company.localeCompare(right.company)
-      })
+    return Array.from(map.entries()).map(([company, groupedItems]) => ({
+      company,
+      items: groupedItems,
+    }))
   }, [items])
 
   return (
@@ -68,13 +61,16 @@ export function EvidenceDisclosure({
       </div>
 
       <BottomSheet open={open} title="面经依据" onClose={() => setOpen(false)}>
-        <div className="evidence-sheet__summary">
+        <section className="evidence-overview" aria-label="面经覆盖情况">
+          <span>题目出现记录</span>
           <strong>
             {stats.evidenceCount} 份面经 · {stats.companyCount} 家公司
           </strong>
-          <p>
-            这些记录用于说明题目的出现情况，学习和作答都在 DataRoadmap 内完成。
-          </p>
+        </section>
+
+        <div className="evidence-group-heading">
+          <strong>按公司</strong>
+          <span>{groups.length} 组</span>
         </div>
 
         <div className="evidence-company-list">
@@ -117,7 +113,7 @@ export function EvidenceDisclosure({
         </div>
 
         <p className="evidence-note">
-          出现次数基于当前已收录并核验的面经记录；新增证据后，这里的数量会随内容数据自动更新。
+          数据来自当前已核验的面经记录；后续补充证据并完成校准后，数量会随内容数据更新。
         </p>
       </BottomSheet>
     </>

@@ -1,0 +1,260 @@
+/* V0.6.0.5 — Design System V1.1 mobile conformance */
+
+/* Calm, opaque chrome: Design System forbids glassmorphism. */
+.top-bar,
+.bottom-nav {
+  background: var(--color-canvas);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Continue Learning = current-state surface.
+   Use only Signal family in the hairline so the edge does not turn muddy gray. */
+.continue-focus-card {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-signal-soft) 88%,
+      var(--color-signal)
+    );
+  background: color-mix(
+    in srgb,
+    var(--color-signal-soft) 76%,
+    var(--color-canvas)
+  );
+}
+
+.continue-focus-card:active {
+  background: var(--color-signal-soft);
+}
+
+.continue-focus-card__top > span::before {
+  content: '第 ';
+}
+
+.continue-focus-card__top > span::after {
+  content: ' 节';
+}
+
+/* Quick technology selection gets the full mobile width.
+   No mask / clipped chip is placed directly beside the advanced filter control. */
+.interview-discovery-row {
+  display: contents;
+}
+
+.interview-tech-scroll {
+  margin: 20px calc(var(--page-padding-mobile) * -1) 0;
+  padding: 0 var(--page-padding-mobile);
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.interview-tech-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.interview-tech-scroll button {
+  min-height: var(--tap-target);
+  padding: 0 14px;
+  flex: none;
+  white-space: nowrap;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.interview-tech-scroll button[data-selected="true"] {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: white;
+}
+
+/* Filter belongs to the list it affects. */
+.interview-list-heading {
+  margin-top: 28px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.interview-list-heading > div {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.interview-list-heading h2 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.32;
+}
+
+.interview-list-heading > div > span {
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.filter-control {
+  min-height: var(--tap-target);
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.filter-control:active {
+  background: var(--color-surface-strong);
+}
+
+.filter-control[data-active="true"] {
+  border-color: var(--color-hairline-strong);
+  color: var(--color-signal-strong);
+}
+
+.filter-control strong {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-signal);
+  color: white;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* The list itself owns the divider now. */
+.interview-list-heading + .question-list {
+  margin-top: 8px;
+}
+
+/* Evidence summary is compact; only the action reads as interactive. */
+.evidence-summary {
+  min-height: 72px;
+}
+
+.evidence-summary__stats strong {
+  font-size: 12px;
+}
+
+.evidence-summary__stats span {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.evidence-summary__action {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Evidence sheet hierarchy:
+   Overview metric != company group header. */
+.evidence-overview {
+  padding: 14px 16px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.evidence-overview > span,
+.evidence-overview > strong {
+  display: block;
+}
+
+.evidence-overview > span {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.evidence-overview > strong {
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.evidence-group-heading {
+  margin-top: 22px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.evidence-group-heading strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.evidence-group-heading span {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+}
+
+.evidence-company-list {
+  border-top: 0;
+}
+
+.evidence-company {
+  padding: 17px 0 3px;
+}
+
+.evidence-company__header strong {
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.evidence-company__header span {
+  font-size: 11px;
+}
+
+.evidence-record {
+  padding: 10px 0 13px;
+}
+
+.evidence-record > strong {
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.evidence-record__meta {
+  font-size: 12px;
+}
+
+/* Frozen baseline says FilterChip touch targets are >=44px. */
+.chip-row button {
+  min-height: var(--tap-target);
+}
+
+/* Navigation labels use the 12px meta scale, not 10px microcopy. */
+.bottom-nav__item {
+  font-size: 11px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interview-tech-scroll {
+    scroll-behavior: auto;
+  }
+}

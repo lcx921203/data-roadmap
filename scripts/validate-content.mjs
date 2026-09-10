@@ -38,6 +38,46 @@ const interviewBank = readYaml(
 )
 const components = readYaml('content/design/components-v1.yaml')
 
+const canonicalFrequency = readYaml(
+  'content/interviews/canonical-frequency-v0.3.8.yaml',
+)
+const canonicalFrequencySupplement = readYaml(
+  'content/interviews/canonical-frequency-supplement-v1.yaml',
+)
+
+if (!Array.isArray(canonicalFrequency?.questions)) {
+  throw new Error('Canonical frequency V0.3.8 must contain questions')
+}
+
+if (!Array.isArray(canonicalFrequencySupplement?.questions)) {
+  throw new Error('Canonical frequency supplement must contain questions')
+}
+
+for (const record of canonicalFrequency.questions) {
+  const ids = Array.from(new Set(record?.verified_direct?.ids ?? []))
+  const companies = Array.from(
+    new Set(record?.verified_direct?.companies ?? []),
+  )
+
+  if (
+    typeof record?.verified_direct?.independent_count === 'number' &&
+    record.verified_direct.independent_count !== ids.length
+  ) {
+    throw new Error(
+      `Canonical evidence count mismatch for ${record.id}`,
+    )
+  }
+
+  if (
+    typeof record?.verified_direct?.company_count === 'number' &&
+    record.verified_direct.company_count !== companies.length
+  ) {
+    throw new Error(
+      `Canonical company count mismatch for ${record.id}`,
+    )
+  }
+}
+
 if (!Array.isArray(taxonomy?.stages) || taxonomy.stages.length !== 12) {
   throw new Error(
     `Expected 12 taxonomy stages, found ${taxonomy?.stages?.length ?? 'invalid'}`,
@@ -79,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.0') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1')
+if (components?.status !== 'frozen' || components?.version !== '1.1') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.1')
 }
 
 const ids = new Set()
@@ -260,6 +300,57 @@ if (evidenceDisclosureSource.includes('source?.url')) {
   )
 }
 
+
+const dynamicNumberFrontstage = [
+  'src/pages/LearnPage.tsx',
+  'src/pages/StagePage.tsx',
+  'src/pages/InterviewPage.tsx',
+  'src/pages/InterviewDetailPage.tsx',
+  'src/components/QuestionRow.tsx',
+  'src/components/EvidenceDisclosure.tsx',
+]
+
+const forbiddenStaticCountLiterals = [
+  '42%',
+  '30 / 30',
+  '12 个阶段',
+  '11 份面经',
+  '11 条独立面经',
+  '5 家公司',
+  '7 / 10',
+]
+
+for (const file of dynamicNumberFrontstage) {
+  const source = readText(file)
+  for (const literal of forbiddenStaticCountLiterals) {
+    if (source.includes(literal)) {
+      throw new Error(
+        `Hard-coded dynamic frontstage number "${literal}" found in ${file}`,
+      )
+    }
+  }
+}
+
+const evidenceUiSource = readText('src/components/EvidenceDisclosure.tsx')
+if (
+  evidenceUiSource.includes('question.direct_count') ||
+  evidenceUiSource.includes('question.company_count')
+) {
+  throw new Error(
+    'Evidence UI must use current frequency registry, not copied question counts',
+  )
+}
+
+const questionRowSource = readText('src/components/QuestionRow.tsx')
+if (
+  questionRowSource.includes('item.direct_count') ||
+  questionRowSource.includes('item.company_count')
+) {
+  throw new Error(
+    'QuestionRow must use current evidence stats, not copied question counts',
+  )
+}
+
 console.log('Frontstage copy audit passed.')
 
 console.log(
@@ -268,5 +359,5 @@ console.log(
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1 frozen.`,
+    `Design System V1.1 frozen.`,
 )

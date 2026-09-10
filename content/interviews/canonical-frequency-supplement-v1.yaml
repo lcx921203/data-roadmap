@@ -1,0 +1,8 @@
+version: '1.0'
+as_of: '2026-09-11'
+questions: []
+notes:
+- Append or override current canonical-frequency records here.
+- verified_direct.ids and verified_direct.companies are the frontstage count source
+  of truth.
+- Do not edit the frozen V0.3.8 calibration file only to change UI numbers.

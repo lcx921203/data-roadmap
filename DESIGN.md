@@ -1,27 +1,19 @@
-# DESIGN.md
-
 # DataRoadmap Design System
 
-> Version: **1.0 / Frozen at V0.4.2**
+> Version: **1.1 / Mobile Validation Revision at V0.6.0.5**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
-DataRoadmap 的设计系统从 V0.4.2 起进入 V1 Frozen（V1 冻结）状态。
-
-后续进入 React / TypeScript 实现时，默认不得改变以下基础原则：
+V1.1 是 V1 的移动端验证修订，不改变顶级信息架构、颜色体系或产品性格。
 
 ```text
 Content is the interface.
 Evidence is the trust layer.
 ```
 
----
-
 ## 1. Product Character
 
-DataRoadmap 不是课程商城、刷题排行榜、企业后台，也不是一面墙的彩色卡片。
-
-它应该像：
+DataRoadmap 应该像：
 
 ```text
 结构清楚的技术编辑内容
@@ -43,78 +35,49 @@ Evidence-led
 Mobile-first
 ```
 
----
+禁止：
 
-## 2. Visual Rules
+```text
+Card Wall
+Gradient Decoration
+Glassmorphism
+Neon AI
+Heavy Shadow
+Gamification Dashboard
+```
 
-### Canvas
+## 2. Color
 
 ```text
 Canvas          #FCFCFA
 Surface         #F6F6F3
 Surface Raised  #FFFFFF
+Surface Strong  #EEEDE8
 Ink             #171717
-```
+Ink Soft        #5F5F5B
+Ink Muted       #8A8A84
+Hairline        #E4E4DE
+Hairline Strong #D2D2CB
 
-### Accent
-
-唯一主 Accent：
-
-```text
 Signal Blue     #315DDC
 Signal Strong   #2346B5
 Signal Soft     #EEF2FF
 ```
 
-只用于：
+Signal 只用于：
 
 - Active；
 - Link；
 - Focus；
 - Primary Action；
+- Current Learning State；
 - Diagram Active Path。
 
-禁止将 Accent 作为装饰背景大面积铺色。
-
-### Semantic
-
-```text
-Success   #19714A
-Warning   #A15C00
-Danger    #B42318
-```
-
-只表达真实状态。
-
----
+不使用透明模糊背景制造 Glass Surface。TopBar / BottomNavigation 使用不透明 Canvas + Hairline。
 
 ## 3. Typography
 
-### Sans
-
-```text
-system-ui
--apple-system
-BlinkMacSystemFont
-"Segoe UI"
-"PingFang SC"
-"Hiragino Sans GB"
-"Microsoft YaHei"
-sans-serif
-```
-
-### Mono
-
-```text
-ui-monospace
-"SFMono-Regular"
-"SF Mono"
-Menlo
-Consolas
-monospace
-```
-
-### Mobile scale
+移动端：
 
 ```text
 Display       34 / 1.12 / 650
@@ -122,54 +85,32 @@ H1            28 / 1.20 / 650
 H2            22 / 1.32 / 650
 H3            18 / 1.40 / 620
 Body          16 / 1.72 / 400
-Body Strong   16 / 1.65 / 600
 Small         14 / 1.55 / 400
 Meta          12 / 1.45 / 500
 Mono          13 / 1.60 / 400
 ```
 
-中文正文默认 16px。
+中文正文默认 >=16px；导航与 Metadata 可使用 Meta Scale。
 
----
-
-## 4. Spacing
-
-基础单位 4px：
+## 4. Spacing / Radius / Border
 
 ```text
+Spacing:
 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64
-```
 
-默认：
-
-```text
-Mobile Page Padding   20px
-Section Gap           40–48px
-Subsection Gap        24–32px
-Paragraph Gap         16px
-```
-
----
-
-## 5. Radius / Border / Shadow
-
-```text
 Radius:
 4 / 6 / 10 / 14 / full
 
-Border:
-1px #E4E4DE
+Default Border:
+1px Hairline
 
-Shadow:
-default = none
-overlay = 0 8px 30px rgba(20,20,18,.08)
+Default Shadow:
+none
 ```
 
-Row 优先，Card 次之。
+Row / Section / Divider 优先于 Card。
 
----
-
-## 6. Top-level Information Architecture
+## 5. Information Architecture
 
 ```text
 Learn
@@ -178,327 +119,205 @@ Scale Lab
 Projects
 ```
 
-Search 是 Global Action（全局操作），不是第五个 Tab。
+Mobile 使用 Bottom Navigation；Desktop 使用 Left Sidebar。
 
-Mobile：Bottom Navigation。
+## 6. Continue Learning
 
-Desktop：Left Sidebar。
+首页唯一允许使用较明显 Signal Soft Surface 的区域之一，因为它表达“当前学习状态”。
 
----
-
-## 7. Frozen Component Inventory
-
-V1 核心组件：
+结构：
 
 ```text
-AppShell
-TopBar
-BottomNavigation
-StageRow
-QuestionRow
-MetadataLine
-Badge
-FilterChip
-QuickAnswer
-ReadingSegment
-QuickNavigation
-EvidenceSummary
-EvidenceDisclosure
-CodeBlock
-DiagramNode
-DiagramEdge
-ScaleKPI
-ConstraintCallout
-ProjectFactState
-ScaleExtensionState
-BottomSheet
-```
-
-组件状态、交互和可访问性规则见：
-
-```text
-content/design/components-v1.yaml
-docs/COMPONENT_FREEZE_V0.4.2.md
-docs/INTERACTION_STATES_V0.4.2.md
-docs/ACCESSIBILITY_V0.4.2.md
-```
-
----
-
-## 8. Navigation
-
-### Bottom Navigation
-
-固定四项：
-
-```text
-Learn | Interview | Scale | Projects
+继续学习                  第 N / M 节
+Stage · Topic
+Current Knowledge
+Summary
+Progress Position
 ```
 
 规则：
 
-- 高度 72–80px + safe area；
-- 每项触控区域 >= 44×44；
-- Active 仅改变 Icon / Label 为 Signal Blue；
-- 不使用大胶囊背景；
-- Detail Page 仍保留 Bottom Navigation，除非进入沉浸式临时 Overlay。
+- 整块可点击；
+- 不放孤立的蓝色“继续” CTA；
+- Signal Soft + 纯 Signal 系 Hairline；
+- 无 Shadow；
+- N / M 从当前 Stage 内容集合动态计算；
+- Progress 表示最近学习位置，不冒充完成率。
 
-### Top Bar
+## 7. StageRow
 
-List Page：
-
-```text
-Title / Brand
-Global Search
-```
-
-Detail Page：
-
-```text
-Back
-Context Title
-Overflow / Search
-```
-
----
-
-## 9. List Rows
-
-### StageRow
+结构：
 
 ```text
 Stage Number
 Title
 Short Summary
-Depth / Core tags
-Chevron
 ```
 
 整行可点击。
 
-状态：
+V1.1 经移动端验证后移除 Chevron：整行布局与 Pressed State 已足以表达列表交互，避免右侧图标造成对齐噪音。
+
+## 8. QuestionRow
+
+结构：
 
 ```text
-default
-pressed
-focus-visible
-disabled
-```
-
-Pressed：
-
-```text
-background = Surface
-```
-
-不靠阴影。
-
-### QuestionRow
-
-```text
-Rank + Frequency Band
-Evidence Count
+Current Rank
+Frequency Band
+Evidence Count · Company Count
 Question
-Domain · Level · Curated Status
+Answer Status
 ```
 
-Question 必须是视觉主角。
+Question 是视觉主角。
 
-Evidence 必须可见。
+Rank、Evidence Count、Company Count 必须来自当前 Content Registry / Frequency Registry，不允许写死到 React 文案。
 
----
+## 9. Interview Discovery
 
-## 10. Quick Answer
-
-QuickAnswer 是 Interview Detail 最重要的强调容器。
+Search 与 Quick Technology Chip 分工：
 
 ```text
-background    Signal Soft
-border        Signal Hairline
-radius        10px
-padding       18–20px
+Search
+= 问题 / 场景 / 故障 / 关键词
+
+Technology Chip
+= Spark / Flink / Kafka / SQL / ...
 ```
 
-它不是 CTA。
+技术 Chip 独占横向滚动行，不与 Advanced Filter 挤在同一裁剪容器里。
 
-禁止：
-
-- Gradient；
-- 大 Icon；
-- 厚 Shadow；
-- 动画高亮。
-
----
-
-## 11. Reading Segment
+Advanced Filter 属于题目列表操作，应放在 List Heading 附近，并使用：
 
 ```text
-Interview | Learn
+Filter Icon + 筛选 + Active Count
 ```
 
-这是 Presentation Mode（展示模式），不是两个内容源。
+完整筛选使用 BottomSheet。
 
-状态：
-
-```text
-default
-selected
-focus-visible
-```
-
-Selected：
-
-```text
-white surface
-Ink text
-```
-
-不得用强蓝底填满整个 Segment。
-
----
-
-## 12. Evidence
-
-### EvidenceSummary
-
-默认一行：
-
-```text
-11 direct · 5 companies
-```
-
-可附 Frequency Band。
-
-必须提供展开入口。
-
-### EvidenceDisclosure
-
-移动端使用 BottomSheet。
-
-BottomSheet 显示：
-
-```text
-Source
-Company
-Role
-Round
-Date
-Mapping Type
-```
-
-Direct Evidence 与 Topic-only Candidate 必须视觉区分。
-
-Evidence 关闭时不丢失当前滚动位置。
-
----
-
-## 13. Filters
-
-Question List Filter：
-
-```text
-Domain
-Level
-Frequency
-Company
-Curated
-```
-
-列表顶部只保留少量高频 Chip。
-
-完整筛选器使用 BottomSheet。
-
-Filter 状态：
-
-```text
-default
-selected
-disabled
-focus-visible
-```
-
-Selected Chip：
+Selected Technology Chip：
 
 ```text
 Ink background
 White text
 ```
 
-而不是 Signal Blue，以避免 Accent 过载。
+不使用 Signal Blue Fill。
 
----
+## 10. Evidence Summary
 
-## 14. Code Block
-
-状态：
+题目标题附近必须显示：
 
 ```text
-collapsed
-expanded
-copied
-focus-visible
+Frequency Band
+N 份面经 · M 家公司
+面经依据 ›
 ```
 
-移动端默认规则：
+只有“面经依据”是展开操作。数字和 Frequency Band 本身不是独立点击入口。
+
+## 11. Evidence Disclosure
+
+移动端使用 BottomSheet。
+
+前台字段：
+
+```text
+Evidence Overview
+Company
+Role
+Round
+Publisher
+Date
+```
+
+分组方式：
+
+```text
+Overview
+↓
+按公司
+↓
+Company Group
+↓
+Interview Records
+```
+
+禁止把以下后台审计字段直接显示给普通用户：
+
+```text
+source_url
+reliability_grade
+mapping_type
+independence_group
+review_status
+```
+
+Source URL 继续保留在后台 Evidence YAML 中供核验，但不作为前台外跳入口。
+
+## 12. Dynamic Numbers
+
+所有会随着内容增长或用户状态变化的数字都必须由数据计算。
+
+必须动态：
+
+```text
+Stage Count
+Knowledge Count
+Current Learning Position N / M
+Interview Total Count
+Filtered Interview Count
+Question Rank
+Evidence Count
+Company Count
+Company Group Count
+Answer-ready Count（如未来展示）
+Scale Scenario Count（如未来展示）
+```
+
+允许固定的数字：
+
+```text
+30 秒回答 / 30 秒理解
+L1–L5 Learning Depth
+Scale Lab 中定义好的 10B / 100 Writers 等场景约束
+Design Token 尺寸
+```
+
+历史校准文件中的数字可以冻结，但 React 前台不得复制一份硬编码。
+
+## 13. Quick Answer
+
+```text
+background Signal Soft
+border     Signal Hairline
+radius     10px
+padding    18–20px
+```
+
+它是阅读强调容器，不是 CTA。
+
+## 14. Reading Segment
+
+```text
+Interview | Learn
+```
+
+只控制同一内容源的展示模式。
+
+## 15. Code Block
 
 - 短代码直接展开；
-- 长代码默认 Collapse；
+- 长代码默认折叠；
 - 横向滚动；
-- Header 显示 language / filename；
-- Copy 为 44px Touch Target；
-- 不自动折行破坏代码结构。
-
----
-
-## 15. Technical Diagram
-
-### Node
-
-```text
-default
-active
-warning
-failure
-```
-
-Default：
-
-```text
-Raised Surface
-Hairline
-8–10px Radius
-```
-
-Active：
-
-```text
-Signal Soft
-Signal Border
-```
-
-Failure：
-
-```text
-Danger Soft
-Danger Border
-```
-
-### Edge
-
-```text
-default    neutral solid
-active     signal solid
-retry      warning dashed
-rollback   danger dashed
-```
-
-Mobile 优先纵向重排。
-
----
+- Copy >=44px Touch Target；
+- 不强制折行；
+- Inline Code 与 Fenced CodeBlock 样式严格分离。
 
 ## 16. Scale Lab
 
-Scale 页面按：
+详情按：
 
 ```text
 Scenario
@@ -512,18 +331,9 @@ Cost
 Recovery
 ```
 
-ScaleKPI 只是参数展示，不游戏化。
+Scale 首页展示具体 Scenario，不展示内容模板。
 
-禁止：
-
-- 星级；
-- XP；
-- 金币；
-- 排行榜。
-
----
-
-## 17. Project Fact Boundary
+## 17. Project Truthfulness
 
 Project Case 固定区分：
 
@@ -535,135 +345,61 @@ Interview Mapping
 Scale Extension
 ```
 
-### ProjectFactState
+未核验事实不得进入 Actual。
 
-`verified_project_fact`：
-
-```text
-Success semantic
-但不使用大面积绿色卡片
-```
-
-### ScaleExtensionState
-
-必须出现：
+## 18. BottomSheet
 
 ```text
-HYPOTHETICAL SCALE LAB
-```
-
-它使用 Neutral / Signal Soft 容器，不得与 Actual 使用同一状态样式。
-
----
-
-## 18. Bottom Sheet
-
-BottomSheet 用于：
-
-- Evidence；
-- Filters；
-- 长列表辅助选择。
-
-规则：
-
-```text
-mobile max-height: 82vh
-radius top: 14px
-drag handle: optional
-background: Raised
-overlay: rgba(17,17,17,.26)
+mobile max-height 82vh
+top radius        14px
+background        Raised
+overlay           rgba(17,17,17,.26)
 ```
 
 必须支持：
 
 - tap outside close；
 - close button；
-- Escape on keyboard；
+- Escape；
 - focus trap；
 - restore focus。
 
----
-
-## 19. Interaction Timing
+## 19. Interaction
 
 ```text
-pressed feedback      immediate
-micro transition      140ms
-panel transition      180ms
+pressed feedback immediate
+micro transition 140ms
+panel transition 180ms
 ```
 
-只允许：
-
-- opacity；
-- background；
-- transform <= 4px；
-- sheet slide。
-
-禁止：
-
-- bounce；
-- parallax；
-- decorative floating；
-- long entrance animation。
-
-支持：
-
-```css
-@media (prefers-reduced-motion: reduce)
-```
-
----
+支持 `prefers-reduced-motion`。
 
 ## 20. Accessibility
 
-最低要求：
-
 ```text
-Tap Target             >= 44×44
-Body                   >= 16px
+Touch Target           >=44×44
+Body                   >=16px
 WCAG                    AA
 Keyboard Focus          visible
-Color-only semantics    forbidden
-Bottom Nav safe area    required
-Code horizontal scroll  required
-Diagram text fallback   required
+Color-only semantics   forbidden
+Bottom Nav safe area   required
+Code horizontal scroll required
 ```
-
-Modal / BottomSheet：
-
-```text
-aria-modal
-focus trap
-restore focus
-Escape close
-```
-
-Segment / Tabs 必须使用正确语义。
-
----
 
 ## 21. Responsive
 
-### Mobile 0–767
+Mobile 0–767：
 
 ```text
 20px page padding
 single column
 bottom navigation
 bottom sheet
-vertical diagram
+vertical technical diagrams
 progressive disclosure
 ```
 
-### Tablet 768–1099
-
-```text
-24px padding
-reading column
-optional local navigation
-```
-
-### Desktop 1100+
+Desktop 1100+：
 
 ```text
 Sidebar      240–272
@@ -671,51 +407,15 @@ Reading      680–760
 Local TOC    200–240
 ```
 
----
+## 22. Change Policy
 
-## 22. Design Change Policy
-
-V1 Frozen 后，以下修改需要更新 `DESIGN.md` 版本：
+需要继续版本化 Design System：
 
 - Top-level Navigation；
-- Color system；
+- Color architecture；
 - Typography scale；
-- Core component behavior；
-- Project / Scale truthfulness boundary；
-- Evidence visibility policy。
+- Core component anatomy；
+- Evidence visibility policy；
+- Project / Scale truthfulness boundary。
 
-以下可在实现中微调而不升级 Design System 主版本：
-
-- 2–4px Padding；
-- Border 色轻微调整；
-- Icon glyph；
-- 单组件文案；
-- non-core spacing。
-
----
-
-# Design Statement
-
-DataRoadmap 的高级感来自：
-
-```text
-Information Architecture
-+
-Typography
-+
-Reading Rhythm
-+
-Evidence
-+
-Production-grade Technical Content
-```
-
-不是来自：
-
-```text
-Gradient
-Glass
-Shadow
-Illustration
-Animation
-```
+普通 spacing、图标 glyph、边框轻微调整、文案微调不要求升级主版本。

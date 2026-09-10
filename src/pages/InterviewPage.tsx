@@ -69,6 +69,15 @@ export function InterviewPage() {
   const advancedFilterCount =
     Number(frequency !== 'all') + Number(answer !== 'all')
 
+  const hasDiscoveryState =
+    query.trim().length > 0 ||
+    activeTag !== null ||
+    advancedFilterCount > 0
+
+  const countLabel = hasDiscoveryState
+    ? `${visible.length} / ${interviewBank.questions.length} 道`
+    : `${interviewBank.questions.length} 道`
+
   return (
     <>
       <TopBar title="Interview" />
@@ -92,35 +101,46 @@ export function InterviewPage() {
           例如：数据倾斜、指标不一致、历史回填
         </p>
 
-        <div className="interview-discovery-row">
-          <div
-            className="interview-tech-scroll"
-            aria-label="按技术筛选面试题"
+        <div
+          className="interview-tech-scroll"
+          aria-label="按技术筛选面试题"
+        >
+          <button
+            type="button"
+            data-selected={activeTag === null}
+            aria-pressed={activeTag === null}
+            onClick={() => setActiveTag(null)}
           >
-            <button
-              type="button"
-              data-selected={activeTag === null}
-              aria-pressed={activeTag === null}
-              onClick={() => setActiveTag(null)}
-            >
-              全部
-            </button>
+            全部
+          </button>
 
-            {interviewDiscovery.quick_tags.map((tag) => (
-              <button
-                key={tag.id}
-                type="button"
-                data-selected={activeTag === tag.id}
-                aria-pressed={activeTag === tag.id}
-                onClick={() =>
-                  setActiveTag((current) =>
-                    current === tag.id ? null : tag.id,
-                  )
-                }
-              >
-                {tag.label}
-              </button>
-            ))}
+          {interviewDiscovery.quick_tags.map((tag) => (
+            <button
+              key={tag.id}
+              type="button"
+              data-selected={activeTag === tag.id}
+              aria-pressed={activeTag === tag.id}
+              onClick={() =>
+                setActiveTag((current) =>
+                  current === tag.id ? null : tag.id,
+                )
+              }
+            >
+              {tag.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="interview-list-heading">
+          <div>
+            <h2>
+              {activeTag
+                ? interviewDiscovery.quick_tags.find(
+                    (tag) => tag.id === activeTag,
+                  )?.label ?? '题目'
+                : '题目'}
+            </h2>
+            <span>{countLabel}</span>
           </div>
 
           <button
@@ -140,19 +160,6 @@ export function InterviewPage() {
               <strong>{advancedFilterCount}</strong>
             )}
           </button>
-        </div>
-
-        <div className="section-heading section-heading--interview">
-          <h2>
-            {activeTag
-              ? interviewDiscovery.quick_tags.find(
-                  (tag) => tag.id === activeTag,
-                )?.label ?? '题目'
-              : '题目'}
-          </h2>
-          <span>
-            {visible.length} / {interviewBank.questions.length} 道
-          </span>
         </div>
 
         {visible.length > 0 ? (
