@@ -1,0 +1,22 @@
+version: 0.3.7
+answer_format_version: '1.0'
+curated_answer_count: 10
+status: all_v0_3_4_answer_ready_questions_curated
+existing_first_slice:
+- iq-warehouse-layering-001
+- iq-data-quality-diagnosis-001
+- iq-dimensional-fact-dimension-design-001
+- iq-spark-data-skew-salting-001
+- iq-flink-exactly-once-checkpoint-001
+new_v0_3_7_slice:
+- iq-data-governance-framework-001
+- iq-lake-vs-warehouse-001
+- iq-kafka-reliability-001
+- iq-sql-window-lead-lag-001
+- iq-spark-broadcast-join-001
+publication:
+  publishable: false
+  remaining_blockers:
+  - complete_question_level_evidence_review
+  - final_frequency_calibration
+  - project_fact_check_only_when_project_claim_is_published

@@ -1,0 +1,16 @@
+version: 0.3.7
+name: Evidence Completion Audit
+status: in_progress
+policy:
+  topic_tag_is_not_direct_evidence: true
+  only_reopened_or_question_level_verified_source_counts: true
+  unreviewed_candidate_support_frequency_contribution: 0
+completed_for:
+  all_answer_ready_questions: true
+  curated_answer_count: 10
+remaining:
+  full_prior_32_source_question_level_reopen: true
+  canonical_questions_outside_answer_ready_set: true
+  final_frequency_bands: true
+note: V0.3.7 finishes the remaining answer-ready content. It intentionally does not
+  claim that every historical topic tag has been reopened as direct evidence.
