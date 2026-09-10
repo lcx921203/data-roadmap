@@ -22,13 +22,13 @@ const stageHints: Record<string, string> = {
 
 export function StageRow({ stage }: StageRowProps) {
   return (
-    <button className="stage-row" type="button">
+    <a className="stage-row" href={`#/learn/stage/${stage.id}`}>
       <span className="stage-row__number">{stage.id}</span>
       <span className="stage-row__body">
         <strong>{stage.title_cn}</strong>
         <span>{stageHints[stage.id] ?? stage.title_en}</span>
       </span>
       <ChevronIcon className="stage-row__chevron" />
-    </button>
+    </a>
   )
 }

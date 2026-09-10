@@ -7,10 +7,11 @@ interface QuestionRowProps {
 
 export function QuestionRow({ item }: QuestionRowProps) {
   return (
-    <article className="question-row">
+    <a className="question-row" href={`#/interview/${item.id}`}>
       <div className="question-row__meta">
         <span className="question-row__rank">
-          #{String(item.rank).padStart(2, '0')} · {formatFrequencyBand(item.frequency_band)}
+          #{String(item.rank).padStart(2, '0')} ·{' '}
+          {formatFrequencyBand(item.frequency_band)}
         </span>
         <span>
           {item.direct_count} direct · {item.company_count} companies
@@ -21,6 +22,6 @@ export function QuestionRow({ item }: QuestionRowProps) {
         <span>{item.answer_curated ? 'Curated' : 'To curate'}</span>
         <span>{item.publishable ? 'Publishable' : 'Evidence scope'}</span>
       </div>
-    </article>
+    </a>
   )
 }

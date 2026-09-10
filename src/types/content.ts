@@ -1,4 +1,5 @@
 export type RouteKey = 'learn' | 'interview' | 'scale' | 'projects'
+export type ReadingMode = 'interview' | 'learn'
 
 export interface TaxonomyStage {
   id: string
@@ -33,7 +34,86 @@ export interface InterviewBankFile {
   questions: InterviewQuestionSummary[]
 }
 
-export interface MarkdownAsset {
+export interface InterviewEvidenceMapping {
+  canonical_question_id: string
+  mapping: string
+  summary?: string
+}
+
+export interface InterviewEvidenceFile {
+  id: string
+  type: 'interview_evidence'
+  source?: {
+    url?: string | null
+    source_type?: string | null
+    publisher?: string | null
+    published_at?: string | null
+    captured_at?: string | null
+    reliability?: string | null
+  }
+  interview_context?: {
+    company?: string | null
+    role?: string | null
+    round?: string | null
+  }
+  independence_group?: string | null
+  question_evidence?: InterviewEvidenceMapping[]
+  review?: {
+    extraction_status?: string | null
+    human_verified?: boolean | null
+    notes?: string | null
+  }
+}
+
+export interface QuestionEvidenceView {
+  evidence: InterviewEvidenceFile
+  mapping: InterviewEvidenceMapping
+}
+
+export interface KnowledgeFrontMatter {
+  id: string
+  type: 'knowledge'
+  title: string
+  stage_id: string
+  domain?: string
+  learning_depth?: string
+  stack_role?: string
+  content_status?: string
+  summary?: string
+}
+
+export interface InterviewAnswerFrontMatter {
+  id: string
+  type: 'interview'
+  question?: string
+  domain?: string
+  learning_depth?: string
+  status?: string
+  verification?: {
+    answer_curated?: boolean
+    publishable?: boolean
+    content_review_status?: string
+  }
+  project_connection?: {
+    status?: string
+  }
+}
+
+export interface MarkdownDocument<TMeta extends Record<string, unknown> = Record<string, unknown>> {
   path: string
   raw: string
+  meta: TMeta
+  body: string
+  title: string | null
+}
+
+export interface MarkdownSection {
+  title: string
+  body: string
+}
+
+export interface HashRoute {
+  key: RouteKey
+  segments: string[]
+  path: string
 }

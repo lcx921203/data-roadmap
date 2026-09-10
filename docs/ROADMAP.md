@@ -34,38 +34,50 @@
 
 ### V0.5.0 Application Bootstrap
 - [x] React + TypeScript + Vite
-- [x] `base: /data-roadmap/`
 - [x] Hash routing
 - [x] Design Token CSS
-- [x] App Shell
 - [x] Four top-level routes
 - [x] YAML content loader
 - [x] Static content registry
-- [x] Real Taxonomy rendering
-- [x] Real Interview Bank rendering
-- [x] Content validation build gate
-- [x] GitHub Pages workflow template
+- [x] Build validation
 
-### Next: V0.5.1 GitHub Pages Deployment
-- [ ] Install `.github/workflows/deploy-pages.yml`
-- [ ] GitHub Pages Actions mode
-- [ ] CI build
-- [ ] Pages deploy
-- [ ] Mobile smoke test on live URL
-- [ ] Fix deployment-only issues
+### V0.5.1 GitHub Pages Deployment
+- [x] Install Pages workflow
+- [x] Enable GitHub Actions Pages
+- [x] Build
+- [x] Deploy
+- [x] Live URL
 
 ### V0.5.2 Detail-page Foundation
-- [ ] Knowledge route / detail loader
-- [ ] Interview detail route
-- [ ] Markdown front matter parser
-- [ ] Evidence Bottom Sheet
-- [ ] Reading Segment
-- [ ] Code Collapse
-- [ ] Route-level deep links
+- [x] Route-level deep links
+- [x] Stage Detail
+- [x] Knowledge Detail
+- [x] Markdown Front Matter parser
+- [x] Interview Detail
+- [x] Evidence Bottom Sheet
+- [x] Interview / Learn Reading Segment
+- [x] Code Collapse / Copy
+- [x] Curated-answer content gate
+- [x] Knowledge content gate
+
+### V0.5 Close Condition
+- [ ] Deploy V0.5.2 to Pages
+- [ ] Mobile smoke test
+- [ ] Close V0.5 milestone
 
 ## V0.6 First Vertical Slice
-- [ ] Iceberg knowledge path
-- [ ] Project Case
-- [ ] Scale Lab
-- [ ] Interview Bank integration
-- [ ] Curated-answer rendering
+
+### Next: V0.6.0 Iceberg Knowledge Spine
+- [ ] Iceberg L5 chapter map
+- [ ] Table Metadata / Snapshot
+- [ ] Manifest List / Manifest
+- [ ] Partition Evolution
+- [ ] Write Distribution / Ordering
+- [ ] Schema Evolution
+- [ ] Concurrent Commit
+- [ ] Maintenance / Small Files
+- [ ] Failure Recovery
+- [ ] Trino read path
+- [ ] Project mapping with fact boundary
+- [ ] Scale Lab mapping
+- [ ] Interview mapping

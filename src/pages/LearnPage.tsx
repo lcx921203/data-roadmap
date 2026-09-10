@@ -13,14 +13,18 @@ export function LearnPage() {
         <h1 className="display-title">{product.subtitle}</h1>
         <p className="page-lead">按系统能力学习，而不是按工具列表刷课程。</p>
 
-        <section className="continue-card" aria-label="继续学习">
+        <a
+          className="continue-card continue-card--link"
+          href="#/learn/kb-iceberg-overview-001"
+          aria-label="继续学习 Apache Iceberg"
+        >
           <span className="meta">CONTINUE · 04 LAKEHOUSE</span>
           <strong>Apache Iceberg</strong>
           <p>Snapshot · Manifest · Write Ordering · Schema Evolution</p>
           <div className="progress-track" aria-hidden="true">
             <span style={{ width: '42%' }} />
           </div>
-        </section>
+        </a>
 
         <div className="section-heading">
           <h2>Roadmap</h2>

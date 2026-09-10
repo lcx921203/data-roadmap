@@ -7,6 +7,17 @@ const frequencyLabels: Record<string, string> = {
   unverified_candidate: 'CANDIDATE',
 }
 
+const mappingLabels: Record<string, string> = {
+  direct_question: 'Direct question',
+  direct_followup: 'Direct follow-up',
+  round_topic: 'Round topic',
+  editorial_inference: 'Editorial inference',
+}
+
 export function formatFrequencyBand(value: string): string {
   return frequencyLabels[value] ?? value.replaceAll('_', ' ').toUpperCase()
+}
+
+export function formatMapping(value: string): string {
+  return mappingLabels[value] ?? value.replaceAll('_', ' ')
 }
