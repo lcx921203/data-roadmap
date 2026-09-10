@@ -3,7 +3,11 @@ import type {
   InterviewQuestionSummary,
   QuestionEvidenceView,
 } from '../types/content'
-import { formatFrequencyBand, formatMapping } from '../utils/format'
+import {
+  formatFrequencyBand,
+  formatMapping,
+  formatSourceReliability,
+} from '../utils/format'
 import { BottomSheet } from './BottomSheet'
 
 interface EvidenceDisclosureProps {
@@ -31,68 +35,61 @@ export function EvidenceDisclosure({
 
   return (
     <>
-      <button
-        className="evidence-summary"
-        type="button"
-        onClick={() => setOpen(true)}
-      >
-        <span>
-          {question.direct_count} direct · {question.company_count} companies
-        </span>
-        <strong>{formatFrequencyBand(question.frequency_band)}</strong>
-        <span className="evidence-summary__action">查看 Evidence ›</span>
-      </button>
+      <div className="evidence-summary">
+        <div className="evidence-summary__stats">
+          <strong>{formatFrequencyBand(question.frequency_band)}</strong>
+          <span>
+            {question.direct_count} 条独立面经 · {question.company_count} 家公司
+          </span>
+        </div>
 
-      <BottomSheet
-        open={open}
-        title="Interview Evidence"
-        onClose={() => setOpen(false)}
-      >
+        <button
+          className="evidence-summary__action"
+          type="button"
+          onClick={() => setOpen(true)}
+        >
+          查看面经来源
+        </button>
+      </div>
+
+      <BottomSheet open={open} title="面经来源" onClose={() => setOpen(false)}>
         <div className="evidence-sheet__summary">
           <strong>
-            {question.direct_count} direct · {question.company_count} companies
+            {question.direct_count} 条独立面经 · {question.company_count} 家公司
           </strong>
-          <p>
-            当前 DataRoadmap 已校准语料范围。下方展示可追溯 Evidence 记录。
-          </p>
           {companies.length > 0 && (
-            <p className="meta">Companies: {companies.join(' · ')}</p>
+            <p className="meta">涉及公司：{companies.join(' · ')}</p>
           )}
         </div>
 
         <div className="evidence-list">
           {items.length === 0 && (
-            <p className="empty-note">
-              当前 Bundle 中没有找到该题的 final-review Evidence 记录。
-            </p>
+            <p className="empty-note">暂时没有可展示的来源记录。</p>
           )}
 
           {items.map(({ evidence, mapping }) => {
             const source = evidence.source
             const context = evidence.interview_context
+            const reliability = formatSourceReliability(source?.reliability)
 
             return (
               <article className="evidence-row" key={evidence.id}>
                 <div className="evidence-row__top">
-                  <strong>{context?.company ?? 'Company unavailable'}</strong>
-                  <span className="badge">{source?.reliability ?? '—'}</span>
+                  <strong>{context?.company ?? '公司信息未公开'}</strong>
+                  {reliability && <span className="badge">{reliability}</span>}
                 </div>
 
                 <p>
                   {[context?.role, context?.round]
                     .filter(Boolean)
-                    .join(' · ') || 'Interview context unavailable'}
+                    .join(' · ') || '岗位 / 轮次信息未公开'}
                 </p>
 
                 <div className="evidence-row__meta">
-                  <span>{source?.publisher ?? 'Source'}</span>
-                  <span>{source?.published_at ?? 'Date unavailable'}</span>
+                  <span>{source?.publisher ?? '公开来源'}</span>
+                  {source?.published_at && <span>{source.published_at}</span>}
                   <span>{formatMapping(mapping.mapping)}</span>
                 </div>
-
-                {mapping.summary && (
-                  <p className="evidence-row__summary">{mapping.summary}</p>
-                )}
 
                 {source?.url && (
                   <a
@@ -110,7 +107,7 @@ export function EvidenceDisclosure({
         </div>
 
         <p className="evidence-note">
-          Evidence 可追溯不等于“绝对行业概率”。Frequency 仅代表当前已验证语料中的重复程度。
+          出现次数仅基于当前已收录并核验的面经来源，不代表绝对行业概率。
         </p>
       </BottomSheet>
     </>

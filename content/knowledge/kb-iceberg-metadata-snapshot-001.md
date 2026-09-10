@@ -124,9 +124,6 @@ TableOperations
 
 不同 Catalog 的“原子切换”实现不同，但 Iceberg 的高层语义一致：**基于旧版本提交新版本，旧版本已变化时不能静默覆盖。**
 
-## 项目案例
-
-项目事实目前保持 `needs_fact_check`。后续若确认实际 Catalog、Snapshot 保留周期、回滚或重放策略，再放进 Project Case。
 
 ## 大规模下会发生什么
 

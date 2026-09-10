@@ -1,39 +1,92 @@
+import { useMemo, useState } from 'react'
 import { QuestionRow } from '../components/QuestionRow'
 import { SearchIcon } from '../components/Icons'
 import { TopBar } from '../components/TopBar'
 import { appRegistry } from '../content/registry'
 
+type FilterKey = 'all' | 'core' | 'repeated' | 'curated'
+
+const filters: Array<{ key: FilterKey; label: string }> = [
+  { key: 'all', label: '全部' },
+  { key: 'core', label: '核心重复' },
+  { key: 'repeated', label: '多次重复' },
+  { key: 'curated', label: '答案已整理' },
+]
+
 export function InterviewPage() {
   const { interviewBank } = appRegistry
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState<FilterKey>('all')
+
+  const visible = useMemo(() => {
+    const keyword = query.trim().toLowerCase()
+
+    return interviewBank.questions.filter((question) => {
+      const matchesKeyword =
+        !keyword || question.question.toLowerCase().includes(keyword)
+
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'core' && question.frequency_band === 'core_verified') ||
+        (filter === 'repeated' &&
+          question.frequency_band === 'repeated_verified') ||
+        (filter === 'curated' && question.answer_curated)
+
+      return matchesKeyword && matchesFilter
+    })
+  }, [filter, interviewBank.questions, query])
 
   return (
     <>
       <TopBar title="Interview" />
       <div className="page page--list">
-        <p className="eyebrow">REAL EVIDENCE · V1</p>
-        <h1>30 high-value questions</h1>
+        <h1>面试题</h1>
         <p className="page-lead">
-          真实面经证据排序。题目进入当前范围不等于已经 Publishable。
+          按当前已收录的真实面经出现情况排序。
         </p>
 
-        <button className="search-field" type="button">
+        <label className="search-field">
           <SearchIcon />
-          <span>搜索 Spark、Kafka、Iceberg...</span>
-        </button>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="搜索 Spark、Kafka、Iceberg..."
+            aria-label="搜索面试题"
+          />
+        </label>
 
-        <div className="chip-row" aria-label="快捷筛选">
-          <button type="button" data-selected="true">All</button>
-          <button type="button">Core</button>
-          <button type="button">L5</button>
-          <button type="button">Spark</button>
-          <button type="button">Warehouse</button>
+        <div className="chip-row" aria-label="面试题筛选">
+          {filters.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              data-selected={filter === item.key}
+              aria-pressed={filter === item.key}
+              onClick={() => setFilter(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
-        <section className="question-list" aria-label="Interview Bank">
-          {interviewBank.questions.map((question) => (
-            <QuestionRow key={question.id} item={question} />
-          ))}
-        </section>
+        <div className="section-heading section-heading--interview">
+          <h2>题目</h2>
+          <span>{visible.length} 道</span>
+        </div>
+
+        {visible.length > 0 ? (
+          <section className="question-list" aria-label="面试题列表">
+            {visible.map((question) => (
+              <QuestionRow key={question.id} item={question} />
+            ))}
+          </section>
+        ) : (
+          <div className="empty-state">
+            <strong>没有找到相关题目</strong>
+            <p>可以换一个关键词或筛选条件。</p>
+          </div>
+        )}
       </div>
     </>
   )

@@ -17,6 +17,33 @@
 9. 所有重要实体使用稳定 ID 关联。
 10. 中文主讲；重要英文术语首次出现时提供中文含义。
 
+## Frontstage content boundary
+
+前台网页只显示对学习、面试和决策有直接价值的信息。
+
+允许显示：
+
+- 知识正文；
+- 面试题与答案；
+- 真实面经来源；
+- 学习深度等用户可理解标签；
+- Scale Lab 的具体训练场景；
+- 项目案例中已确认的事实；
+- 导航、搜索、筛选、继续学习等用户操作。
+
+禁止把以下内部信息原样渲染到用户页面：
+
+- `publishable`、`content_status`、`stack_role` 等内容流水字段；
+- `v0.x.x_*`、`seed`、`backlog`、`needs_fact_check` 等开发/编辑状态；
+- “为什么这样设计内容”“本轮新增”“当前 DataRoadmap 会……”等编辑说明；
+- Validator、Typecheck、Bundle、Registry、Front Matter 等实现细节；
+- Project Fact Check 等后台真实性审核流程；
+- Evidence 的内部模型术语，除非已经转成用户可理解的“面经来源/出现记录”。
+
+内部字段可以继续保留在 Content-as-Code 中，但必须通过 View Model / formatter 转成用户语言，或完全隐藏。
+
+页面出现 Click Affordance（可点击外观）时必须有真实行为。未实现的搜索、筛选、箭头、按钮不要提前展示。
+
 ## Design system status
 
 Design System V1 已于 V0.4.2 冻结。
@@ -76,11 +103,13 @@ GitHub Pages
 
 - Bottom Navigation 固定四项：Learn / Interview / Scale / Projects。
 - Evidence Detail 使用 Bottom Sheet。
+- Evidence 的频次与公司数量是静态信息；只有明确的“查看面经来源”控件打开 Bottom Sheet。
 - Full Filter 使用 Bottom Sheet。
 - 长代码默认可折叠。
 - Reading Segment 只控制展示，不创建第二份内容。
 - Sheet 必须支持 focus trap / Escape / restore focus。
 - Pressed State 不使用缩放 Bounce。
+- 学习位置使用本地状态时必须说明真实语义；不能用写死百分比冒充进度。
 
 ## Change policy
 
@@ -93,4 +122,4 @@ GitHub Pages
 - Evidence visibility policy；
 - Project / Scale truthfulness boundary。
 
-局部 2–4px spacing、图标替换、普通文案调整不需要升级主版本。
+局部 Bug Fix、点击区域修正、2–4px spacing、图标替换、普通文案调整不需要升级主版本。

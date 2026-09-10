@@ -1,5 +1,4 @@
 import type { TaxonomyStage } from '../types/content'
-import { ChevronIcon } from './Icons'
 
 interface StageRowProps {
   stage: TaxonomyStage
@@ -28,7 +27,6 @@ export function StageRow({ stage }: StageRowProps) {
         <strong>{stage.title_cn}</strong>
         <span>{stageHints[stage.id] ?? stage.title_en}</span>
       </span>
-      <ChevronIcon className="stage-row__chevron" />
     </a>
   )
 }

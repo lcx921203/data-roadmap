@@ -4,6 +4,7 @@ import type {
   KnowledgeFrontMatter,
   MarkdownDocument,
   QuestionEvidenceView,
+  ScaleScenario,
   TaxonomyFile,
 } from '../types/content'
 import {
@@ -34,6 +35,11 @@ export const knowledgeArticles = listMarkdownAssets('content/knowledge/')
 
     return left.meta.title.localeCompare(right.meta.title)
   })
+
+export const scaleScenarios = listYamlAssets('content/scenarios/')
+  .map((asset) => parseYaml<ScaleScenario>(asset.raw))
+  .filter((scenario) => scenario?.type === 'scenario')
+  .sort((left, right) => (left.order ?? 999) - (right.order ?? 999))
 
 const evidenceRecords = listYamlAssets(
   'content/interview-evidence/final-review/',
@@ -105,6 +111,7 @@ export const appRegistry = {
   taxonomy,
   interviewBank,
   knowledgeArticles,
+  scaleScenarios,
   scaleFamilies: [
     'Streaming',
     'Batch / Spark',

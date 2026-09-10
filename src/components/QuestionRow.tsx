@@ -14,14 +14,15 @@ export function QuestionRow({ item }: QuestionRowProps) {
           {formatFrequencyBand(item.frequency_band)}
         </span>
         <span>
-          {item.direct_count} direct · {item.company_count} companies
+          {item.direct_count} 条独立面经 · {item.company_count} 家公司
         </span>
       </div>
       <h2>{item.question}</h2>
-      <div className="question-row__footer">
-        <span>{item.answer_curated ? 'Curated' : 'To curate'}</span>
-        <span>{item.publishable ? 'Publishable' : 'Evidence scope'}</span>
-      </div>
+      {item.answer_curated && (
+        <div className="question-row__footer">
+          <span>答案已整理</span>
+        </div>
+      )}
     </a>
   )
 }

@@ -29,3 +29,11 @@ projects:
 interviews:
 - iq-large-dataset-tech-selection-001
 status: v0.6.0_seed
+order: 1
+title_cn: 100 亿行历史回填
+summary: 在 24 小时内完成 Backfill，同时保护在线 Trino 查询的延迟与可用性。
+display_tags:
+- 数据规模
+- 资源隔离
+- 查询 SLO
+- 成本

@@ -1,11 +1,12 @@
+import { useEffect } from 'react'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
-import { MarkdownSections } from '../components/MarkdownSections'
 import { TopBar } from '../components/TopBar'
 import {
   getKnowledgeById,
   getKnowledgeNeighbors,
 } from '../content/registry'
 import { splitH2Sections } from '../content/loaders'
+import { recordKnowledgeVisit } from '../utils/learningProgress'
 
 interface KnowledgeDetailPageProps {
   id: string
@@ -14,14 +15,17 @@ interface KnowledgeDetailPageProps {
 export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
   const article = getKnowledgeById(id)
 
+  useEffect(() => {
+    if (article) recordKnowledgeVisit(article.meta.id)
+  }, [article])
+
   if (!article) {
     return (
       <>
         <TopBar title="Knowledge" backHref="/learn" />
         <div className="page">
-          <p className="eyebrow">NOT FOUND</p>
-          <h1>Knowledge not found</h1>
-          <p>这个 Knowledge ID 还没有对应的 Markdown 内容。</p>
+          <h1>页面暂时不可用</h1>
+          <p>请返回学习路线重新选择。</p>
         </div>
       </>
     )
@@ -31,6 +35,12 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
   const quick = sections.find((section) => section.title === '30 秒理解')
   const rest = sections.filter((section) => section.title !== '30 秒理解')
   const neighbors = getKnowledgeNeighbors(id)
+  const topicLabel =
+    article.meta.topic === 'iceberg'
+      ? 'Iceberg'
+      : article.meta.domain === 'lakehouse'
+        ? 'Lakehouse'
+        : null
 
   return (
     <>
@@ -42,21 +52,16 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
         <p className="eyebrow">
           {article.meta.stage_id} · {article.meta.domain ?? 'Knowledge'}
         </p>
-        <h1>{article.meta.title}</h1>
+        <h1>{article.meta.title_cn ?? article.meta.title}</h1>
         <p className="page-lead">{article.meta.summary}</p>
 
         <div className="badge-row">
           {article.meta.learning_depth && (
             <span className="badge badge--signal">
-              {article.meta.learning_depth}
+              {article.meta.learning_depth} 高阶
             </span>
           )}
-          {article.meta.stack_role && (
-            <span className="badge">{article.meta.stack_role}</span>
-          )}
-          {article.meta.content_status && (
-            <span className="badge">{article.meta.content_status}</span>
-          )}
+          {topicLabel && <span className="badge">{topicLabel}</span>}
         </div>
 
         {rest.length > 0 && (
@@ -107,11 +112,14 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
           ))}
         </div>
 
-        <nav className="knowledge-sequence" aria-label="Iceberg 学习顺序">
+        <nav className="knowledge-sequence" aria-label="学习顺序">
           {neighbors.previous ? (
             <a href={`#/learn/${neighbors.previous.meta.id}`}>
               <span>上一节</span>
-              <strong>{neighbors.previous.meta.title}</strong>
+              <strong>
+                {neighbors.previous.meta.title_cn ??
+                  neighbors.previous.meta.title}
+              </strong>
             </a>
           ) : (
             <span />
@@ -123,7 +131,9 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
               href={`#/learn/${neighbors.next.meta.id}`}
             >
               <span>下一节</span>
-              <strong>{neighbors.next.meta.title}</strong>
+              <strong>
+                {neighbors.next.meta.title_cn ?? neighbors.next.meta.title}
+              </strong>
             </a>
           ) : (
             <span />

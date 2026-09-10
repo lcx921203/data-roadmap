@@ -131,9 +131,6 @@ Query Engine 是否完成 Connector pushdown
 
 演进目标是改变**未来布局**，不是为了漂亮把所有历史文件强制重写。
 
-## 项目案例
-
-项目是否实际做过 Partition Evolution、采用什么 Transform，目前没有经过事实核验，不写进 Actual。
 
 ## 关联知识
 

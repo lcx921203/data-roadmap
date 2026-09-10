@@ -18,7 +18,6 @@ import type {
   MarkdownSection,
   ReadingMode,
 } from '../types/content'
-import { formatFrequencyBand } from '../utils/format'
 
 interface InterviewDetailPageProps {
   id: string
@@ -44,7 +43,8 @@ function selectSections(
   sections: MarkdownSection[],
   mode: ReadingMode,
 ): MarkdownSection[] {
-  const allowed = mode === 'interview' ? interviewSectionNames : learnSectionNames
+  const allowed =
+    mode === 'interview' ? interviewSectionNames : learnSectionNames
   return sections.filter((section) => allowed.has(section.title))
 }
 
@@ -88,9 +88,8 @@ export function InterviewDetailPage({
       <>
         <TopBar title="Interview" backHref="/interview" />
         <div className="page">
-          <p className="eyebrow">NOT FOUND</p>
-          <h1>Question not found</h1>
-          <p>这个 Interview Question ID 不在当前 First 30 Bank 中。</p>
+          <h1>页面暂时不可用</h1>
+          <p>请返回面试题列表重新选择。</p>
         </div>
       </>
     )
@@ -99,16 +98,12 @@ export function InterviewDetailPage({
   return (
     <>
       <TopBar
-        title={`Interview #${String(question.rank).padStart(2, '0')}`}
+        title={`面试题 #${String(question.rank).padStart(2, '0')}`}
         backHref="/interview"
-        showSearch={false}
       />
 
       <article className="page reading-page">
-        <p className="eyebrow">
-          {formatFrequencyBand(question.frequency_band)}
-        </p>
-        <h1>{question.question}</h1>
+        <h1 className="interview-question-title">{question.question}</h1>
 
         <EvidenceDisclosure question={question} items={evidence} />
 
@@ -119,11 +114,8 @@ export function InterviewDetailPage({
           </section>
         ) : (
           <section className="answer-pending">
-            <span className="badge badge--warning">CURATION BACKLOG</span>
-            <h2>Curated Answer 还没有完成</h2>
-            <p>
-              这道题已经有真实 Evidence，但 V1 不会用运行时 AI 临时生成答案。完成编辑审核后才会进入 Answer 页面。
-            </p>
+            <h2>答案整理中</h2>
+            <p>可以先查看这道题的真实面经来源。</p>
           </section>
         )}
 
@@ -134,20 +126,8 @@ export function InterviewDetailPage({
             {bodySections.length > 0 ? (
               <MarkdownSections sections={bodySections} />
             ) : (
-              <p className="empty-note">
-                当前 Answer 还没有这个 Reading Mode 对应的 Section。
-              </p>
+              <p className="empty-note">这个阅读模式下暂时没有更多内容。</p>
             )}
-
-            <footer className="content-footnote">
-              <span>
-                Answer status: {answer.meta.status ?? 'curated'}
-              </span>
-              <span>
-                Project mapping:{' '}
-                {answer.meta.project_connection?.status ?? 'not linked'}
-              </span>
-            </footer>
           </>
         )}
       </article>

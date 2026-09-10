@@ -92,6 +92,25 @@ export interface KnowledgeFrontMatter {
   project_fact_status?: string
 }
 
+
+export interface ScaleScenario {
+  id: string
+  type: 'scenario'
+  order?: number
+  title: string
+  title_cn?: string
+  summary?: string
+  domain?: string
+  difficulty?: string
+  hypothetical: boolean
+  scale_dimensions?: string[]
+  display_tags?: string[]
+  knowledge?: string[]
+  projects?: string[]
+  interviews?: string[]
+  status?: string
+}
+
 export interface InterviewAnswerFrontMatter {
   id: string
   type: 'interview'

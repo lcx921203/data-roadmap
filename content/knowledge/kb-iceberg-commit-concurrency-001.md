@@ -165,9 +165,6 @@ Retry storm
 
 解决方案可能包括更合理的微批窗口、Writer 聚合、Branch/WAP、任务隔离或表拆分，而不是简单扩大 Spark Executor。
 
-## 项目案例
-
-目前没有把“项目发生过 Commit Contention 或采用某种 Retry 参数”写成用户真实经历。后续 Project Fact Check 后再决定。
 
 ## 关联知识
 

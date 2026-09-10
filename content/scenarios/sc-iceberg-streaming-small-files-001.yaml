@@ -20,3 +20,11 @@ projects:
 - north-america
 interviews: []
 status: v0.6.0_seed
+order: 2
+title_cn: 10 秒级提交后的文件膨胀
+summary: 低延迟流式写入导致小文件和 Manifest 快速增长，如何从写入布局到维护策略一起治理。
+display_tags:
+- 低延迟
+- 小文件
+- Manifest
+- 维护

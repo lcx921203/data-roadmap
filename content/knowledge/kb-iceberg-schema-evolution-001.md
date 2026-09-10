@@ -140,9 +140,6 @@ Reader projection
 Downstream contract
 ```
 
-## 项目案例
-
-DataRoadmap 会把 Schema Evolution 作为北美项目的高相关能力，但具体是否处理过某个字段变更、采用何种兼容策略，需要 Project Fact Check 后才能写“我做过”。
 
 ## 大规模下会发生什么
 

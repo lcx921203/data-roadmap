@@ -188,9 +188,6 @@ Trino Iceberg Connector 可以暴露 Metadata Tables，并提供部分表维护�
 - Maintenance Resource Pool；
 - Query SLO 保护。
 
-## 项目案例
-
-当前不宣称项目实际执行过哪种 Maintenance Procedure。该部分在 Project Fact Check 后再挂 Actual。
 
 ## 关联知识
 

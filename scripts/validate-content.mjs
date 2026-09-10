@@ -162,6 +162,68 @@ for (const file of scenarioFiles) {
   }
 }
 
+
+
+const frontstageFiles = [
+  'src/pages/LearnPage.tsx',
+  'src/pages/StagePage.tsx',
+  'src/pages/KnowledgeDetailPage.tsx',
+  'src/pages/InterviewPage.tsx',
+  'src/pages/InterviewDetailPage.tsx',
+  'src/pages/ScalePage.tsx',
+  'src/pages/ProjectsPage.tsx',
+  'src/components/QuestionRow.tsx',
+  'src/components/EvidenceDisclosure.tsx',
+]
+
+const forbiddenFrontstageMarkers = [
+  'Publishable',
+  'Evidence scope',
+  'CURATION BACKLOG',
+  'Content backlog',
+  'HYPOTHETICAL PRODUCTION TRAINING',
+  'FACT BOUNDARY',
+  'v0.6.0_spine',
+  'needs_fact_check',
+  'final-review Evidence',
+  '当前 Bundle',
+  'Front Matter 驱动',
+]
+
+for (const file of frontstageFiles) {
+  const source = readText(file)
+  for (const marker of forbiddenFrontstageMarkers) {
+    if (source.includes(marker)) {
+      throw new Error(`Internal frontstage marker "${marker}" leaked into ${file}`)
+    }
+  }
+}
+
+const icebergFiles = fs
+  .readdirSync(path.join(root, 'content/knowledge'))
+  .filter((name) => name.startsWith('kb-iceberg-') && name.endsWith('.md'))
+
+const forbiddenKnowledgeBodyMarkers = [
+  'Project Fact Check',
+  '当前 V0.6.0',
+  '本轮新增',
+  '当前 DataRoadmap',
+  'needs_fact_check',
+]
+
+for (const file of icebergFiles) {
+  const document = readFrontMatter(`content/knowledge/${file}`)
+  for (const marker of forbiddenKnowledgeBodyMarkers) {
+    if (document.body.includes(marker)) {
+      throw new Error(
+        `Internal editorial marker "${marker}" leaked into visible Knowledge body: ${file}`,
+      )
+    }
+  }
+}
+
+console.log('Frontstage copy audit passed.')
+
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
     `${interviewBank.questions.length} interview questions, ` +

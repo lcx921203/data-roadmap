@@ -21,3 +21,11 @@ projects:
 interviews:
 - iq-system-concurrency-fault-tolerance-001
 status: v0.6.0_seed
+order: 3
+title_cn: 100 个 Writer 并发提交
+summary: 热点 Iceberg 表发生提交争用时，如何控制冲突、重试、Catalog 压力与恢复。
+display_tags:
+- 并发
+- Commit
+- 重试
+- 可靠性

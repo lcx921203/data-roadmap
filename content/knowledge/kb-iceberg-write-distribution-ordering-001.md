@@ -177,9 +177,6 @@ Lower latency
 
 所以低延迟目标必须和文件治理一起设计。
 
-## 项目案例
-
-Write Ordering / Distribution 是当前学习与面试重点，但具体项目是否配置过 `hash/range`、Sort Order、目标文件尺寸，目前不作为真实项目事实发布。
 
 ## 关联知识
 

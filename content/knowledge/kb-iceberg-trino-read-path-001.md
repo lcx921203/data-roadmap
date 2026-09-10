@@ -178,9 +178,6 @@ P95 / P99 monitoring
 
 否则离线写入不仅抢 CPU，还会通过 File/Manifest Explosion 影响 Trino Planning。
 
-## 项目案例
-
-项目是否真实以 Trino 查询 Iceberg、具体并发和延迟目标，目前必须经过事实核验后才进入 Actual。
 
 ## 关联知识
 
