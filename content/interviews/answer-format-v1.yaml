@@ -1,0 +1,81 @@
+version: '1.0'
+name: DataRoadmap Interview Answer
+principle: single_source_dual_reading_path
+reading_modes:
+  interview:
+    purpose: 快速复习与面试口述
+    preferred_sections:
+    - what_it_tests
+    - quick_answer
+    - troubleshooting_or_answer_framework
+    - common_bad_answers
+    - real_followups
+  learn:
+    purpose: L4/L5 深度学习
+    preferred_sections:
+    - core_mechanism
+    - production
+    - troubleshooting
+    - code_or_config
+    - project_connection
+    - scale_lab
+sections:
+  required:
+  - id: what_it_tests
+    heading: 这道题在考什么
+  - id: quick_answer
+    heading: 30 秒回答
+  - id: core_mechanism
+    heading: 核心原理
+  - id: common_bad_answers
+    heading: 常见错误回答
+  - id: project_connection
+    heading: 项目怎么结合
+  - id: scale_lab
+    heading: Scale Lab
+  - id: real_followups
+    heading: 真实关联追问
+  conditional:
+  - id: production
+    heading: Production 实现
+    required_when: production_oriented_question
+  - id: troubleshooting
+    heading: 故障排查
+    required_when: diagnostic_or_operational_question
+  optional:
+  - id: code_or_config
+    heading: 代码 / 配置
+  - id: architecture_diagram
+    heading: 架构图
+  - id: source_path
+    heading: 源码路径
+  - id: capacity
+    heading: 容量 / SLO
+editorial_guidance:
+  quick_answer_seconds:
+    min: 20
+    target: 30
+    max: 40
+  quick_answer_sentences:
+    min: 3
+    max: 6
+  code_blocks:
+    recommended_max: 2
+    hard_limit: false
+  common_bad_answers:
+    recommended_min: 3
+    recommended_max: 5
+  followups:
+    recommended_min: 4
+    recommended_max: 8
+  fixed_total_word_limit: false
+project_truthfulness_states:
+- verified_project_fact
+- needs_project_fact_check
+- no_verified_project_anchor_yet
+publish_gate:
+  direct_evidence_reviewed: true
+  dedup_reviewed: true
+  curated_answer: true
+  project_fact_check_when_claimed: true
+  frequency_policy_satisfied: true

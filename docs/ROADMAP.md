@@ -26,10 +26,12 @@
 - [x] Conservative canonical frequency recalibration
 - [x] Select first 10 answer-ready questions
 - [x] Curate first 5 complete answers
-- [x] Define final answer-content standard
-- [ ] Review first-answer-slice density / structure
+- [x] Review first-answer-slice density / structure
+- [x] Freeze Interview Answer V1
+- [x] Define Learn / Interview dual reading path
 - [ ] Complete question-level review of remaining candidate support
 - [ ] Calibrate final frequency bands
+- [ ] Curate remaining answer-ready questions
 - [ ] Select first 30 publishable questions
 
 ## V0.4 Design System

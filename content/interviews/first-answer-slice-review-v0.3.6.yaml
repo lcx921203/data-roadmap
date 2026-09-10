@@ -1,0 +1,39 @@
+version: 0.3.6
+answer_format_version: '1.0'
+structure_review: passed
+reviewed_questions:
+- id: iq-warehouse-layering-001
+  result: pass
+  notes:
+  - Good quick answer
+  - Project truthfulness boundary is clear
+- id: iq-data-quality-diagnosis-001
+  result: pass
+  notes:
+  - Dense but justified
+  - Use progressive disclosure for code/deep sections
+- id: iq-dimensional-fact-dimension-design-001
+  result: pass
+  notes:
+  - Best reference pacing for modeling questions
+- id: iq-spark-data-skew-salting-001
+  result: pass
+  notes:
+  - Long code is justified
+  - Code should be collapsed by default on mobile
+- id: iq-flink-exactly-once-checkpoint-001
+  result: pass
+  notes:
+  - Terminology density is necessary
+  - Future UI should provide term explanations
+decisions:
+  rewrite_first_slice_required: false
+  shorten_l5_content_for_mobile: false
+  use_progressive_disclosure: true
+  single_markdown_for_learn_and_interview: true
+  freeze_answer_format_v1: true
+publication:
+  first_slice_publishable: false
+  remaining_blockers:
+  - final_frequency_calibration
+  - project_fact_check_when_project_claim_is_used
