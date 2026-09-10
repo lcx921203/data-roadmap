@@ -1,0 +1,40 @@
+version: "0.2"
+
+projects:
+  north-america:
+    display_name: North America Project
+    role: project_case
+    primary_topics:
+      - cdc
+      - kafka
+      - iceberg
+      - trino
+      - dbt
+      - metricflow
+      - dagster
+      - datahub
+      - serving
+      - data-quality
+
+  ahu-medical-exam:
+    display_name: Ahu Medical Exam Project
+    role: project_case
+    primary_topics:
+      - dimensional-modeling
+      - metric-modeling
+      - semantic-layer
+      - serving
+      - data-quality
+      - observability
+
+  caishi-live:
+    display_name: Caishi Live Project
+    role: project_case
+    primary_topics:
+      - kafka
+      - flink
+      - realtime-compute
+      - event-time
+      - watermark
+      - state
+      - checkpoint

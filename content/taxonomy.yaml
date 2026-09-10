@@ -1,0 +1,22 @@
+version: "0.2"
+
+depths:
+  L5: core_stack
+  L4: deep_production
+  L3: working_knowledge
+  L2: comparison
+  L1: awareness
+
+stages:
+  - {id: "00", slug: foundations, title_cn: 数据工程基础, title_en: Data Engineering Foundations}
+  - {id: "01", slug: ingestion, title_cn: 数据接入与消息系统, title_en: Data Ingestion & Messaging}
+  - {id: "02", slug: compute, title_cn: 计算引擎, title_en: Compute Engines}
+  - {id: "03", slug: modeling, title_cn: 数仓建模, title_en: Data Warehouse Modeling}
+  - {id: "04", slug: lakehouse, title_cn: 湖仓与查询引擎, title_en: Lakehouse & Query Engine}
+  - {id: "05", slug: dbt, title_cn: dbt 建模工程, title_en: dbt Modeling Engineering}
+  - {id: "06", slug: semantic, title_cn: 语义层, title_en: Semantic Layer}
+  - {id: "07", slug: orchestration-quality, title_cn: 编排与数据质量, title_en: Orchestration & Data Quality}
+  - {id: "08", slug: governance, title_cn: 数据治理, title_en: Data Governance}
+  - {id: "09", slug: serving, title_cn: 数据服务与 OLAP, title_en: Serving & OLAP}
+  - {id: "10", slug: agent, title_cn: AI 数据智能体, title_en: AI Data Agent}
+  - {id: "11", slug: production, title_cn: 生产架构与规模化能力, title_en: Production Architecture & Scale Lab}
