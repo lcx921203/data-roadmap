@@ -1,0 +1,149 @@
+/* V0.6.0.6 — Interview semantics / Design System V1.2 */
+
+.section-kicker {
+  margin-bottom: 5px;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+
+.interview-scale-followup {
+  margin-top: 4px;
+}
+
+.scale-followup-content > p {
+  margin: 10px 0 0;
+}
+
+.scale-followup-panel {
+  margin: 14px 0;
+  padding: 2px 0;
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.scale-followup-panel__line {
+  min-height: 46px;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.scale-followup-panel__line:last-child {
+  border-bottom: 0;
+}
+
+.scale-followup-panel__arrow {
+  min-height: 30px;
+  display: grid;
+  place-items: center;
+  color: var(--color-ink-muted);
+  font-size: 16px;
+}
+
+.followup-section {
+  margin-top: 4px;
+}
+
+.followup-list {
+  border-top: 1px solid var(--color-hairline);
+}
+
+.followup-item,
+.followup-row--pending {
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.followup-row {
+  width: 100%;
+  min-height: 58px;
+  padding: 13px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.followup-row:active {
+  background: var(--color-surface);
+}
+
+.followup-row__indicator {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-full);
+  color: var(--color-ink-soft);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.followup-answer {
+  padding: 0 36px 16px 0;
+}
+
+.followup-answer p {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 14px;
+  line-height: 1.68;
+}
+
+.followup-row--pending {
+  padding: 13px 0;
+  display: grid;
+  gap: 5px;
+}
+
+.followup-row--pending > span {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.followup-row--pending small {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+}
+
+.project-list {
+  margin-top: 28px;
+}
+
+.project-row strong {
+  font-size: 17px;
+}
+
+.project-row span {
+  margin-top: 5px;
+  line-height: 1.55;
+}
+
+.scenario-row__meta {
+  text-transform: none;
+}
+
+.evidence-group-heading {
+  justify-content: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .followup-answer {
+    scroll-behavior: auto;
+  }
+}

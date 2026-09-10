@@ -35,10 +35,21 @@ export function EvidenceDisclosure({
       map.set(company, current)
     }
 
-    return Array.from(map.entries()).map(([company, groupedItems]) => ({
-      company,
-      items: groupedItems,
-    }))
+    return Array.from(map.entries())
+      .map(([company, groupedItems]) => ({
+        company,
+        items: [...groupedItems].sort((left, right) => {
+          const leftDate = left.evidence.source?.published_at ?? ''
+          const rightDate = right.evidence.source?.published_at ?? ''
+          return rightDate.localeCompare(leftDate)
+        }),
+      }))
+      .sort((left, right) => {
+        const countCompare = right.items.length - left.items.length
+        return countCompare !== 0
+          ? countCompare
+          : left.company.localeCompare(right.company)
+      })
   }, [items])
 
   return (
@@ -70,7 +81,6 @@ export function EvidenceDisclosure({
 
         <div className="evidence-group-heading">
           <strong>按公司</strong>
-          <span>{groups.length} 组</span>
         </div>
 
         <div className="evidence-company-list">

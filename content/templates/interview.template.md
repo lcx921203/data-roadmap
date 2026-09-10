@@ -5,7 +5,7 @@ question: ""
 
 domain: ""
 learning_depth: L5
-answer_format_version: "1.0"
+answer_format_version: "1.1"
 
 evidence:
   direct_independent_count: 0
@@ -51,21 +51,7 @@ status: draft
 
 ## 故障排查
 
-如果题目涉及运行问题，优先写成：
-
-```text
-症状
-↓
-验证
-↓
-缩小范围
-↓
-根因
-↓
-修复
-↓
-验证
-```
+如果题目涉及运行问题，优先写成症状 → 验证 → 缩小范围 → 根因 → 修复 → 验证。
 
 ## 代码 / 配置
 
@@ -77,17 +63,28 @@ status: draft
 
 ## 项目怎么结合
 
-只写核验过的真实项目事实。
+只写核验过的真实项目事实。没有真实项目锚点时保持边界，不虚构。
 
-没有真实项目锚点时可以明确保持为空，不虚构。
+## 规模追问
 
-## Scale Lab
+这是“当前面试题放大规模后的追问”，不是顶级导航里的完整 Scale Lab。
 
-明确写成假设生产规模化练习，不冒充项目经历。
+只保留与当前题直接相关的规模、并发、SLO、故障或成本变化。
 
-## 真实关联追问
+如果存在完整独立生产场景，后续通过站内 Scenario Mapping 关联，不复制第二份 Scale Lab 正文。
 
-1. 
-2. 
-3. 
-4. 
+## 关联追问
+
+正文只列问题：
+
+1.
+2.
+3.
+
+对应精简答案写入：
+
+```text
+content/interviews/followups/curated-followups-v1.yaml
+```
+
+若某条追问自身已成为有真实 Evidence 的 Canonical Interview Question，应关联其稳定 Question ID，并优先进入独立题目详情页。

@@ -1,0 +1,156 @@
+version: '1.0'
+as_of: '2026-09-11'
+type: curated_followup_registry
+policy:
+  runtime_ai: false
+  default_kind: curated_extension
+  evidence_backed_requires_canonical_question_id: true
+questions:
+- id: iq-warehouse-layering-001
+  items:
+  - question: DWM 一定有必要吗？
+    answer: 不一定。DWM 是可选的公共中间层，只有当中间宽表、公共派生字段或轻度聚合能被多个下游复用时才有价值。为了层数完整而增加 DWM，只会增加存储、调度依赖和维护成本。
+  - question: DWD 为什么强调原子粒度？
+    answer: 因为原子粒度能保留最细业务事实，让不同指标在同一事实基础上复用和重算。过早聚合会丢失明细，一旦口径变化或需要 Backfill，就很难重新构造。
+  - question: DWS 和 Semantic Layer 有什么区别？
+    answer: DWS 通常是物理或逻辑上的主题复用模型，常带预聚合；Semantic Layer（语义层）更强调实体、维度、指标和 Join 语义的统一定义。两者可以同时存在：DWS 提供可复用数据形态，语义层统一消费口径。
+  - question: ADS 和缓存是不是重复？
+    answer: 不重复。ADS/Serving Table 是面向消费场景设计的数据结果，强调 Schema、粒度和刷新契约；Cache 是对热点结果的临时加速，通常有 TTL 和淘汰策略。缓存可以加速 ADS，但不能替代数据模型。
+  - question: CDC Delete 在 ODS→DWD 怎么处理？
+    answer: ODS 应保留 Delete 事件及其技术元数据，DWD 再按业务语义决定物理删除、软删除或生成当前态。关键是 Delete 不能被悄悄丢掉，否则下游当前状态和指标会持续错误。
+  - question: 分层太多导致延迟过高怎么办？
+    answer: 先检查哪些层真正提供复用、治理或隔离价值。可以合并没有独立契约的中间层，对高时效链路使用增量模型、物化视图或 Serving，并让日常增量与 Backfill 复用同一逻辑。
+  - question: Lakehouse 时代传统分层还有没有意义？
+    answer: 有，但重点从固定的 ODS/DWD/DWS 名称转向职责边界。Lakehouse 解决存储与表管理能力，不会自动解决原始事实、标准模型、复用语义和消费层之间的职责划分。
+- id: iq-data-quality-diagnosis-001
+  items:
+  - question: 数据质量和数据可观测性有什么区别？
+    answer: 数据质量关注“数据是否满足预期”，例如唯一性、完整性和业务对账；数据可观测性关注“系统发生了什么、哪里异常、影响谁”，通常覆盖 Freshness、Volume、Schema、Lineage 和运行状态。质量规则是可观测体系的重要信号之一，但两者不等价。
+  - question: Freshness 如何定义 SLO？
+    answer: 先从业务消费时点反推。例如核心日报要求 08:00 可用，可以定义 99.9% 的分区在 07:50 前完成并可查询。Freshness SLO 应有明确的资产、截止时间、统计窗口和允许失败比例，而不是笼统写“数据要新鲜”。
+  - question: dbt test 失败是否一定阻断发布？
+    answer: 不一定。核心主键、关键财务对账等 P0 规则适合阻断；探索资产或弱约束可以告警。是否阻断应由业务影响、误报率、可恢复性和 Blast Radius 决定。
+  - question: 如何降低误报？
+    answer: 不要给所有资产套统一阈值。使用历史基线、业务日历、分时段阈值、最小样本量和连续多次异常确认，并按资产重要性分级；同时记录规则命中后的真实事故率，持续校准。
+  - question: CDC Delete 漏掉怎么发现？
+    answer: 可以做源端与湖仓当前态对账、主键集合差异、状态数量变化和周期性全量校验；同时监控 CDC Connector 的 Delete 事件量和 Offset 连续性。只检查总行数通常发现不了局部 Delete 丢失。
+  - question: 实时和离线指标不一致怎么对账？
+    answer: 先统一业务定义、事件时间、去重键和窗口边界，再按同一时间窗口比较输入量和中间结果。重点检查迟到数据、Watermark、CDC Update/Delete、维度版本以及离线 Backfill 是否使用了不同逻辑。
+- id: iq-data-governance-framework-001
+  items:
+  - question: 数据治理和数据管理有什么区别？
+    answer: 数据管理是更宽的日常能力集合，包括建模、存储、质量、安全和生命周期；数据治理更强调规则、责任、标准和决策机制，回答“谁负责、什么标准、如何控制和如何衡量”。
+  - question: 自动血缘怎么做？
+    answer: 优先从结构化来源采集：dbt manifest、编排资产依赖、Spark/Flink 作业元数据和查询日志；必要时再解析 SQL。把不同来源归一成统一资产 ID，并在发布或运行时增量更新血缘。
+  - question: 字段级血缘如何解析？
+    answer: 核心是解析 SQL AST（抽象语法树），建立输出列到输入表达式和输入列的映射，同时解析别名、CTE、子查询、函数和 Join。仅靠字符串正则难以可靠处理复杂 SQL。
+  - question: dbt 和 DataHub 在血缘里分别承担什么？
+    answer: dbt 最了解自己的模型图、ref 依赖和编译 SQL，因此是高质量血缘来源；DataHub 更适合作为跨系统 Metadata Platform，汇总 dbt、数据库、编排和流处理等来源并提供搜索、影响分析和展示。
+  - question: 如何做 Schema Change Impact？
+    answer: 先识别变化的表/字段，再沿字段级和表级下游血缘找到受影响 Model、Metric、Dashboard、API；结合兼容性规则和资产等级决定阻断、告警或人工 Review。大图上应做增量影响分析，而不是每次全图扫描。
+  - question: 治理平台本身如何保证元数据新鲜度？
+    answer: 要监控每个 Ingestion Source 的成功率、最后更新时间、延迟和覆盖率，并对核心资产定义 Metadata Freshness SLO。采集失败必须像数据 Pipeline 一样可告警、可重试、可追踪。
+- id: iq-dimensional-fact-dimension-design-001
+  items:
+  - question: 为什么 Grain 必须先确定？
+    answer: Grain 定义“一行代表什么”。只有先固定 Grain，才能判断主键、事实是否可加、维度 Join 的基数以及是否会重复计数；否则后面的字段设计没有稳定语义基础。
+  - question: 事实表能不能没有度量？
+    answer: 可以。Factless Fact Table（无事实事实表）用来记录事件或关系是否发生，例如学生参加课程、用户曝光活动。它没有数值型 Measure，但仍有明确 Grain 和维度键。
+  - question: 事务事实、周期快照、累积快照区别？
+    answer: 事务事实一行对应一次业务事件；周期快照按固定周期记录某时点状态；累积快照用同一行跟踪一个生命周期多个里程碑。选择取决于要分析事件、状态还是流程周期。
+  - question: 退化维度是什么？
+    answer: Degenerate Dimension（退化维度）是保留在事实表中的业务标识，例如 order_number，没有单独维表属性。它常用于分组、过滤或追溯业务单据。
+  - question: SCD2 如何按事件时间关联？
+    answer: 维度每个版本保存有效起止时间，事实事件按事件时间命中 `effective_from <= event_time < effective_to` 的版本。这样历史事实能看到事件发生当时的维度属性。
+  - question: Join Fan-out 怎么发现？
+    answer: Join 前后比较行数和主键唯一性，检查一侧业务键是否出现多版本或重复；也可以对 Join Key 统计基数。若 Join 后同一事实主键出现多行，就是典型 Fan-out 信号。
+- id: iq-flink-exactly-once-checkpoint-001
+  items:
+  - question: Checkpoint 和 Savepoint 有什么区别？
+    answer: Checkpoint 主要服务自动故障恢复，由 Flink 按策略周期生成；Savepoint 更偏人工运维和版本迁移，生命周期由用户管理。两者都保存状态，但用途、保留方式和操作语义不同。
+  - question: State Backend 和 Checkpoint Storage 区别？
+    answer: State Backend 管理任务运行时状态的组织和访问方式；Checkpoint Storage 保存 Checkpoint 元数据与持久化快照位置。不要把“状态平时怎么存/访问”和“快照最终放哪里”混成一件事。
+  - question: Barrier Alignment 为什么被反压拖慢？
+    answer: 多输入算子需要等同一 Checkpoint 的 Barrier 到齐；某一路因为 Backpressure 变慢时，其他已经到达的输入会等待，从而拉长 Alignment Duration。
+  - question: Unaligned Checkpoint 的代价？
+    answer: 它把部分 In-flight Data 一起纳入快照，能降低严重反压下的 Barrier 等待，但会增加快照数据量和恢复时需要处理的数据，也不会消除反压根因。
+  - question: Kafka→Flink→Kafka 怎么做到端到端 Exactly-once？
+    answer: Source 必须可重放，Flink 用 Checkpoint 统一状态和 Source Position，Kafka Sink 使用事务并与 Checkpoint 协调提交；Consumer 端还应使用能识别已提交事务的读取语义。
+  - question: Flink→MySQL 怎么实现幂等？
+    answer: 常用稳定业务主键 + Upsert/唯一键，让同一事件重放产生同一最终状态；复杂场景可使用事务 Sink 或幂等写入协议。仅依赖 Checkpoint 不能让普通 MySQL Insert 自动 Exactly-once。
+  - question: 大 State 如何缩短恢复时间？
+    answer: 减少无效状态和 Key 基数，设置合理 TTL，使用增量快照，提升 Checkpoint Storage 吞吐，并评估并行恢复和资源预留。若恢复目标与 State 体量不匹配，需要从架构上拆状态或改变 SLA。
+- id: iq-kafka-reliability-001
+  items:
+  - question: '`acks=all` 和 `min.insync.replicas` 什么关系？'
+    answer: '`acks=all` 要求 Leader 等待 ISR 中满足要求的副本确认；`min.insync.replicas` 定义允许成功写入所需的最小 ISR 数。两者组合才形成“副本不足时拒绝写入”的耐久性约束。'
+  - question: Idempotent Producer 如何去重重试？
+    answer: Broker 根据 Producer ID、Partition 和 Sequence Number 识别同一 Producer 的重复发送，使网络超时后的重试不会重复追加同一条记录。它解决 Producer→Kafka
+      这一段的重试重复，不自动解决外部 Sink。
+  - question: Consumer Offset 为什么会造成重复或丢失？
+    answer: 先提交 Offset 再写下游，中间故障可能丢数据；先写下游再提交 Offset，中间故障会重放，所以需要下游幂等。Offset 与业务副作用之间的提交顺序决定故障窗口。
+  - question: Kafka Transaction 能保证 MySQL Exactly-once 吗？
+    answer: 不能自动保证。Kafka Transaction 能原子处理 Kafka 内部的生产和消费位点，但 MySQL 不属于同一个 Kafka 事务域。写 MySQL 仍需业务幂等、Outbox/Inbox 或专门的事务协调。
+  - question: Lag 突然上升怎么判断是 Broker 还是 Consumer？
+    answer: 先看所有 Partition 还是少数 Partition，再结合 Consumer Processing Time、Rebalance、CPU/GC 和下游延迟；同时检查 Broker 磁盘/网络、Leader 分布和请求延迟。Consumer
+      全面变慢与单 Broker/Partition 热点的症状不同。
+  - question: 增加 Partition 为什么可能影响顺序？
+    answer: 默认 Key 分区映射依赖 Partition 数量。扩容后，同一个 Key 的新消息可能被映射到新的 Partition，而旧消息仍留在旧 Partition，因此跨扩容边界无法天然维持全局 Key 顺序。
+- id: iq-lake-vs-warehouse-001
+  items:
+  - question: Iceberg 和 Parquet 是什么关系？
+    answer: Parquet 是 File Format（文件格式），定义单个列式文件如何编码；Iceberg 是 Table Format（表格式），定义一张表由哪些文件组成、Snapshot、Schema、Partition 和
+      Commit 如何管理。Iceberg 常以 Parquet 作为底层数据文件。
+  - question: Iceberg 为什么不依赖目录 Listing 作为表状态？
+    answer: 因为当前表状态由 Metadata → Snapshot → Manifest 明确定义。Reader 读取已提交的文件集合，而不是临时 List 目录，因此能获得更稳定的 Snapshot 语义，也减少大规模目录枚举。
+  - question: Lakehouse 是否还需要 DWD/DWS？
+    answer: 仍需要职责上的标准化与复用，但不一定继续使用固定物理层名。Lakehouse 解决表存储和事务能力；DWD/DWS 代表的数据清洗、原子事实、主题复用和聚合职责仍然存在。
+  - question: Iceberg vs Hudi vs Delta 怎么选？
+    answer: 比较写入模式、CDC/Upsert 需求、多引擎生态、Catalog、事务模型和运维复杂度。Iceberg 强调开放多引擎和分析表管理；Hudi 更偏增量/Upsert 工作负载；Delta 在 Databricks 生态中集成更深。实际选择要结合版本与平台约束。
+  - question: 为什么还需要 Trino？
+    answer: Iceberg 管理表，不负责提供完整的交互式 SQL 查询服务。Trino 作为分布式 Query Engine 可以读取 Iceberg Metadata、做 Predicate/Column Pruning，并连接多个数据源提供统一
+      SQL 入口。
+  - question: Lakehouse 为什么仍可能需要 Serving 层？
+    answer: 湖仓适合统一数据底座和分析，但高 QPS、固定查询形态、毫秒级延迟或热点 Key 访问可能需要专门的 OLAP、Serving Table 或 Cache。统一存储不等于统一所有消费延迟目标。
+- id: iq-spark-broadcast-join-001
+  items:
+  - question: Broadcast Hash Join 为什么能减少 Shuffle？
+    answer: 小表被广播到每个 Executor 后，大表 Partition 可以在本地 Probe，不需要为了 Join Key 把大表全量重新分区。代价是广播对象的内存占用和网络分发。
+  - question: '`autoBroadcastJoinThreshold` 是什么？'
+    answer: 它是 Spark SQL 自动考虑 Broadcast Join 的大小阈值之一。优化器会结合 Statistics 判断是否广播；生产上还要考虑过滤后大小、Hash Relation 膨胀、Executor 内存和 AQE，不能只背默认值。
+  - question: 为什么磁盘文件大小不能直接等于广播内存大小？
+    answer: Parquet 等磁盘文件通常经过列式编码和压缩；加载后构建 JVM 对象或 Hash Relation 会产生解压与结构开销，因此内存占用可能明显高于文件大小。
+  - question: Broadcast Hint 有什么风险？
+    answer: Hint 可能让优化器尝试广播一个统计不准或实际过大的表，引发 Driver/Executor OOM、Broadcast Timeout 和网络压力。Hint 是选择建议，不是安全证明。
+  - question: AQE 如何把 Sort Merge Join 改成 Broadcast Join？
+    answer: AQE 在 Shuffle 后拿到更准确的运行时 Statistics，如果某一侧实际变小并满足条件，可以在最终 Adaptive Plan 中把原先的 Sort Merge Join 改为 Broadcast Join。
+  - question: Broadcast Join 和数据倾斜是什么关系？
+    answer: 如果倾斜来自大表按 Join Key Shuffle，广播小表可以消除这一侧 Join Shuffle，从而绕开部分倾斜；但大表自身的热点、聚合或扫描倾斜仍然存在，因此 Broadcast 不是通用倾斜解法。
+- id: iq-spark-data-skew-salting-001
+  items:
+  - question: 数据倾斜和资源不足怎么区分？
+    answer: 倾斜通常表现为同一 Stage 少数 Task 的数据量和耗时远高于中位数，而多数 Task 已结束；资源不足则更像大量 Task 都慢、排队或频繁 GC/Spill。看 Task 分布比只看 Job 总时长更有效。
+  - question: AQE 如何识别 skewed partition？
+    answer: AQE 利用运行时 Shuffle Statistics 比较 Partition 大小，当某些 Partition 相对中位数和配置阈值明显过大时，可把它识别为 Skew Partition 并进一步拆分处理。
+  - question: Salting 为什么需要复制小表？
+    answer: 大表 Hot Key 被拆成 A#0、A#1… 后，小表原来的 A 必须为每个 Salt 都提供可 Join 的键，否则只能匹配其中一部分。复制小表就是用额外数据量换并行度。
+  - question: Broadcast Join 也会 OOM 吗？
+    answer: 会。广播关系需要在多个 Executor 上可用，构建和分发也会给 Driver 带来压力。表过滤后仍过大、统计错误或并发广播过多都可能 OOM。
+  - question: Group By 倾斜怎么处理？
+    answer: 可以先局部预聚合，再对 Hot Key 做两阶段聚合或 Salting；同时排查是否有异常默认 Key。仅增加 Partition 数不会拆开同一个 Hash Key。
+  - question: Null Key 倾斜怎么处理？
+    answer: 先确认 Null 是否有业务意义。无需参与 Join/Aggregate 的 Null 可提前过滤；需要保留时可以单独分流处理，避免所有 Null 被 Hash 到同一热点 Partition。
+- id: iq-sql-window-lead-lag-001
+  items:
+  - question: '`ROW_NUMBER`、`RANK`、`DENSE_RANK` 区别？'
+    answer: '`ROW_NUMBER` 无论并列都给唯一连续序号；`RANK` 并列同名次且后续名次会跳号；`DENSE_RANK` 并列同名次但后续不跳号。三者都依赖 Window 的 Partition 和 Order。'
+  - question: '`LAG` 越界默认返回什么？'
+    answer: 默认返回 NULL。多数实现也允许提供 default 参数，在不存在对应前序行时返回指定默认值。
+  - question: 连续登录 N 天怎么写？
+    answer: 先按用户和日期去重排序，再用 `LAG` 判断日期是否连续，或用 `date - row_number()` 构造连续分组键，最后按用户和分组统计连续天数。
+  - question: Window Function 为什么可能很慢？
+    answer: 主要成本通常来自按 `PARTITION BY` 重新分布和在分区内排序。大分区、热点 Key、宽行以及未提前过滤的数据都会放大 Shuffle、Sort 和内存压力。
+  - question: 时间戳相同时如何保证结果稳定？
+    answer: 在 `ORDER BY` 中增加稳定的 Tie-breaker，例如事件序号或唯一 `event_id`。只有时间戳而存在并列时，“上一行/下一行”可能不是确定结果。
+  - question: 窗口计算和 `GROUP BY` 最大区别是什么？
+    answer: '`GROUP BY` 把多行聚合成更少的结果行；Window Function 在计算排名、累计值或相邻关系后仍保留原行粒度。'

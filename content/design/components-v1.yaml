@@ -1,5 +1,5 @@
-version: '1.1'
-frozen_at: 0.6.0.5
+version: '1.2'
+frozen_at: 0.6.0.6
 status: frozen
 viewport_baseline:
   width: 390
@@ -11,12 +11,9 @@ principles:
   body_min_px: 16
   tap_target_min_px: 44
   evidence_visible: true
-  project_scale_boundary_visible: true
-  single_content_source_dual_reading_mode: true
-  decorative_gradient: false
-  glassmorphism: false
-  gamification: false
   dynamic_counts_from_content: true
+  runtime_ai_answers: false
+  interview_scale_is_not_top_level_scale: true
 components:
 - id: app-shell
   status: frozen
@@ -24,161 +21,64 @@ components:
   - top_bar
   - content
   - bottom_navigation
-  mobile:
-    page_padding: 20px
-- id: top-bar
-  status: frozen
-  variants:
-  - list
-  - detail
-  height: 56px
-  rules:
-  - sticky
-  - safe_top
-  - low_noise
-  - opaque_canvas
-  - no_glass
-- id: bottom-navigation
-  status: frozen
-  items:
-  - learn
-  - interview
-  - scale
-  - projects
-  rules:
-  - active_uses_signal
-  - no_active_pill
-  - safe_bottom
-  - opaque_canvas
 - id: continue-learning
   status: frozen
-  anatomy:
-  - state_label
-  - position
-  - stage_topic
-  - title
-  - summary
-  - position_bar
   rules:
   - whole_surface_clickable
   - signal_soft_current_state
   - signal_family_hairline
   - no_separate_cta
-  - no_shadow
-  - position_not_completion
   - dynamic_position
-- id: stage-row
-  status: frozen
-  anatomy:
-  - stage_number
-  - title
-  - summary
-  rules:
-  - whole_row_clickable
-  - no_chevron_v1_1
+  - position_not_completion
 - id: question-row
   status: frozen
-  anatomy:
-  - rank
-  - frequency_band
-  - evidence_count
-  - question
-  - metadata
   rules:
   - question_is_primary
   - evidence_visible
   - dynamic_counts
-- id: filter-chip
-  status: frozen
-  selected_style: ink_fill
-  mobile:
-    min_touch_height: 44px
-- id: filter-control
-  status: frozen
-  anatomy:
-  - filter_icon
-  - label
-  - active_count_optional
-  rules:
-  - near_list_heading
-  - visually_distinct_from_technology_chip
-- id: quick-answer
-  status: frozen
-  style:
-    background: signal_soft
-    border: signal_hairline
-    radius: 10px
-    padding: 18-20px
-- id: reading-segment
-  status: frozen
-  options:
-  - interview
-  - learn
-  rules:
-  - presentation_mode_only
-  - same_content_source
-- id: quick-navigation
-  status: frozen
-  mobile: horizontal_scroll
-- id: evidence-summary
-  status: frozen
-  anatomy:
-  - frequency_band
-  - evidence_count
-  - company_count
-  - expand_action
-  rules:
-  - visible_near_question_title
-  - only_expand_action_clickable
-  - dynamic_counts
 - id: evidence-disclosure
   status: frozen
   mobile_container: bottom_sheet
-  frontstage_fields:
-  - overview
-  - company
-  - role
-  - round
-  - publisher
-  - date
+  grouping: company
+  sorting:
+  - company_record_count_desc
+  - records_published_at_desc
   backstage_only_fields:
   - source_url
   - reliability_grade
   - mapping_type
   - independence_group
   - review_status
-  grouping: company
+- id: scale-followup-section
+  status: frozen
+  frontstage_title: 规模追问
+  scope: current_interview_question_only
+  rules:
+  - not_top_level_scale_lab
+  - text_fence_renders_as_semantic_rows
+  - no_copy_action_for_scale_parameters
+  - no_code_surface_for_plain_constraints
+- id: followup-disclosure
+  status: frozen
+  frontstage_title: 关联追问
+  rules:
+  - accordion
+  - default_collapsed
+  - one_open_at_a_time
+  - curated_extension_not_frequency_claim
+  - canonical_question_can_link_internally
+  - pending_answer_labeled
+  - no_runtime_ai
 - id: code-block
   status: frozen
   rules:
+  - only_for_code_config_command_sql
   - long_code_collapsible
   - horizontal_scroll
-  - no_forced_wrap
+  - copy_action
   - inline_block_style_separation
-- id: scale-kpi
-  status: frozen
-  rules:
-  - parameter_only
-  - no_gamification
-- id: project-fact-state
-  status: frozen
-  variants:
-  - verified_project_fact
-  - needs_fact_check
-  - boundary
-  rules:
-  - never_imply_unverified_fact
-- id: scale-extension-state
-  status: frozen
-  label_required: HYPOTHETICAL SCALE LAB
-  rules:
-  - visually_distinct_from_actual
 - id: bottom-sheet
   status: frozen
-  used_for:
-  - evidence
-  - filters
-  - auxiliary_selection
   accessibility:
   - aria_modal
   - focus_trap

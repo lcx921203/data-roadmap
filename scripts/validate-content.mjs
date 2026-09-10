@@ -119,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.1') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1.1')
+if (components?.status !== 'frozen' || components?.version !== '1.2') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.2')
 }
 
 const ids = new Set()
@@ -353,11 +353,76 @@ if (
 
 console.log('Frontstage copy audit passed.')
 
+
+const followUpRegistry = readYaml(
+  'content/interviews/followups/curated-followups-v1.yaml',
+)
+
+if (
+  followUpRegistry?.type !== 'curated_followup_registry' ||
+  !Array.isArray(followUpRegistry?.questions)
+) {
+  throw new Error('Curated follow-up registry is invalid')
+}
+
+const curatedMainQuestionIds = new Set(
+  interviewBank.questions
+    .filter((question) => question.answer_curated)
+    .map((question) => question.id),
+)
+
+const followUpQuestionIds = new Set(
+  followUpRegistry.questions.map((question) => question.id),
+)
+
+for (const id of curatedMainQuestionIds) {
+  if (!followUpQuestionIds.has(id)) {
+    throw new Error(`Curated main question missing follow-up answer set: ${id}`)
+  }
+}
+
+for (const group of followUpRegistry.questions) {
+  const seenQuestions = new Set()
+  for (const item of group.items ?? []) {
+    if (!item?.question || !item?.answer) {
+      throw new Error(`Empty follow-up answer in ${group.id}`)
+    }
+    if (seenQuestions.has(item.question)) {
+      throw new Error(`Duplicate follow-up question in ${group.id}`)
+    }
+    seenQuestions.add(item.question)
+  }
+}
+
+const interviewDetailSource = readText('src/pages/InterviewDetailPage.tsx')
+if (!interviewDetailSource.includes('ScaleFollowUpSection')) {
+  throw new Error('Interview detail must use ScaleFollowUpSection')
+}
+
+const scaleRendererSource = readText(
+  'src/components/ScaleFollowUpSection.tsx',
+)
+if (
+  scaleRendererSource.includes('<CodeBlock') ||
+  scaleRendererSource.includes('Copy')
+) {
+  throw new Error(
+    'Interview scale parameters must not render as CodeBlock/Copy UI',
+  )
+}
+
+const followUpSource = readText('src/components/FollowUpDisclosure.tsx')
+if (!followUpSource.includes('aria-expanded')) {
+  throw new Error('Follow-up disclosure must expose aria-expanded')
+}
+
+console.log('Interview semantics V0.6.0.6 validation passed.')
+
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
     `${interviewBank.questions.length} interview questions, ` +
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1.1 frozen.`,
+    `Design System V1.2 frozen.`,
 )
