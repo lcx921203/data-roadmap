@@ -1,0 +1,54 @@
+version: "0.3"
+
+source_reliability:
+  A:
+    label: strong_first_hand
+    frequency_weight: 1.00
+    publish_support: true
+    description: "可追溯的第一人称真实面试复盘，具备较完整面试上下文。"
+
+  B:
+    label: first_hand_incomplete
+    frequency_weight: 0.75
+    publish_support: true
+    description: "明显是第一人称真实面试经历，但公司/岗位/轮次/日期等元数据不完整。"
+
+  C:
+    label: traceable_secondary
+    frequency_weight: 0.35
+    publish_support: true
+    description: "二次整理来源，但可追溯真实面试证据或明确说明来自真实面试反馈。"
+
+  D:
+    label: untraceable_claim
+    frequency_weight: 0
+    publish_support: false
+    description: "不可追溯的所谓高频题、必问题或无来源题库，仅作为搜索线索。"
+
+recency_weight:
+  within_12_months: 1.00
+  months_13_to_24: 0.85
+  months_25_to_48: 0.65
+  older_than_48_months: 0.45
+  unknown_date: 0.50
+
+frequency_labels:
+  - unrated
+  - emerging
+  - repeated
+  - high_frequency
+  - long_tail
+
+calibration:
+  strategy: corpus_percentile
+  activate_after_corpus_validation: true
+  target_percentiles:
+    high_frequency: "top_15_percent"
+    repeated: "15_to_40_percent"
+    emerging: "40_to_70_percent"
+    long_tail: "remaining"
+
+independence:
+  one_contribution_per_independence_group: true
+  reposts_count_as_independent: false
+  mirrors_count_as_independent: false

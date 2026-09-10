@@ -15,14 +15,17 @@
 - [x] Map three project cases
 - [x] Define Scale Lab scenario families
 - [x] Freeze Interview Bank evidence-first rule
-- [ ] Validate taxonomy against real interview corpus
 
 ## V0.3 Interview Evidence Model
-- [ ] Define source reliability levels
-- [ ] Define normalization / deduplication rules
+- [x] Define source reliability levels
+- [x] Define evidence independence
+- [x] Define normalization / deduplication rules
+- [x] Define evidence schema
+- [x] Upgrade canonical interview schema
+- [x] Define frequency calculation model
+- [x] Define publishing gate
 - [ ] Collect first real interview corpus
-- [ ] Build company / role / date / frequency metadata
-- [ ] Map real questions to Knowledge + Scale Lab
+- [ ] Calibrate frequency bands against corpus
 - [ ] Select first 30 high-value real questions
 
 ## V0.4 Design System
