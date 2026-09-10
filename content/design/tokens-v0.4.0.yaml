@@ -1,0 +1,120 @@
+version: 0.4.0
+name: DataRoadmap Design Tokens
+status: foundation
+direction: technical_editorial_learning_system
+appearance: light_first
+colors:
+  canvas: '#FCFCFA'
+  surface: '#F6F6F3'
+  surface_raised: '#FFFFFF'
+  surface_strong: '#EEEDE8'
+  ink: '#171717'
+  ink_soft: '#5F5F5B'
+  ink_muted: '#8A8A84'
+  ink_faint: '#B4B4AE'
+  hairline: '#E4E4DE'
+  hairline_strong: '#D2D2CB'
+  signal: '#315DDC'
+  signal_strong: '#2346B5'
+  signal_soft: '#EEF2FF'
+  success: '#19714A'
+  success_soft: '#EDF8F2'
+  warning: '#A15C00'
+  warning_soft: '#FFF6E8'
+  danger: '#B42318'
+  danger_soft: '#FFF0EE'
+  code_canvas: '#111318'
+  code_surface: '#181B21'
+  code_ink: '#F3F4F6'
+  code_muted: '#A9AFBA'
+typography:
+  font_sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif
+  font_mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace
+  mobile:
+    display:
+      size: 34px
+      line_height: 1.12
+      weight: 650
+    h1:
+      size: 28px
+      line_height: 1.2
+      weight: 650
+    h2:
+      size: 22px
+      line_height: 1.32
+      weight: 650
+    h3:
+      size: 18px
+      line_height: 1.4
+      weight: 620
+    body:
+      size: 16px
+      line_height: 1.72
+      weight: 400
+    body_strong:
+      size: 16px
+      line_height: 1.65
+      weight: 600
+    small:
+      size: 14px
+      line_height: 1.55
+      weight: 400
+    small_strong:
+      size: 14px
+      line_height: 1.5
+      weight: 600
+    meta:
+      size: 12px
+      line_height: 1.45
+      weight: 500
+    mono:
+      size: 13px
+      line_height: 1.6
+      weight: 400
+spacing:
+  '1': 4px
+  '2': 8px
+  '3': 12px
+  '4': 16px
+  '5': 20px
+  '6': 24px
+  '8': 32px
+  '10': 40px
+  '12': 48px
+  '16': 64px
+radius:
+  xs: 4px
+  sm: 6px
+  md: 10px
+  lg: 14px
+  full: 9999px
+border:
+  default: '1px solid #E4E4DE'
+  strong: '1px solid #D2D2CB'
+shadow:
+  default: none
+  overlay: 0 8px 30px rgba(20, 20, 18, 0.08)
+layout:
+  mobile_page_padding: 20px
+  tablet_page_padding: 24px
+  desktop_sidebar: 240-272px
+  desktop_reading: 680-760px
+  desktop_toc: 200-240px
+  tap_target_min: 44px
+navigation:
+  top_level:
+  - learn
+  - interview
+  - scale_lab
+  - projects
+  mobile: bottom_navigation
+  desktop: left_sidebar
+  search: global_action
+component_principles:
+  row_over_card: true
+  default_shadow: false
+  decorative_gradient: false
+  decorative_illustration_first: false
+  single_accent: true
+  progressive_disclosure: true

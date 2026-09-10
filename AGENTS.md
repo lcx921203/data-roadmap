@@ -33,13 +33,37 @@
 
 新增 Scale Scenario 时必须注明规模维度与训练目标。
 
-## Design rule
+## Design rules
 
-视觉设计尚未冻结。
+设计系统从 V0.4.0 起由根目录 `DESIGN.md` 约束。
 
-在 `DESIGN.md` 正式完成前：
+必须：
 
-- 不自行定义完整 Design System
-- 不沿用此前已推翻的 UI 方案
-- 不批量创建视觉组件
-- 不为了“好看”改变 PRODUCT / CONTENT 信息架构
+1. Mobile First，以 390px 宽屏可用性作为关键检查点。
+2. 优先 Row / Section / Divider，只有需要明确 containment 时使用 Card。
+3. 主正文不小于 16px。
+4. 默认只使用一个主 Accent：Signal Blue。
+5. Accent 只用于交互、Focus、Active Path 和关键状态，不做装饰铺色。
+6. 默认无 Shadow；层级优先通过留白、Surface 和 Hairline 表达。
+7. 禁止装饰性 Gradient、Glassmorphism、Neon AI 风格。
+8. 技术内容优先使用 Technical Diagram，不用无意义插画占据正文。
+9. Learn / Interview 共用内容源，不复制两套 Markdown。
+10. Project Fact、Production Pattern 和 Scale Lab 必须视觉与语义分离。
+11. Evidence 在 Interview UI 中必须可见，不允许藏成不可发现的脚注。
+12. Touch Target >= 44px，支持 iOS Safe Area 和 reduced motion。
+13. 不为了“好看”改变 PRODUCT / CONTENT / CONTENT_MODEL 的信息架构。
+
+## Reference rule
+
+`VoltAgent/awesome-design-md` 用于学习设计描述和抽取设计原则。
+
+禁止直接复制：
+
+- 品牌名称；
+- 品牌色；
+- 专有字体；
+- 商标；
+- 页面构图；
+- 组件视觉组合。
+
+DataRoadmap 必须保持自己的 Technical Editorial Learning System 方向。

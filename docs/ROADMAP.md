@@ -25,7 +25,6 @@
 - [x] Direct-only question-level recalibration
 - [x] Freeze Interview Answer V1
 - [x] Curate first 10 answer-ready questions
-- [x] Complete final evidence-calibration pass
 - [x] Freeze Frequency Band V1
 - [x] Select Interview Bank V1 first 30
 - [x] Close V0.3 Evidence Model milestone
@@ -36,15 +35,31 @@
 - [ ] Run Project Fact Check when project claims are published
 
 ## V0.4 Design System
-- [ ] Review selected design references
-- [ ] Define DataRoadmap DESIGN.md
-- [ ] Define typography / spacing / surfaces
-- [ ] Define technical diagram language
-- [ ] Define mobile-first navigation
-- [ ] Prototype Learn Mode
-- [ ] Prototype Interview Mode
-- [ ] Prototype Scale Lab
-- [ ] Prototype Project Case
+
+### V0.4.0 Foundation
+- [x] Review Mintlify reference
+- [x] Review Notion reference
+- [x] Review Apple reference
+- [x] Review Linear reference
+- [x] Review WIRED reference
+- [x] Define Technical Editorial direction
+- [x] Define typography
+- [x] Define spacing / radius / surfaces
+- [x] Define Signal Blue accent policy
+- [x] Define mobile-first navigation
+- [x] Define Information Architecture
+- [x] Define Technical Diagram language
+- [x] Update Agent design rules
+
+### Next: V0.4.1 Product Prototypes
+- [ ] Prototype Learn Home / Stage List
+- [ ] Prototype Knowledge Detail
+- [ ] Prototype Interview List
+- [ ] Prototype Interview Detail
+- [ ] Prototype Scale Lab Detail
+- [ ] Prototype Project Case Detail
+- [ ] Validate on 390px mobile viewport
+- [ ] Freeze component inventory
 
 ## V0.5 Web Foundation
 - [ ] React + TypeScript + Vite
