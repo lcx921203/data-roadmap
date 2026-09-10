@@ -1,0 +1,28 @@
+id: ev-didi-2026-04-19-bigdata-first-004
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/7c3bb71369db4148befba1ed539ba6cb
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2026-04-19'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Didi
+  role: 大数据开发
+  round: 一面
+  interview_date: null
+origin_fingerprint: 4a5d4e58af2b620f
+independence_group: ev-didi-2026-04-19-bigdata-first-004
+extracted_topic_candidates:
+- data_skew
+- data_governance
+- pipeline_failure
+- warehouse_layering
+- predicate_pushdown
+- data_validation
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

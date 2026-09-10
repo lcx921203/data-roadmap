@@ -1,0 +1,29 @@
+id: ev-didi-2026-09-10-data-rd-007
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/630bb86ca8224183ad3de301a69ec199
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2026-09-10'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Didi
+  role: 数据研发工程师
+  round: 二面
+  interview_date: '2026-08-31'
+origin_fingerprint: 6235e0597f578a90
+independence_group: ev-didi-2026-09-10-data-rd-007
+extracted_topic_candidates:
+- project_value
+- metrics
+- rag
+- agent_vs_product
+- ai_agent
+- skill
+- llm_cost
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

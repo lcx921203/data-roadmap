@@ -1,0 +1,25 @@
+id: ev-jd-2025-05-15-data-dev-002
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/7fce664c40714cfeb2d478f0d4bcad03
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-05-15'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: JD
+  role: 数据开发
+  round: 一面
+  interview_date: null
+origin_fingerprint: a939fb74a21de89d
+independence_group: ev-jd-2025-05-15-data-dev-002
+extracted_topic_candidates:
+- large_scale_tagging
+- sql_window
+- data_scale
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

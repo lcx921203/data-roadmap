@@ -1,0 +1,400 @@
+version: 0.3.2
+as_of: '2026-09-10'
+corpus_size: 32
+candidates:
+- id: iq-candidate-warehouse_layering-v032
+  cluster: warehouse_layering
+  question: 数仓为什么要分层，各层职责和数据流如何设计？
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-alibaba-2025-03-05-warehouse-001
+  - ev-kuaishou-2025-10-12-data-rd-002
+  - ev-kuaishou-2025-01-29-data-intern-003
+  - ev-kuaishou-2025-11-11-growth-data-dev-006
+  - ev-kuaishou-2026-06-10-data-rd-intern-007
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-didi-2025-04-02-bigdata-intern-002
+  - ev-didi-2026-04-19-bigdata-first-004
+  - ev-didi-2026-08-25-data-rd-006
+  - ev-baidu-2024-05-29-data-intern-001
+  - ev-baidu-2022-07-22-bigdata-003
+  - ev-tencent-2025-04-17-cloud-data-intern-003
+  independent_evidence_count: 17
+  company_count: 7
+  companies:
+  - Alibaba
+  - Baidu
+  - ByteDance
+  - Didi
+  - Kuaishou
+  - Meituan
+  - Tencent
+  recent_12m_count: 8
+  weighted_score: 15.2
+  provisional_frequency: high_frequency_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-spark_performance-v032
+  cluster: spark_performance
+  question: Spark 任务慢、Shuffle 或数据倾斜时如何定位和优化？
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-kuaishou-2025-10-12-data-dev-001
+  - ev-kuaishou-2025-01-29-data-intern-003
+  - ev-kuaishou-2025-11-10-data-dev-004
+  - ev-kuaishou-2025-11-11-growth-data-dev-006
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-didi-2025-04-02-bigdata-intern-002
+  - ev-didi-2026-04-19-bigdata-first-004
+  - ev-jd-2025-10-26-bigdata-social-001
+  - ev-tencent-2025-04-17-cloud-data-intern-003
+  independent_evidence_count: 12
+  company_count: 6
+  companies:
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  - Meituan
+  - Tencent
+  recent_12m_count: 6
+  weighted_score: 11.25
+  provisional_frequency: high_frequency_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-sql_window-v032
+  cluster: sql_window
+  question: 窗口函数、分组聚合与连续行为类 SQL 怎么写？
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-kuaishou-2025-10-12-data-dev-001
+  - ev-kuaishou-2025-10-12-data-rd-002
+  - ev-kuaishou-2025-01-29-data-intern-003
+  - ev-kuaishou-2025-11-11-growth-data-dev-006
+  - ev-kuaishou-2026-06-10-data-rd-intern-007
+  - ev-didi-2025-04-02-bigdata-intern-002
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-08-25-data-rd-006
+  - ev-jd-2025-05-15-data-dev-002
+  - ev-tencent-2025-04-17-cloud-data-intern-003
+  independent_evidence_count: 12
+  company_count: 6
+  companies:
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  - Meituan
+  - Tencent
+  recent_12m_count: 6
+  weighted_score: 11.1
+  provisional_frequency: repeated_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-data_governance-v032
+  cluster: data_governance
+  question: 数据治理应从哪些方面展开，如何衡量治理效果？
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-alibaba-2025-03-05-warehouse-001
+  - ev-kuaishou-2025-01-29-data-intern-003
+  - ev-kuaishou-2025-09-05-social-data-dev-005
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-04-19-bigdata-first-004
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-jd-2025-10-26-bigdata-social-001
+  - ev-jd-2025-09-06-warehouse-003
+  - ev-baidu-2022-07-22-bigdata-003
+  - ev-tencent-2025-04-17-cloud-data-intern-003
+  independent_evidence_count: 12
+  company_count: 7
+  companies:
+  - Alibaba
+  - Baidu
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  - Tencent
+  recent_12m_count: 5
+  weighted_score: 11.0
+  provisional_frequency: repeated_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-data_quality-v032
+  cluster: data_quality
+  question: 如何建立数据质量体系，并在指标异常时快速定位问题？
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-alibaba-2025-03-05-warehouse-001
+  - ev-kuaishou-2025-10-12-data-dev-001
+  - ev-kuaishou-2025-09-05-social-data-dev-005
+  - ev-kuaishou-2025-11-11-growth-data-dev-006
+  - ev-didi-2026-04-19-bigdata-first-004
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-jd-2025-09-06-warehouse-003
+  - ev-baidu-2022-07-22-bigdata-003
+  independent_evidence_count: 10
+  company_count: 6
+  companies:
+  - Alibaba
+  - Baidu
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  recent_12m_count: 5
+  weighted_score: 9.3
+  provisional_frequency: repeated_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-dimensional_modeling-v032
+  cluster: dimensional_modeling
+  question: 维度建模如何设计，粒度、事实表和维表如何确定？
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-alibaba-2025-03-05-warehouse-001
+  - ev-kuaishou-2025-11-11-growth-data-dev-006
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-08-25-data-rd-006
+  - ev-jd-2025-09-06-warehouse-003
+  independent_evidence_count: 9
+  company_count: 6
+  companies:
+  - Alibaba
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  - Meituan
+  recent_12m_count: 5
+  weighted_score: 8.55
+  provisional_frequency: repeated_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-pipeline_reliability-v032
+  cluster: pipeline_reliability
+  question: 数据任务延迟、失败或产出异常时如何排查和恢复？
+  evidence_ids:
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-alibaba-2025-03-05-warehouse-001
+  - ev-kuaishou-2025-01-29-data-intern-003
+  - ev-kuaishou-2025-09-05-social-data-dev-005
+  - ev-didi-2025-04-02-bigdata-intern-002
+  - ev-didi-2026-04-19-bigdata-first-004
+  - ev-tencent-2025-03-12-techops-data-004
+  independent_evidence_count: 7
+  company_count: 5
+  companies:
+  - Alibaba
+  - ByteDance
+  - Didi
+  - Kuaishou
+  - Tencent
+  recent_12m_count: 1
+  weighted_score: 6.19
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-flink_reliability-v032
+  cluster: flink_reliability
+  question: Flink 的 Exactly-once、Checkpoint、状态与故障恢复如何实现？
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-kuaishou-2026-04-19-data-tech-final-008
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-jd-2025-09-06-warehouse-003
+  independent_evidence_count: 6
+  company_count: 4
+  companies:
+  - ByteDance
+  - Didi
+  - JD
+  - Kuaishou
+  recent_12m_count: 5
+  weighted_score: 6.0
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-lakehouse_vs_warehouse-v032
+  cluster: lakehouse_vs_warehouse
+  question: 数据湖、湖仓一体与传统数仓有什么区别，为什么做湖仓选型？
+  evidence_ids:
+  - ev-kuaishou-2025-11-10-data-dev-004
+  - ev-kuaishou-2025-09-05-social-data-dev-005
+  - ev-kuaishou-2026-04-19-data-tech-final-008
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-jd-2025-09-06-warehouse-003
+  independent_evidence_count: 6
+  company_count: 3
+  companies:
+  - Didi
+  - JD
+  - Kuaishou
+  recent_12m_count: 4
+  weighted_score: 6.0
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-kafka_reliability-v032
+  cluster: kafka_reliability
+  question: Kafka 如何保证可靠消费，出现丢失、重复或 Lag 时如何处理？
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-tencent-2025-02-13-bigdata-platform-001
+  - ev-kuaishou-2025-11-10-data-dev-004
+  - ev-didi-2025-11-04-data-dev-001
+  independent_evidence_count: 5
+  company_count: 4
+  companies:
+  - ByteDance
+  - Didi
+  - Kuaishou
+  - Tencent
+  recent_12m_count: 3
+  weighted_score: 4.7
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-realtime_offline_consistency-v032
+  cluster: realtime_offline_consistency
+  question: 实时与离线指标不一致时如何定位，并保证最终一致性？
+  evidence_ids:
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-didi-2025-04-02-bigdata-intern-002
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-baidu-2022-07-22-bigdata-003
+  independent_evidence_count: 5
+  company_count: 2
+  companies:
+  - Baidu
+  - Didi
+  recent_12m_count: 3
+  weighted_score: 4.3
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-hdfs_reliability-v032
+  cluster: hdfs_reliability
+  question: HDFS 读写流程、数据一致性以及节点故障如何处理？
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-alibabacloud-2025-11-13-bigdata-002
+  - ev-didi-2025-11-04-data-dev-001
+  - ev-baidu-2024-05-29-data-intern-001
+  independent_evidence_count: 5
+  company_count: 5
+  companies:
+  - Alibaba Cloud
+  - Baidu
+  - ByteDance
+  - Didi
+  - Meituan
+  recent_12m_count: 3
+  weighted_score: 4.25
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-scale_design-v032
+  cluster: scale_design
+  question: 数据量从 GB/TB 增长到十亿级、百亿级时，模型和计算链路如何演进？
+  evidence_ids:
+  - ev-kuaishou-2025-10-12-data-rd-002
+  - ev-didi-2026-08-25-data-rd-006
+  - ev-jd-2025-05-15-data-dev-002
+  - ev-tencent-2025-11-13-bigdata-002
+  independent_evidence_count: 4
+  company_count: 4
+  companies:
+  - Didi
+  - JD
+  - Kuaishou
+  - Tencent
+  recent_12m_count: 3
+  weighted_score: 3.85
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-star_snowflake-v032
+  cluster: star_snowflake
+  question: 星型模型和雪花模型有什么区别，分别适合什么场景？
+  evidence_ids:
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-didi-2026-08-25-data-rd-006
+  independent_evidence_count: 3
+  company_count: 2
+  companies:
+  - Didi
+  - Meituan
+  recent_12m_count: 2
+  weighted_score: 2.85
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-olap_selection-v032
+  cluster: olap_selection
+  question: OLAP 引擎如何选型，Trino / Doris / ClickHouse / StarRocks 类方案怎么比较？
+  evidence_ids:
+  - ev-didi-2026-04-13-bigdata-final-003
+  - ev-didi-2026-07-26-data-dev-005
+  - ev-baidu-2023-08-22-bigdata-rd-002
+  independent_evidence_count: 3
+  company_count: 2
+  companies:
+  - Baidu
+  - Didi
+  recent_12m_count: 2
+  weighted_score: 2.65
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.
+- id: iq-candidate-agent_rag-v032
+  cluster: agent_rag
+  question: 数据岗位中的 RAG / Agent / Skill 如何设计与评估？
+  evidence_ids:
+  - ev-didi-2026-08-25-data-rd-006
+  - ev-didi-2026-09-10-data-rd-007
+  independent_evidence_count: 2
+  company_count: 1
+  companies:
+  - Didi
+  recent_12m_count: 2
+  weighted_score: 2.0
+  provisional_frequency: emerging_provisional
+  publishable: false
+  calibration_note: 32-source corpus; mostly NowCoder. Useful for prioritization,
+    not final industry frequency.

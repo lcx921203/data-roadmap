@@ -1,0 +1,29 @@
+id: ev-kuaishou-2025-11-10-data-dev-004
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/c522429083104672bd24fa7021a4d930
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-11-10'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据开发
+  round: null
+  interview_date: null
+origin_fingerprint: 1c9a03f69f46d44a
+independence_group: ev-kuaishou-2025-11-10-data-dev-004
+extracted_topic_candidates:
+- hdfs_formats
+- mapreduce
+- flink_vs_spark
+- kafka_mechanism
+- distributed_tradeoff
+- lakehouse_vs_warehouse
+- data_skew
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

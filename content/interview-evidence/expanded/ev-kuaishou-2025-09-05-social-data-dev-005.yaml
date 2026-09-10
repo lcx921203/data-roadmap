@@ -1,0 +1,28 @@
+id: ev-kuaishou-2025-09-05-social-data-dev-005
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/2234597c22cf4f13bb254a796e43121a
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-09-05'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据开发（社招）
+  round: 一面
+  interview_date: null
+origin_fingerprint: 241059325a59c0f5
+independence_group: ev-kuaishou-2025-09-05-social-data-dev-005
+extracted_topic_candidates:
+- lakehouse_vs_warehouse
+- warehouse_quality
+- data_governance
+- data_quality
+- realtime_latency
+- realtime_troubleshooting
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

@@ -1,0 +1,30 @@
+id: ev-didi-2026-04-13-bigdata-final-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/97937eb24dae4a21b88869d9e71915ae
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2026-04-13'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Didi
+  role: 大数据开发
+  round: 三面技术终面
+  interview_date: null
+origin_fingerprint: ff0d0aa37976d899
+independence_group: ev-didi-2026-04-13-bigdata-final-003
+extracted_topic_candidates:
+- dimensional_modeling
+- realtime_offline_consistency
+- olap_selection
+- flink_exactly_once
+- realtime_join
+- data_governance
+- lakehouse_quality
+- sql
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

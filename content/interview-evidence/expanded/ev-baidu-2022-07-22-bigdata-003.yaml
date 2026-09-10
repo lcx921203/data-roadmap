@@ -1,0 +1,32 @@
+id: ev-baidu-2022-07-22-bigdata-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/discuss/380102483274727424
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2022-07-22'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Baidu
+  role: 大数据开发
+  round: 一面
+  interview_date: null
+origin_fingerprint: 675bca75a085b831
+independence_group: ev-baidu-2022-07-22-bigdata-003
+extracted_topic_candidates:
+- warehouse_sources
+- warehouse_layering
+- grain_quality
+- data_quality
+- data_cleaning
+- etl_alerting
+- model_standards
+- hive_tuning
+- zookeeper_ha
+- consistency
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

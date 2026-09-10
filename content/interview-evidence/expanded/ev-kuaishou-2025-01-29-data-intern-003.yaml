@@ -1,0 +1,30 @@
+id: ev-kuaishou-2025-01-29-data-intern-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/6edbdad413404ee68fc19d9e2287c7c1
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-01-29'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据开发实习
+  round: 一面/二面
+  interview_date: null
+origin_fingerprint: c2f50c2d914ef3a5
+independence_group: ev-kuaishou-2025-01-29-data-intern-003
+extracted_topic_candidates:
+- funnel
+- freshness
+- task_optimization
+- spark_parallelism
+- data_domain
+- warehouse_layering
+- lineage
+- sql
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

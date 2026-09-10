@@ -1,0 +1,28 @@
+id: ev-kuaishou-2025-10-12-data-rd-002
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/df6ca5bed6d749ef93ea78d37443baf0
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-10-12'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据研发工程师
+  round: 一面
+  interview_date: null
+origin_fingerprint: 30c01ccd83375ca4
+independence_group: ev-kuaishou-2025-10-12-data-rd-002
+extracted_topic_candidates:
+- project_scale
+- storage_cost
+- dashboard_pipeline
+- hadoop_spark
+- warehouse_layering
+- sql_window
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

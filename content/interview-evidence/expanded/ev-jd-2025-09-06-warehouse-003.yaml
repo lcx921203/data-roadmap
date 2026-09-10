@@ -1,0 +1,28 @@
+id: ev-jd-2025-09-06-warehouse-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/9634ba2cad824a11b2042fa67da5072e
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-09-06'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: JD
+  role: 数仓开发
+  round: null
+  interview_date: null
+origin_fingerprint: f49e90f7d05957d0
+independence_group: ev-jd-2025-09-06-warehouse-003
+extracted_topic_candidates:
+- warehouse_modeling
+- data_quality
+- realtime_reliability
+- user_profile
+- lakehouse_vs_warehouse
+- data_governance
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

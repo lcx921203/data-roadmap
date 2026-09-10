@@ -1,0 +1,32 @@
+id: ev-tencent-2025-04-17-cloud-data-intern-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/6a2ae8bd268f46b4b157092bf27cf68a
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-04-17'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Tencent
+  role: 腾讯云智 数据开发实习
+  round: 一面/二面
+  interview_date: null
+origin_fingerprint: 89521e9dbb088451
+independence_group: ev-tencent-2025-04-17-cloud-data-intern-003
+extracted_topic_candidates:
+- data_domain
+- warehouse_layering
+- sql_ordering
+- longest_login
+- data_skew
+- salt
+- small_files
+- map_join
+- zookeeper
+- source_trace
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

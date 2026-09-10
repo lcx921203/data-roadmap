@@ -1,0 +1,29 @@
+id: ev-didi-2026-07-26-data-dev-005
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/4e1b733a23f0400886db9f0977dcc138
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2026-07-26'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Didi
+  role: 数据开发
+  round: null
+  interview_date: null
+origin_fingerprint: 2b89539003aec734
+independence_group: ev-didi-2026-07-26-data-dev-005
+extracted_topic_candidates:
+- data_domain
+- metrics
+- realtime_exactly_once
+- olap_selection
+- lakehouse_vs_warehouse
+- data_quality
+- realtime_offline_consistency
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

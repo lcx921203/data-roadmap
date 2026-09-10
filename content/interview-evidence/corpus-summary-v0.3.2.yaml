@@ -1,0 +1,22 @@
+version: 0.3.2
+as_of: '2026-09-10'
+independent_source_count: 32
+new_source_count: 24
+company_count: 9
+company_distribution:
+  ByteDance: 3
+  Meituan: 2
+  Tencent: 4
+  Alibaba: 1
+  Alibaba Cloud: 1
+  Kuaishou: 8
+  Didi: 7
+  JD: 3
+  Baidu: 3
+publisher_distribution:
+  NowCoder: 32
+calibration:
+  status: provisional
+  reason: Corpus has crossed 30 independent sources but is still strongly single-platform
+    biased.
+  final_frequency_publishable: false

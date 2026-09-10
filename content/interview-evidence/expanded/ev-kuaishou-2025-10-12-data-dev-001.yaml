@@ -1,0 +1,31 @@
+id: ev-kuaishou-2025-10-12-data-dev-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/b73a5508df754dd6b5d1a95b00f08d6e
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-10-12'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据开发
+  round: 技术面
+  interview_date: null
+origin_fingerprint: d060a654d173b3e2
+independence_group: ev-kuaishou-2025-10-12-data-dev-001
+extracted_topic_candidates:
+- warehouse_quality
+- data_quality
+- warehouse_optimization
+- spark_scheduler
+- spark_vs_mr
+- sparksql_catalyst
+- spark_memory
+- flink_vs_spark
+- sql
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

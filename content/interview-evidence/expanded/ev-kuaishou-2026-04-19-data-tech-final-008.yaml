@@ -1,0 +1,28 @@
+id: ev-kuaishou-2026-04-19-data-tech-final-008
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/9cfb5d2b97a14777baa3cf28ec2f7208
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2026-04-19'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Kuaishou
+  role: 数据开发（社招）
+  round: 技术终面
+  interview_date: null
+origin_fingerprint: 1355ec79e0881129
+independence_group: ev-kuaishou-2026-04-19-data-tech-final-008
+extracted_topic_candidates:
+- technical_standards
+- lakehouse_selection
+- realtime_exactly_once
+- realtime_warehouse
+- finance_vs_traffic
+- event_tracking
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

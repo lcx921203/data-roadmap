@@ -1,0 +1,33 @@
+id: ev-didi-2025-11-04-data-dev-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/6b2dfa7e5e9440c8a6a8bc2db786c352
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-11-04'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Didi
+  role: 数据开发
+  round: 一面
+  interview_date: null
+origin_fingerprint: f496df12ac77ed84
+independence_group: ev-didi-2025-11-04-data-dev-001
+extracted_topic_candidates:
+- mapreduce
+- hdfs_consistency
+- flink_kafka_consistency
+- flink_checkpoint
+- kafka_consistency
+- spark_vs_mr_shuffle
+- spark_memory
+- warehouse_layering
+- dimension_table
+- user_profile
+- sparksql
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

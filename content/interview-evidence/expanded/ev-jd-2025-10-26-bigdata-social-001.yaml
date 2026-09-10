@@ -1,0 +1,26 @@
+id: ev-jd-2025-10-26-bigdata-social-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/565a9d1d022044fdb6e30b8b2f32604d
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-10-26'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: JD
+  role: 大数据开发（社招）
+  round: 一面/二面/三面
+  interview_date: null
+origin_fingerprint: 1b6638dc7dae915d
+independence_group: ev-jd-2025-10-26-bigdata-social-001
+extracted_topic_candidates:
+- dimensional_vs_normalized
+- data_skew
+- finance_data
+- model_standards
+review:
+  extraction_status: corpus_reviewed
+  human_verified: false
+  notes: V0.3.2 corpus expansion. Question-level wording must still be reviewed before
+    a canonical question is publishable.

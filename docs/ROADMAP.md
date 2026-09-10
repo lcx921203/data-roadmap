@@ -19,11 +19,13 @@
 - [x] Evidence schema
 - [x] Frequency model
 - [x] Publishing gate
-- [x] First seed corpus: 8 independent sources
-- [x] First candidate clustering validation
-- [ ] Expand to 30+ independent sources
-- [ ] Improve source / company / role diversity
-- [ ] Calibrate frequency bands against corpus
+- [x] Seed corpus: 8 independent sources
+- [x] Expand corpus to 32 independent sources
+- [x] Add Kuaishou / Didi / JD / Baidu and more Tencent coverage
+- [x] First provisional cross-company frequency calibration
+- [ ] Add non-NowCoder source diversity
+- [ ] Split broad candidate clusters into canonical questions
+- [ ] Review question-level evidence mappings
 - [ ] Select first 30 publishable high-value questions
 - [ ] Curate answers
 
