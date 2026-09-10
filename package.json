@@ -1,0 +1,29 @@
+{
+  "name": "data-roadmap",
+  "private": true,
+  "version": "0.5.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "validate:content": "node scripts/validate-content.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run validate:content && npm run typecheck && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

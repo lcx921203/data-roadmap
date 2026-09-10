@@ -24,41 +24,44 @@
 - [ ] Project Fact Check when claims are published
 
 ## V0.4 Design System
-
-### V0.4.0 Foundation
-- [x] Reference synthesis
-- [x] Technical Editorial direction
-- [x] Typography / spacing / surfaces
-- [x] Information Architecture
-- [x] Technical Diagram language
-
-### V0.4.1 Product Prototypes
-- [x] Six mobile product prototypes
-- [x] 390px structural validation
-- [x] Candidate component inventory
-
-### V0.4.2 Component Freeze
-- [x] Freeze component inventory
-- [x] Freeze interaction states
-- [x] Freeze Evidence Disclosure
-- [x] Freeze Filter Bottom Sheet flow
-- [x] Freeze Code expand / collapse
-- [x] Freeze accessibility baseline
-- [x] Freeze Design System V1
+- [x] Design Foundation
+- [x] Mobile Product Prototypes
+- [x] Component Freeze
+- [x] Design System V1 Frozen
 - [x] Close V0.4 milestone
 
 ## V0.5 Web Foundation
 
-### Next: V0.5.0 Application Bootstrap
-- [ ] React + TypeScript + Vite
-- [ ] `base: /data-roadmap/`
-- [ ] Design token CSS
-- [ ] App Shell
-- [ ] Four top-level routes
-- [ ] Markdown / YAML content loader
-- [ ] Static content registry
-- [ ] GitHub Pages build workflow
-- [ ] Mobile smoke test
+### V0.5.0 Application Bootstrap
+- [x] React + TypeScript + Vite
+- [x] `base: /data-roadmap/`
+- [x] Hash routing
+- [x] Design Token CSS
+- [x] App Shell
+- [x] Four top-level routes
+- [x] YAML content loader
+- [x] Static content registry
+- [x] Real Taxonomy rendering
+- [x] Real Interview Bank rendering
+- [x] Content validation build gate
+- [x] GitHub Pages workflow template
+
+### Next: V0.5.1 GitHub Pages Deployment
+- [ ] Install `.github/workflows/deploy-pages.yml`
+- [ ] GitHub Pages Actions mode
+- [ ] CI build
+- [ ] Pages deploy
+- [ ] Mobile smoke test on live URL
+- [ ] Fix deployment-only issues
+
+### V0.5.2 Detail-page Foundation
+- [ ] Knowledge route / detail loader
+- [ ] Interview detail route
+- [ ] Markdown front matter parser
+- [ ] Evidence Bottom Sheet
+- [ ] Reading Segment
+- [ ] Code Collapse
+- [ ] Route-level deep links
 
 ## V0.6 First Vertical Slice
 - [ ] Iceberg knowledge path

@@ -46,6 +46,32 @@ content/design/components-v1.yaml
 12. Technical Diagram 在 Mobile 优先纵向。
 13. 不为了“好看”修改 PRODUCT / CONTENT / CONTENT_MODEL 信息架构。
 
+## Web engineering baseline
+
+V0.5 起正式 Web App 技术基线：
+
+```text
+React
+TypeScript
+Vite
+Markdown / YAML
+Static First
+GitHub Pages
+```
+
+工程规则：
+
+1. `content/` 是内容事实源，不在 React 页面复制第二份 Taxonomy / Interview Bank。
+2. V1 不引入 Backend、Database 或运行时 AI。
+3. GitHub Pages 项目路径固定使用 `base: /data-roadmap/`。
+4. 静态部署阶段优先 Hash Routing，避免 Pages 子路径刷新 404。
+5. Build 必须先执行 Content Validation 和 TypeScript Typecheck。
+6. Stable ID 是跨 Knowledge / Interview / Project / Scale 的关联键。
+7. 页面组件不允许绕过 Frozen Design Tokens 私自新增品牌色。
+8. 依赖新增必须说明为什么不能用现有 Web Platform / React 能力解决。
+9. 不在 Feature Code 中硬编码真实项目事实；Project Fact 必须来自已核验内容。
+10. Workflow 文件变更与普通 ZIP 更新分离处理，因为 `Apply DataRoadmap package` 排除 `.github/workflows/*`。
+
 ## Interaction rules
 
 - Bottom Navigation 固定四项：Learn / Interview / Scale / Projects。
