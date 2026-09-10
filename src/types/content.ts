@@ -99,7 +99,13 @@ export interface InterviewAnswerFrontMatter {
   }
 }
 
-export interface MarkdownDocument<TMeta extends Record<string, unknown> = Record<string, unknown>> {
+/**
+ * Front matter is structurally typed.
+ *
+ * Do not require Record<string, unknown> here: ordinary interfaces such as
+ * KnowledgeFrontMatter intentionally do not declare a string index signature.
+ */
+export interface MarkdownDocument<TMeta extends object = Record<string, unknown>> {
   path: string
   raw: string
   meta: TMeta

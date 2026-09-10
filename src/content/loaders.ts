@@ -83,7 +83,7 @@ export function listMarkdownAssets(contains: string): RawAsset[] {
   return listAssets(markdownModules, contains)
 }
 
-export function parseFrontMatter<TMeta extends Record<string, unknown>>(
+export function parseFrontMatter<TMeta extends object>(
   path: string,
   raw: string,
 ): MarkdownDocument<TMeta> {
@@ -106,6 +106,7 @@ export function parseFrontMatter<TMeta extends Record<string, unknown>>(
       ? (parsed as TMeta)
       : ({} as TMeta)
 
+  const metaRecord = meta as unknown as Record<string, unknown>
   const body = match[2].trim()
 
   return {
@@ -114,8 +115,8 @@ export function parseFrontMatter<TMeta extends Record<string, unknown>>(
     meta,
     body,
     title:
-      typeof (meta as Record<string, unknown>).title === 'string'
-        ? ((meta as Record<string, unknown>).title as string)
+      typeof metaRecord.title === 'string'
+        ? metaRecord.title
         : extractH1(body),
   }
 }
