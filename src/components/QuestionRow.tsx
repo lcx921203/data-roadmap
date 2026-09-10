@@ -1,4 +1,5 @@
 import type { InterviewQuestionSummary } from '../types/content'
+import { getQuestionEvidenceStats } from '../content/registry'
 import { formatFrequencyBand } from '../utils/format'
 
 interface QuestionRowProps {
@@ -6,15 +7,17 @@ interface QuestionRowProps {
 }
 
 export function QuestionRow({ item }: QuestionRowProps) {
+  const stats = getQuestionEvidenceStats(item)
+
   return (
     <a className="question-row" href={`#/interview/${item.id}`}>
       <div className="question-row__meta">
         <span className="question-row__rank">
           #{String(item.rank).padStart(2, '0')} ·{' '}
-          {formatFrequencyBand(item.frequency_band)}
+          {formatFrequencyBand(stats.frequencyBand)}
         </span>
         <span>
-          {item.direct_count} 条独立面经 · {item.company_count} 家公司
+          {stats.evidenceCount} 份面经 · {stats.companyCount} 家公司
         </span>
       </div>
       <h2>{item.question}</h2>

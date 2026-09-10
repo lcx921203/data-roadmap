@@ -54,6 +54,31 @@ if (
   )
 }
 
+const interviewSupplement = readYaml(
+  'content/interviews/interview-bank-supplement-v1.yaml',
+)
+
+if (!Array.isArray(interviewSupplement?.questions)) {
+  throw new Error('Interview supplement must contain a questions array')
+}
+
+const mergedInterviewIds = new Set()
+
+for (const question of [
+  ...interviewBank.questions,
+  ...interviewSupplement.questions,
+]) {
+  if (!question?.id) {
+    throw new Error('Merged interview question without stable ID')
+  }
+
+  if (mergedInterviewIds.has(question.id)) {
+    throw new Error(`Duplicate merged interview question ID: ${question.id}`)
+  }
+
+  mergedInterviewIds.add(question.id)
+}
+
 if (components?.status !== 'frozen' || components?.version !== '1.0') {
   throw new Error('Design components-v1.yaml must remain frozen at V1')
 }
@@ -188,6 +213,8 @@ const forbiddenFrontstageMarkers = [
   'final-review Evidence',
   '当前 Bundle',
   'Front Matter 驱动',
+  '打开原始来源',
+  '一手完整记录',
 ]
 
 for (const file of frontstageFiles) {
@@ -220,6 +247,17 @@ for (const file of icebergFiles) {
       )
     }
   }
+}
+
+
+const evidenceDisclosureSource = readText(
+  'src/components/EvidenceDisclosure.tsx',
+)
+
+if (evidenceDisclosureSource.includes('source?.url')) {
+  throw new Error(
+    'Evidence source URL must remain backstage and must not be rendered in the frontstage Evidence sheet',
+  )
 }
 
 console.log('Frontstage copy audit passed.')

@@ -1,9 +1,13 @@
 import { useMemo, useState } from 'react'
 import { BottomSheet } from '../components/BottomSheet'
+import { FilterIcon } from '../components/FilterIcon'
 import { QuestionRow } from '../components/QuestionRow'
 import { SearchIcon } from '../components/Icons'
 import { TopBar } from '../components/TopBar'
-import { appRegistry } from '../content/registry'
+import {
+  appRegistry,
+  getQuestionEvidenceStats,
+} from '../content/registry'
 import {
   interviewDiscovery,
   matchesAnswerFilter,
@@ -39,13 +43,20 @@ export function InterviewPage() {
 
   const visible = useMemo(
     () =>
-      interviewBank.questions.filter(
-        (question) =>
+      interviewBank.questions.filter((question) => {
+        const stats = getQuestionEvidenceStats(question)
+
+        return (
           matchesInterviewSearch(question, query) &&
           matchesInterviewTag(question, activeTag) &&
-          matchesFrequencyFilter(question, frequency) &&
-          matchesAnswerFilter(question, answer),
-      ),
+          matchesFrequencyFilter(
+            question,
+            frequency,
+            stats.frequencyBand,
+          ) &&
+          matchesAnswerFilter(question, answer)
+        )
+      }),
     [
       activeTag,
       answer,
@@ -55,7 +66,8 @@ export function InterviewPage() {
     ],
   )
 
-  const hasAdvancedFilters = frequency !== 'all' || answer !== 'all'
+  const advancedFilterCount =
+    Number(frequency !== 'all') + Number(answer !== 'all')
 
   return (
     <>
@@ -63,7 +75,7 @@ export function InterviewPage() {
       <div className="page page--list">
         <h1>面试题</h1>
         <p className="page-lead">
-          搜索问题和场景，或按技术快速进入题集。
+          搜索问题、场景或关键词，也可以直接选择技术。
         </p>
 
         <label className="search-field interview-search">
@@ -80,42 +92,54 @@ export function InterviewPage() {
           例如：数据倾斜、指标不一致、历史回填
         </p>
 
-        <div className="quick-filter-heading">
-          <strong>按技术快速进入</strong>
-          <button
-            type="button"
-            className="advanced-filter-button"
-            data-active={hasAdvancedFilters}
-            onClick={() => setFiltersOpen(true)}
+        <div className="interview-discovery-row">
+          <div
+            className="interview-tech-scroll"
+            aria-label="按技术筛选面试题"
           >
-            筛选{hasAdvancedFilters ? ' · 已应用' : ''}
-          </button>
-        </div>
-
-        <div className="chip-row interview-tech-chips" aria-label="技术标签">
-          <button
-            type="button"
-            data-selected={activeTag === null}
-            aria-pressed={activeTag === null}
-            onClick={() => setActiveTag(null)}
-          >
-            全部
-          </button>
-          {interviewDiscovery.quick_tags.map((tag) => (
             <button
-              key={tag.id}
               type="button"
-              data-selected={activeTag === tag.id}
-              aria-pressed={activeTag === tag.id}
-              onClick={() =>
-                setActiveTag((current) =>
-                  current === tag.id ? null : tag.id,
-                )
-              }
+              data-selected={activeTag === null}
+              aria-pressed={activeTag === null}
+              onClick={() => setActiveTag(null)}
             >
-              {tag.label}
+              全部
             </button>
-          ))}
+
+            {interviewDiscovery.quick_tags.map((tag) => (
+              <button
+                key={tag.id}
+                type="button"
+                data-selected={activeTag === tag.id}
+                aria-pressed={activeTag === tag.id}
+                onClick={() =>
+                  setActiveTag((current) =>
+                    current === tag.id ? null : tag.id,
+                  )
+                }
+              >
+                {tag.label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className="filter-control"
+            data-active={advancedFilterCount > 0}
+            onClick={() => setFiltersOpen(true)}
+            aria-label={
+              advancedFilterCount > 0
+                ? `筛选，已应用 ${advancedFilterCount} 个条件`
+                : '筛选'
+            }
+          >
+            <FilterIcon />
+            <span>筛选</span>
+            {advancedFilterCount > 0 && (
+              <strong>{advancedFilterCount}</strong>
+            )}
+          </button>
         </div>
 
         <div className="section-heading section-heading--interview">
@@ -126,7 +150,9 @@ export function InterviewPage() {
                 )?.label ?? '题目'
               : '题目'}
           </h2>
-          <span>{visible.length} 道</span>
+          <span>
+            {visible.length} / {interviewBank.questions.length} 道
+          </span>
         </div>
 
         {visible.length > 0 ? (

@@ -1,6 +1,7 @@
 import type {
   InterviewBankFile,
   InterviewEvidenceFile,
+  InterviewQuestionSummary,
   KnowledgeFrontMatter,
   MarkdownDocument,
   QuestionEvidenceView,
@@ -17,9 +18,27 @@ import {
 
 export const taxonomy = loadYaml<TaxonomyFile>('content/taxonomy.yaml')
 
-export const interviewBank = loadYaml<InterviewBankFile>(
+const firstInterviewBank = loadYaml<InterviewBankFile>(
   'content/interviews/first-interview-bank-30-v0.3.8.yaml',
 )
+
+const interviewSupplement = loadYaml<InterviewBankFile>(
+  'content/interviews/interview-bank-supplement-v1.yaml',
+)
+
+const mergedQuestions = [
+  ...firstInterviewBank.questions,
+  ...interviewSupplement.questions,
+]
+
+export const interviewBank: InterviewBankFile = {
+  version: 'current',
+  as_of: interviewSupplement.as_of || firstInterviewBank.as_of,
+  selection_count: mergedQuestions.length,
+  publication_note:
+    'Current app registry: frozen First 30 plus future supplement.',
+  questions: mergedQuestions,
+}
 
 export const knowledgeArticles = listMarkdownAssets('content/knowledge/')
   .map((asset) =>
@@ -46,6 +65,13 @@ const evidenceRecords = listYamlAssets(
 )
   .map((asset) => parseYaml<InterviewEvidenceFile>(asset.raw))
   .filter((record) => record?.type === 'interview_evidence')
+
+export interface QuestionEvidenceStats {
+  evidenceCount: number
+  companyCount: number
+  frequencyBand: string
+  fromLiveEvidence: boolean
+}
 
 export function getKnowledgeById(
   id: string,
@@ -78,22 +104,29 @@ export function getKnowledgeNeighbors(id: string): {
   }
 }
 
+function isDirectMapping(mapping: string): boolean {
+  return mapping === 'direct_question' || mapping === 'direct_followup'
+}
+
 export function getQuestionEvidence(questionId: string): QuestionEvidenceView[] {
   const seen = new Set<string>()
   const results: QuestionEvidenceView[] = []
 
   for (const evidence of evidenceRecords) {
-    const mapping = evidence.question_evidence?.find(
-      (item) => item.canonical_question_id === questionId,
-    )
+    const mappings =
+      evidence.question_evidence?.filter(
+        (item) =>
+          item.canonical_question_id === questionId &&
+          isDirectMapping(item.mapping),
+      ) ?? []
 
-    if (!mapping) continue
+    if (mappings.length === 0) continue
 
     const dedupeKey = evidence.independence_group || evidence.id
     if (seen.has(dedupeKey)) continue
     seen.add(dedupeKey)
 
-    results.push({ evidence, mapping })
+    results.push({ evidence, mapping: mappings[0] })
   }
 
   return results.sort((a, b) => {
@@ -101,6 +134,56 @@ export function getQuestionEvidence(questionId: string): QuestionEvidenceView[] 
     const right = b.evidence.source?.published_at ?? ''
     return right.localeCompare(left)
   })
+}
+
+function deriveFrequencyBand(
+  evidenceCount: number,
+  companyCount: number,
+  fallback: string,
+): string {
+  if (evidenceCount >= 5 && companyCount >= 3) return 'core_verified'
+  if (evidenceCount >= 3 && companyCount >= 2) return 'repeated_verified'
+  if (evidenceCount >= 2 && companyCount >= 2) {
+    return 'supported_cross_company'
+  }
+  if (evidenceCount >= 2) return 'supported_single_company'
+  if (evidenceCount === 1) return 'single_verified'
+  return fallback
+}
+
+export function getQuestionEvidenceStats(
+  question: InterviewQuestionSummary,
+): QuestionEvidenceStats {
+  const directEvidence = getQuestionEvidence(question.id)
+
+  if (directEvidence.length === 0) {
+    return {
+      evidenceCount: question.direct_count,
+      companyCount: question.company_count,
+      frequencyBand: question.frequency_band,
+      fromLiveEvidence: false,
+    }
+  }
+
+  const companies = new Set(
+    directEvidence
+      .map((item) => item.evidence.interview_context?.company)
+      .filter((value): value is string => Boolean(value)),
+  )
+
+  const evidenceCount = directEvidence.length
+  const companyCount = companies.size
+
+  return {
+    evidenceCount,
+    companyCount,
+    frequencyBand: deriveFrequencyBand(
+      evidenceCount,
+      companyCount,
+      question.frequency_band,
+    ),
+    fromLiveEvidence: true,
+  }
 }
 
 export const appRegistry = {

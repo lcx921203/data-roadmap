@@ -1,0 +1,6 @@
+version: '1.0'
+as_of: '2026-09-11'
+selection_count: 0
+publication_note: Append future canonical questions here; UI count is derived from
+  merged question arrays.
+questions: []

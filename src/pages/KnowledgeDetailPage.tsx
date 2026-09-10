@@ -58,7 +58,7 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
         <div className="badge-row">
           {article.meta.learning_depth && (
             <span className="badge badge--signal">
-              {article.meta.learning_depth} 高阶
+              {article.meta.learning_depth} · 深度掌握
             </span>
           )}
           {topicLabel && <span className="badge">{topicLabel}</span>}

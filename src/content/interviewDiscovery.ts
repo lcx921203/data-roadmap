@@ -50,19 +50,20 @@ export function matchesInterviewTag(
 export function matchesFrequencyFilter(
   question: InterviewQuestionSummary,
   filter: InterviewFrequencyFilter,
+  effectiveBand: string = question.frequency_band,
 ): boolean {
   if (filter === 'all') return true
-  if (filter === 'core') return question.frequency_band === 'core_verified'
+  if (filter === 'core') return effectiveBand === 'core_verified'
   if (filter === 'repeated') {
-    return question.frequency_band === 'repeated_verified'
+    return effectiveBand === 'repeated_verified'
   }
   if (filter === 'supported') {
     return (
-      question.frequency_band === 'supported_cross_company' ||
-      question.frequency_band === 'supported_single_company'
+      effectiveBand === 'supported_cross_company' ||
+      effectiveBand === 'supported_single_company'
     )
   }
-  return question.frequency_band === 'single_verified'
+  return effectiveBand === 'single_verified'
 }
 
 export function matchesAnswerFilter(

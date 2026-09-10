@@ -7,6 +7,7 @@ import './styles/app.css'
 import './styles/iceberg-spine.css'
 import './styles/frontstage-cleanup.css'
 import './styles/discovery-refine.css'
+import './styles/evidence-discovery-polish.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
