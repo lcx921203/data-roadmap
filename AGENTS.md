@@ -17,53 +17,54 @@
 9. 所有重要实体使用稳定 ID 关联。
 10. 中文主讲；重要英文术语首次出现时提供中文含义。
 
-## Content rules
+## Design system status
 
-新增 Knowledge 前先确认：
+Design System V1 已于 V0.4.2 冻结。
 
-- stack_role
-- learning_depth
-- domain
-- topic
-- role_relevance
+工程实现必须以：
 
-新增 Interview Question 前必须确认来源信息。
+```text
+DESIGN.md
+content/design/components-v1.yaml
+```
 
-新增 Project Case 时必须明确真实边界。
-
-新增 Scale Scenario 时必须注明规模维度与训练目标。
+为事实源。
 
 ## Design rules
 
-设计系统从 V0.4.0 起由根目录 `DESIGN.md` 约束。
+1. Mobile First，390px 是关键设计基准。
+2. Row / Section / Divider 优先于 Card。
+3. 主正文 >= 16px。
+4. 只使用一个主 Accent：Signal Blue。
+5. 默认无 Shadow；层级使用留白、Surface、Hairline。
+6. 禁止装饰性 Gradient、Glassmorphism、Neon AI。
+7. Learn / Interview 共用内容源，不复制两套 Markdown。
+8. Evidence 在 Interview UI 必须可见。
+9. Project Fact 与 Scale Lab 必须视觉与语义分离。
+10. Touch Target >= 44px。
+11. 支持 iOS Safe Area 与 Reduced Motion。
+12. Technical Diagram 在 Mobile 优先纵向。
+13. 不为了“好看”修改 PRODUCT / CONTENT / CONTENT_MODEL 信息架构。
 
-必须：
+## Interaction rules
 
-1. Mobile First，以 390px 宽屏可用性作为关键检查点。
-2. 优先 Row / Section / Divider，只有需要明确 containment 时使用 Card。
-3. 主正文不小于 16px。
-4. 默认只使用一个主 Accent：Signal Blue。
-5. Accent 只用于交互、Focus、Active Path 和关键状态，不做装饰铺色。
-6. 默认无 Shadow；层级优先通过留白、Surface 和 Hairline 表达。
-7. 禁止装饰性 Gradient、Glassmorphism、Neon AI 风格。
-8. 技术内容优先使用 Technical Diagram，不用无意义插画占据正文。
-9. Learn / Interview 共用内容源，不复制两套 Markdown。
-10. Project Fact、Production Pattern 和 Scale Lab 必须视觉与语义分离。
-11. Evidence 在 Interview UI 中必须可见，不允许藏成不可发现的脚注。
-12. Touch Target >= 44px，支持 iOS Safe Area 和 reduced motion。
-13. 不为了“好看”改变 PRODUCT / CONTENT / CONTENT_MODEL 的信息架构。
+- Bottom Navigation 固定四项：Learn / Interview / Scale / Projects。
+- Evidence Detail 使用 Bottom Sheet。
+- Full Filter 使用 Bottom Sheet。
+- 长代码默认可折叠。
+- Reading Segment 只控制展示，不创建第二份内容。
+- Sheet 必须支持 focus trap / Escape / restore focus。
+- Pressed State 不使用缩放 Bounce。
 
-## Reference rule
+## Change policy
 
-`VoltAgent/awesome-design-md` 用于学习设计描述和抽取设计原则。
+以下变更必须明确升级 Design System 版本：
 
-禁止直接复制：
+- 顶级导航；
+- Color architecture；
+- Typography scale；
+- 核心 Component Anatomy；
+- Evidence visibility policy；
+- Project / Scale truthfulness boundary。
 
-- 品牌名称；
-- 品牌色；
-- 专有字体；
-- 商标；
-- 页面构图；
-- 组件视觉组合。
-
-DataRoadmap 必须保持自己的 Technical Editorial Learning System 方向。
+局部 2–4px spacing、图标替换、普通文案调整不需要升级主版本。

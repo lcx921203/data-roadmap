@@ -29,37 +29,36 @@
 - [x] Reference synthesis
 - [x] Technical Editorial direction
 - [x] Typography / spacing / surfaces
-- [x] Signal Blue policy
-- [x] Mobile-first navigation
 - [x] Information Architecture
 - [x] Technical Diagram language
 
 ### V0.4.1 Product Prototypes
-- [x] Learn Home prototype
-- [x] Knowledge Detail prototype
-- [x] Interview List prototype
-- [x] Interview Detail prototype
-- [x] Scale Lab Detail prototype
-- [x] Project Case Detail prototype
-- [x] Validate structural layout at 390px
-- [x] Draft component inventory
+- [x] Six mobile product prototypes
+- [x] 390px structural validation
+- [x] Candidate component inventory
 
-### Next: V0.4.2 Component Freeze
-- [ ] Interaction states
-- [ ] Evidence disclosure
-- [ ] Filter / bottom sheet
-- [ ] Code expand / collapse
-- [ ] Accessibility state rules
-- [ ] Freeze component inventory
-- [ ] Freeze Design System V1
+### V0.4.2 Component Freeze
+- [x] Freeze component inventory
+- [x] Freeze interaction states
+- [x] Freeze Evidence Disclosure
+- [x] Freeze Filter Bottom Sheet flow
+- [x] Freeze Code expand / collapse
+- [x] Freeze accessibility baseline
+- [x] Freeze Design System V1
+- [x] Close V0.4 milestone
 
 ## V0.5 Web Foundation
+
+### Next: V0.5.0 Application Bootstrap
 - [ ] React + TypeScript + Vite
-- [ ] Markdown front-matter loader
-- [ ] Taxonomy / Interview registry loader
-- [ ] Routing
-- [ ] GitHub Pages
-- [ ] Implement frozen Design System
+- [ ] `base: /data-roadmap/`
+- [ ] Design token CSS
+- [ ] App Shell
+- [ ] Four top-level routes
+- [ ] Markdown / YAML content loader
+- [ ] Static content registry
+- [ ] GitHub Pages build workflow
+- [ ] Mobile smoke test
 
 ## V0.6 First Vertical Slice
 - [ ] Iceberg knowledge path

@@ -1,0 +1,219 @@
+version: '1.0'
+frozen_at: 0.4.2
+status: frozen
+viewport_baseline:
+  width: 390
+  height: 844
+principles:
+  row_over_card: true
+  single_accent: true
+  default_shadow: none
+  body_min_px: 16
+  tap_target_min_px: 44
+  evidence_visible: true
+  project_scale_boundary_visible: true
+  single_content_source_dual_reading_mode: true
+  decorative_gradient: false
+  glassmorphism: false
+  gamification: false
+components:
+- id: app-shell
+  status: frozen
+  anatomy:
+  - top_bar
+  - content
+  - bottom_navigation
+  mobile:
+    page_padding: 20px
+- id: top-bar
+  status: frozen
+  variants:
+  - list
+  - detail
+  height: 56px
+  states:
+  - default
+  rules:
+  - sticky
+  - safe_top
+  - low_noise
+- id: bottom-navigation
+  status: frozen
+  items:
+  - learn
+  - interview
+  - scale
+  - projects
+  states:
+  - default
+  - active
+  - focus_visible
+  rules:
+  - active_uses_signal
+  - no_active_pill
+  - safe_bottom
+- id: stage-row
+  status: frozen
+  states:
+  - default
+  - pressed
+  - focus_visible
+  - disabled
+  anatomy:
+  - stage_number
+  - title
+  - summary
+  - badges
+  - chevron
+- id: question-row
+  status: frozen
+  states:
+  - default
+  - pressed
+  - focus_visible
+  anatomy:
+  - rank
+  - frequency_band
+  - evidence_count
+  - question
+  - metadata
+  rules:
+  - question_is_primary
+  - evidence_visible
+- id: badge
+  status: frozen
+  variants:
+  - neutral
+  - signal
+  - success
+  - warning
+  - danger
+  rules:
+  - short_state_only
+  - no_sentence_badges
+- id: filter-chip
+  status: frozen
+  states:
+  - default
+  - selected
+  - disabled
+  - focus_visible
+  selected_style: ink_fill
+- id: quick-answer
+  status: frozen
+  states:
+  - default
+  style:
+    background: signal_soft
+    border: signal_hairline
+    radius: 10px
+    padding: 18-20px
+- id: reading-segment
+  status: frozen
+  options:
+  - interview
+  - learn
+  states:
+  - default
+  - selected
+  - focus_visible
+  rules:
+  - presentation_mode_only
+  - same_content_source
+- id: quick-navigation
+  status: frozen
+  states:
+  - default
+  - active
+  - focus_visible
+  mobile: horizontal_scroll
+- id: evidence-summary
+  status: frozen
+  anatomy:
+  - direct_count
+  - company_count
+  - frequency_band
+  - expand_action
+  rules:
+  - visible_near_question_title
+- id: evidence-disclosure
+  status: frozen
+  mobile_container: bottom_sheet
+  fields:
+  - source
+  - company
+  - role
+  - round
+  - date
+  - mapping_type
+  states:
+  - closed
+  - open
+- id: code-block
+  status: frozen
+  states:
+  - collapsed
+  - expanded
+  - copied
+  - focus_visible
+  rules:
+  - long_code_collapsible
+  - horizontal_scroll
+  - no_forced_wrap
+- id: diagram-node
+  status: frozen
+  states:
+  - default
+  - active
+  - warning
+  - failure
+- id: diagram-edge
+  status: frozen
+  variants:
+  - default
+  - active
+  - retry
+  - rollback
+- id: scale-kpi
+  status: frozen
+  rules:
+  - parameter_only
+  - no_gamification
+- id: constraint-callout
+  status: frozen
+  variants:
+  - constraint
+  - warning
+  - failure
+- id: project-fact-state
+  status: frozen
+  variants:
+  - verified_project_fact
+  - needs_fact_check
+  - boundary
+  rules:
+  - never_imply_unverified_fact
+- id: scale-extension-state
+  status: frozen
+  label_required: HYPOTHETICAL SCALE LAB
+  rules:
+  - visually_distinct_from_actual
+- id: bottom-sheet
+  status: frozen
+  used_for:
+  - evidence
+  - filters
+  - auxiliary_selection
+  states:
+  - closed
+  - opening
+  - open
+  - closing
+  accessibility:
+  - aria_modal
+  - focus_trap
+  - escape_close
+  - restore_focus
+  mobile:
+    max_height: 82vh
+    top_radius: 14px

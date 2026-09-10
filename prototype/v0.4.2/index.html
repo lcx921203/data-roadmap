@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataRoadmap Component States V0.4.2</title>
+<style>
+:root{--c:#FCFCFA;--s:#F6F6F3;--w:#fff;--i:#171717;--m:#8A8A84;--l:#E4E4DE;--b:#315DDC;--bs:#EEF2FF;--d:#111318}
+*{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--i);font-family:system-ui,-apple-system,"PingFang SC",sans-serif}
+main{max-width:390px;margin:auto;padding:24px 20px 80px}h1{font-size:28px;line-height:1.2;margin:0 0 8px}h2{font-size:20px;margin:30px 0 10px}p{font-size:15px;line-height:1.65;color:#5F5F5B}
+.row{padding:16px 0;border-bottom:1px solid var(--l)}.meta{font-size:12px;color:var(--m)}.q{font-weight:650;line-height:1.45;margin-top:5px}
+.quick{background:var(--bs);border:1px solid #CDD8FF;border-radius:10px;padding:18px}.quick b{font-size:12px;color:#2346B5}
+.segment{display:flex;background:var(--s);border:1px solid var(--l);border-radius:10px;padding:3px}.segment button{flex:1;border:0;background:transparent;padding:10px;border-radius:7px}.segment button.on{background:#fff;font-weight:650}
+.action{height:44px;border:1px solid var(--l);background:#fff;border-radius:9px;padding:0 14px;font-weight:650}
+.code{background:var(--d);color:#f3f4f6;border-radius:10px;padding:12px;margin-top:10px;font:13px/1.6 monospace;white-space:pre;overflow:auto}
+.sheetback{display:none;position:fixed;inset:0;background:rgba(17,17,17,.26);align-items:end}.sheetback.on{display:flex}
+.sheet{background:#fff;border-radius:14px 14px 0 0;width:100%;padding:18px 20px 28px;max-height:82vh}.handle{width:36px;height:4px;background:#D2D2CB;border-radius:99px;margin:0 auto 14px}
+.evi{padding:13px 0;border-bottom:1px solid var(--l)}.evi strong{display:block}.close{width:44px;height:44px;border:0;background:var(--s);border-radius:9px;float:right}
+</style></head>
+<body><main>
+<div class="meta">V0.4.2 · FROZEN COMPONENT STATES</div><h1>Interview Question</h1>
+<div class="row"><div class="meta">#01 · CORE VERIFIED · 11 direct · 5 companies</div><div class="q">数仓为什么要分层？ODS、DWD、DWS、ADS 分别解决什么问题？</div></div>
+<p><button class="action" id="evidence">查看 Evidence</button></p>
+<div class="quick"><b>30 秒回答</b><p>分层的核心是解耦、复用和治理。重点不是机械背层名，而是保证职责、粒度、质量和消费边界清楚。</p></div>
+<h2>Reading Segment</h2><div class="segment"><button class="on">Interview</button><button>Learn</button></div>
+<h2>Code Collapse</h2><button class="action" id="toggle" aria-expanded="false">Show code</button><div class="code" id="code" hidden>Raw → Conformed
+    → Reusable Model
+    → Serving</div>
+</main>
+<div class="sheetback" id="back"><div class="sheet" role="dialog" aria-modal="true" aria-label="Interview evidence"><div class="handle"></div><button class="close" id="close">×</button><h2 style="margin-top:0">Evidence</h2><div class="evi"><strong>ByteDance</strong><span class="meta">数据开发 · 一面 · Direct</span></div><div class="evi"><strong>Meituan</strong><span class="meta">大数据开发 · Direct</span></div><div class="evi"><strong>Didi</strong><span class="meta">数据开发 · Direct</span></div></div></div>
+<script>
+const back=document.getElementById('back'), ev=document.getElementById('evidence'), close=document.getElementById('close');
+ev.onclick=()=>{back.classList.add('on');close.focus()};close.onclick=()=>{back.classList.remove('on');ev.focus()};
+back.onclick=e=>{if(e.target===back)close.click()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&back.classList.contains('on'))close.click()});
+document.querySelectorAll('.segment button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.segment button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+const toggle=document.getElementById('toggle'), code=document.getElementById('code');toggle.onclick=()=>{const open=code.hidden;code.hidden=!open;toggle.textContent=open?'Hide code':'Show code';toggle.setAttribute('aria-expanded',open)};
+</script></body></html>
