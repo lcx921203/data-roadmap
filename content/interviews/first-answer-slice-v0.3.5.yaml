@@ -1,0 +1,40 @@
+version: 0.3.5
+as_of: '2026-09-11'
+purpose: Validate final curated-answer depth before scaling to the first 30 Interview
+  Bank questions.
+slice_count: 5
+questions:
+- id: iq-warehouse-layering-001
+  file: content/interviews/answers/iq-warehouse-layering-001.md
+  evidence_count: 6
+  company_count: 3
+  answer_curated: true
+  publishable: false
+- id: iq-data-quality-diagnosis-001
+  file: content/interviews/answers/iq-data-quality-diagnosis-001.md
+  evidence_count: 5
+  company_count: 3
+  answer_curated: true
+  publishable: false
+- id: iq-dimensional-fact-dimension-design-001
+  file: content/interviews/answers/iq-dimensional-fact-dimension-design-001.md
+  evidence_count: 4
+  company_count: 4
+  answer_curated: true
+  publishable: false
+- id: iq-spark-data-skew-salting-001
+  file: content/interviews/answers/iq-spark-data-skew-salting-001.md
+  evidence_count: 3
+  company_count: 3
+  answer_curated: true
+  publishable: false
+- id: iq-flink-exactly-once-checkpoint-001
+  file: content/interviews/answers/iq-flink-exactly-once-checkpoint-001.md
+  evidence_count: 3
+  company_count: 2
+  answer_curated: true
+  publishable: false
+publication_blockers:
+- first_slice_content_review
+- project_fact_check_where_project_connection_is_used
+- final_frequency_calibration

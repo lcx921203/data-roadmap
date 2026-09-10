@@ -23,12 +23,12 @@
 - [x] 32-source expansion
 - [x] Add LeetCode / Reddit source diversity
 - [x] Split broad clusters into canonical candidates
-- [x] Fix canonical coverage gaps
-- [x] Remap prior 32-source corpus conservatively at question level
-- [x] Recalculate verified canonical support
+- [x] Conservative canonical frequency recalibration
 - [x] Select first 10 answer-ready questions
-- [ ] Curate first 3–5 complete answers
-- [ ] Complete full question-level review of remaining candidate support
+- [x] Curate first 5 complete answers
+- [x] Define final answer-content standard
+- [ ] Review first-answer-slice density / structure
+- [ ] Complete question-level review of remaining candidate support
 - [ ] Calibrate final frequency bands
 - [ ] Select first 30 publishable questions
 
