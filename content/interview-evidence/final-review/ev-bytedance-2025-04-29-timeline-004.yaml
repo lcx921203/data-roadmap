@@ -1,0 +1,39 @@
+id: ev-bytedance-2025-04-29-timeline-004
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/0cc4dbbee2c843718f63b4745904a278
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-04-29'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: ByteDance
+  role: 数据开发 / 大数据方向
+  round: 一面 / 二面 / 三面
+origin_fingerprint: 6bfbbd74c73a3f13
+independence_group: ev-bytedance-2025-04-29-timeline-004
+question_evidence:
+- canonical_question_id: iq-spark-data-skew-salting-001
+  mapping: direct_question
+  summary: 数据倾斜怎么解决；后续再次追问小文件和数据倾斜。
+- canonical_question_id: iq-warehouse-layering-001
+  mapping: direct_question
+  summary: 数仓各分层作用，并要求结合项目说明。
+- canonical_question_id: iq-data-quality-diagnosis-001
+  mapping: direct_question
+  summary: 数据质量监控，例如如何快速找到坏数据。
+- canonical_question_id: iq-dimensional-fact-dimension-design-001
+  mapping: direct_question
+  summary: 如何构建事实表，并继续追问粒度。
+- canonical_question_id: iq-spark-broadcast-join-001
+  mapping: direct_question
+  summary: Broadcast Join 原理以及为什么快。
+- canonical_question_id: iq-flink-exactly-once-checkpoint-001
+  mapping: direct_question
+  summary: Flink Checkpoint 机制并要求举例。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the traceable first-hand source. Source
+    metadata not visible in the page remains null.

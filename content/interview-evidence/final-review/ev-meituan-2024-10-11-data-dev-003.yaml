@@ -1,0 +1,36 @@
+id: ev-meituan-2024-10-11-data-dev-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/e95a5bca598f44009220bbbf2f0d3e8f
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2024-10-11'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Meituan
+  role: 数据开发工程师
+  round: 一面 / 二面 / 三面
+origin_fingerprint: 4c748155e1c5ebc6
+independence_group: ev-meituan-2024-10-11-data-dev-003
+question_evidence:
+- canonical_question_id: iq-warehouse-layering-001
+  mapping: direct_question
+  summary: 数仓分层。
+- canonical_question_id: iq-spark-data-skew-salting-001
+  mapping: direct_question
+  summary: 数据倾斜，特别追问几个热 Key 时怎么处理。
+- canonical_question_id: iq-star-vs-snowflake-001
+  mapping: direct_question
+  summary: 星型 / 雪花 / 星座模型。
+- canonical_question_id: iq-sql-window-lead-lag-001
+  mapping: direct_question
+  summary: LAG 参数以及何时使用窗口函数。
+- canonical_question_id: iq-sql-performance-plan-index-001
+  mapping: direct_question
+  summary: 慢 SQL 如何排查。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the traceable first-hand source. Source
+    metadata not visible in the page remains null.

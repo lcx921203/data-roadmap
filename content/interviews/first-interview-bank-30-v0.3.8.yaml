@@ -1,0 +1,283 @@
+version: 0.3.8
+as_of: '2026-09-11'
+selection_count: 30
+selection_policy:
+- Prefer stronger verified direct evidence.
+- Preserve coverage across warehouse, Spark, Flink, Kafka, SQL, lakehouse, governance,
+  serving, architecture and HDFS.
+- Do not create filler questions only to reach 30.
+- The 30th canonical question (HDFS read path) is added because it has direct evidence
+  from two independent companies.
+publication_note: Selection means Interview Bank V1 scope, not publishable=true. Questions
+  without curated answers remain content backlog.
+questions:
+- rank: 1
+  id: iq-warehouse-layering-001
+  question: 数仓为什么要分层？ODS、DWD/DWM、DWS/ADS 等层分别解决什么问题？
+  frequency_band: core_verified
+  direct_count: 11
+  company_count: 5
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 2
+  id: iq-data-quality-diagnosis-001
+  question: 如何建立数据质量体系？某个指标突然不准时如何快速定位到具体环节？
+  frequency_band: core_verified
+  direct_count: 10
+  company_count: 6
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 3
+  id: iq-spark-data-skew-salting-001
+  question: Spark 数据倾斜如何定位和解决？什么时候使用 Salting，salt 数量如何确定？
+  frequency_band: core_verified
+  direct_count: 7
+  company_count: 6
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 4
+  id: iq-lake-vs-warehouse-001
+  question: Data Lake 和 Data Warehouse 有什么区别？湖仓一体解决了什么问题？
+  frequency_band: core_verified
+  direct_count: 6
+  company_count: 4
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 5
+  id: iq-data-governance-framework-001
+  question: 数据治理应该从哪些方面展开？如何衡量治理效果？
+  frequency_band: core_verified
+  direct_count: 5
+  company_count: 4
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 6
+  id: iq-dimensional-fact-dimension-design-001
+  question: 给定业务场景，如何确定事实表、维表和数据粒度？
+  frequency_band: core_verified
+  direct_count: 5
+  company_count: 4
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 7
+  id: iq-flink-exactly-once-checkpoint-001
+  question: Flink Exactly-once 如何实现？Checkpoint、State 与 Barrier 在其中分别做什么？
+  frequency_band: repeated_verified
+  direct_count: 4
+  company_count: 2
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 8
+  id: iq-star-vs-snowflake-001
+  question: 星型模型和雪花模型有什么区别？分别适合什么场景？
+  frequency_band: repeated_verified
+  direct_count: 4
+  company_count: 2
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 9
+  id: iq-spark-broadcast-join-001
+  question: Spark Broadcast Join 什么时候适用？如何结合表大小和 Executor 内存判断？
+  frequency_band: repeated_verified
+  direct_count: 3
+  company_count: 3
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 10
+  id: iq-kafka-reliability-001
+  question: Kafka 如何保证不丢、不重和可恢复？出现 Lag 或分区异常时如何排查？
+  frequency_band: repeated_verified
+  direct_count: 3
+  company_count: 2
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 11
+  id: iq-olap-engine-selection-001
+  question: OLAP 引擎如何选型？Doris、StarRocks、ClickHouse、Trino 等方案应该怎么比较？
+  frequency_band: repeated_verified
+  direct_count: 3
+  company_count: 2
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 12
+  id: iq-sql-window-lead-lag-001
+  question: LEAD / LAG 适合解决哪些时序分析问题？如何写出正确的窗口 SQL？
+  frequency_band: repeated_verified
+  direct_count: 3
+  company_count: 2
+  answer_curated: true
+  content_status: curated
+  publishable: false
+- rank: 13
+  id: iq-hdfs-read-path-001
+  question: HDFS 读取一份文件时，Client、NameNode、DataNode 之间的完整流程是什么？
+  frequency_band: supported_cross_company
+  direct_count: 2
+  company_count: 2
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 14
+  id: iq-spark-job-stage-task-001
+  question: Spark 的 Job、Stage、Task 如何划分？Shuffle 为什么形成 Stage 边界？
+  frequency_band: supported_cross_company
+  direct_count: 2
+  company_count: 2
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 15
+  id: iq-sql-performance-plan-index-001
+  question: SQL 变慢时如何利用执行计划、索引和数据分布定位瓶颈？
+  frequency_band: supported_cross_company
+  direct_count: 2
+  company_count: 2
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 16
+  id: iq-realtime-offline-consistency-001
+  question: 实时指标和离线指标不一致时如何判断谁对，并定位不一致原因？
+  frequency_band: supported_single_company
+  direct_count: 2
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 17
+  id: iq-cdc-vs-scd-001
+  question: CDC 和 SCD 分别解决什么问题？两者在数仓链路里是什么关系？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 18
+  id: iq-data-lake-integrity-001
+  question: 对象存储 / Data Lake 缺少传统数据库约束时，如何保障数据完整性和一致性？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 19
+  id: iq-data-platform-batch-realtime-001
+  question: 如何设计同时支持批处理和实时处理的数据平台？关键一致性与故障边界是什么？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 20
+  id: iq-data-product-system-design-001
+  question: 从原始数据到可消费 Data Product，如何设计访问、处理、存储和数仓模型？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 21
+  id: iq-dimensional-partial-late-data-001
+  question: 事实数据部分到达或迟到时，数仓模型和下游指标如何处理？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 22
+  id: iq-dimensional-primary-key-001
+  question: 事实表和维表的主键、业务键应该怎么设计？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 23
+  id: iq-etl-join-slowdown-001
+  question: ETL 中某个 Join 突然变慢，如何从数据分布、执行计划和资源层定位？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 24
+  id: iq-large-dataset-tech-selection-001
+  question: 面对大规模数据集，如何选择 Spark、流处理、仓库或湖仓方案？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 25
+  id: iq-parquet-columnar-format-001
+  question: Parquet 为什么适合分析型数据？列式存储相比行式/CSV 有什么优势和代价？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 26
+  id: iq-scd1-vs-scd2-001
+  question: SCD Type 1 和 Type 2 有什么区别？如何选择并实现？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 27
+  id: iq-spark-cache-persist-001
+  question: Spark Cache 和 Persist 有什么区别？什么时候缓存，什么时候释放？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 28
+  id: iq-spark-large-scale-limited-resource-001
+  question: 数据量很大但 Spark 资源有限时，如何设计和优化处理链路？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 29
+  id: iq-spark-repartition-vs-coalesce-001
+  question: Spark Repartition 和 Coalesce 有什么区别，生产中怎么选？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false
+- rank: 30
+  id: iq-system-concurrency-fault-tolerance-001
+  question: 数据系统设计中如何处理高并发、容错、CAP 与存储选型？
+  frequency_band: single_verified
+  direct_count: 1
+  company_count: 1
+  answer_curated: false
+  content_status: selected_for_curation
+  publishable: false

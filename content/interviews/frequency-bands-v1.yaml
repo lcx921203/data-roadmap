@@ -1,0 +1,35 @@
+version: '1.0'
+as_of: '2026-09-11'
+scope: DataRoadmap current verified interview corpus
+not_an_absolute_industry_claim: true
+bands:
+  core_verified:
+    rule: direct_independent_count >= 5 AND company_count >= 3
+    ui_zh: 核心重复题
+    meaning: 当前可验证语料中跨多家公司反复出现，优先级最高。
+  repeated_verified:
+    rule: direct_independent_count >= 3 AND company_count >= 2
+    ui_zh: 多次重复题
+    meaning: 至少跨两家公司多次出现。
+  supported_cross_company:
+    rule: direct_independent_count >= 2 AND company_count >= 2
+    ui_zh: 跨公司验证题
+    meaning: 已在至少两家公司出现，但样本仍较少。
+  supported_single_company:
+    rule: direct_independent_count >= 2
+    ui_zh: 单公司重复题
+    meaning: 多次出现但公司维度还不足。
+  single_verified:
+    rule: direct_independent_count == 1
+    ui_zh: 真实单次题
+    meaning: 真实可追溯，但当前不能声称高频。
+  unverified_candidate:
+    rule: direct_independent_count == 0
+    ui_zh: 待验证候选
+    meaning: 只有主题线索，不进入正式频率。
+rules:
+  topic_only_contribution: 0
+  direct_question_contribution: 1
+  direct_followup_contribution: 1
+  same_independence_group_max_contribution_per_question: 1
+  generic_high_frequency_articles_contribution: 0

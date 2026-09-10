@@ -1,0 +1,762 @@
+version: 0.3.8
+as_of: '2026-09-11'
+canonical_question_count: 30
+method: direct_evidence_only_corpus_relative_calibration
+questions:
+- id: iq-warehouse-layering-001
+  question: 数仓为什么要分层？ODS、DWD/DWM、DWS/ADS 等层分别解决什么问题？
+  domain: warehouse
+  learning_depth: L5
+  verified_direct:
+    independent_count: 11
+    company_count: 5
+    publisher_count: 1
+    ids:
+    - ev-baidu-2022-07-22-bigdata-003
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-bytedance-2025-09-06-offline-warehouse-003
+    - ev-bytedance-2025-09-21-data-dev-001
+    - ev-bytedance-2025-11-13-data-dev-005
+    - ev-bytedance-2025-summer-data-ecommerce-002
+    - ev-didi-2025-11-04-data-dev-001
+    - ev-meituan-2024-10-11-data-dev-003
+    - ev-meituan-2025-04-02-data-dev-002
+    - ev-meituan-2025-10-31-bigdata-001
+    - ev-tencent-2025-04-17-cloud-data-intern-003
+    companies:
+    - Baidu
+    - ByteDance
+    - Didi
+    - Meituan
+    - Tencent
+    publishers:
+    - NowCoder
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 1
+- id: iq-data-quality-diagnosis-001
+  question: 如何建立数据质量体系？某个指标突然不准时如何快速定位到具体环节？
+  domain: data_quality
+  learning_depth: L5
+  verified_direct:
+    independent_count: 10
+    company_count: 6
+    publisher_count: 1
+    ids:
+    - ev-baidu-2022-07-22-bigdata-003
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-bytedance-2025-09-06-offline-warehouse-003
+    - ev-bytedance-2025-09-21-data-dev-001
+    - ev-didi-2026-07-26-data-dev-005
+    - ev-jd-2025-09-06-warehouse-003
+    - ev-kuaishou-2025-09-05-social-data-dev-005
+    - ev-kuaishou-2025-10-12-data-dev-001
+    - ev-kuaishou-undated-social-bigdata-009
+    - ev-tencent-2025-04-17-cloud-data-intern-003
+    companies:
+    - Baidu
+    - ByteDance
+    - Didi
+    - JD
+    - Kuaishou
+    - Tencent
+    publishers:
+    - NowCoder
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 2
+- id: iq-spark-data-skew-salting-001
+  question: Spark 数据倾斜如何定位和解决？什么时候使用 Salting，salt 数量如何确定？
+  domain: spark
+  learning_depth: L5
+  verified_direct:
+    independent_count: 7
+    company_count: 6
+    publisher_count: 3
+    ids:
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-bytedance-2025-11-13-data-dev-005
+    - ev-kuaishou-2025-11-10-data-dev-004
+    - ev-leetcode-tiktok-2024-09-21-de-spark-001
+    - ev-meituan-2024-10-11-data-dev-003
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    - ev-tencent-2025-04-17-cloud-data-intern-003
+    companies:
+    - ByteDance
+    - EPAM
+    - Kuaishou
+    - Meituan
+    - Tencent
+    - TikTok
+    publishers:
+    - LeetCode Discuss
+    - NowCoder
+    - Reddit
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 3
+- id: iq-lake-vs-warehouse-001
+  question: Data Lake 和 Data Warehouse 有什么区别？湖仓一体解决了什么问题？
+  domain: lakehouse
+  learning_depth: L4
+  verified_direct:
+    independent_count: 6
+    company_count: 4
+    publisher_count: 2
+    ids:
+    - ev-didi-2026-07-26-data-dev-005
+    - ev-jd-2025-09-06-warehouse-003
+    - ev-kuaishou-2025-09-05-social-data-dev-005
+    - ev-kuaishou-2025-11-10-data-dev-004
+    - ev-kuaishou-undated-social-bigdata-009
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - Didi
+    - EPAM
+    - JD
+    - Kuaishou
+    publishers:
+    - NowCoder
+    - Reddit
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 4
+- id: iq-data-governance-framework-001
+  question: 数据治理应该从哪些方面展开？如何衡量治理效果？
+  domain: governance
+  learning_depth: L5
+  verified_direct:
+    independent_count: 5
+    company_count: 4
+    publisher_count: 1
+    ids:
+    - ev-bytedance-2025-09-06-offline-warehouse-003
+    - ev-didi-2026-04-13-bigdata-final-003
+    - ev-jd-2025-09-06-warehouse-003
+    - ev-kuaishou-2025-09-05-social-data-dev-005
+    - ev-kuaishou-undated-social-bigdata-009
+    companies:
+    - ByteDance
+    - Didi
+    - JD
+    - Kuaishou
+    publishers:
+    - NowCoder
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 5
+- id: iq-dimensional-fact-dimension-design-001
+  question: 给定业务场景，如何确定事实表、维表和数据粒度？
+  domain: warehouse
+  learning_depth: L5
+  verified_direct:
+    independent_count: 5
+    company_count: 4
+    publisher_count: 2
+    ids:
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-bytedance-2025-summer-data-ecommerce-002
+    - ev-didi-2025-11-04-data-dev-001
+    - ev-leetcode-amazon-de2-2020-04-001
+    - ev-meituan-2025-10-31-bigdata-001
+    companies:
+    - Amazon
+    - ByteDance
+    - Didi
+    - Meituan
+    publishers:
+    - LeetCode Discuss
+    - NowCoder
+  frequency:
+    band: core_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 6
+- id: iq-flink-exactly-once-checkpoint-001
+  question: Flink Exactly-once 如何实现？Checkpoint、State 与 Barrier 在其中分别做什么？
+  domain: flink
+  learning_depth: L5
+  verified_direct:
+    independent_count: 4
+    company_count: 2
+    publisher_count: 1
+    ids:
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-bytedance-2025-09-21-data-dev-001
+    - ev-didi-2025-11-04-data-dev-001
+    - ev-didi-2026-04-13-bigdata-final-003
+    companies:
+    - ByteDance
+    - Didi
+    publishers:
+    - NowCoder
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 7
+- id: iq-star-vs-snowflake-001
+  question: 星型模型和雪花模型有什么区别？分别适合什么场景？
+  domain: warehouse
+  learning_depth: L4
+  verified_direct:
+    independent_count: 4
+    company_count: 2
+    publisher_count: 1
+    ids:
+    - ev-bytedance-2025-summer-data-ecommerce-002
+    - ev-meituan-2024-10-11-data-dev-003
+    - ev-meituan-2025-04-02-data-dev-002
+    - ev-meituan-2025-10-31-bigdata-001
+    companies:
+    - ByteDance
+    - Meituan
+    publishers:
+    - NowCoder
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 8
+- id: iq-spark-broadcast-join-001
+  question: Spark Broadcast Join 什么时候适用？如何结合表大小和 Executor 内存判断？
+  domain: spark
+  learning_depth: L5
+  verified_direct:
+    independent_count: 3
+    company_count: 3
+    publisher_count: 2
+    ids:
+    - ev-bytedance-2025-04-29-timeline-004
+    - ev-meituan-2025-04-02-data-dev-002
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - ByteDance
+    - EPAM
+    - Meituan
+    publishers:
+    - NowCoder
+    - Reddit
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 9
+- id: iq-kafka-reliability-001
+  question: Kafka 如何保证不丢、不重和可恢复？出现 Lag 或分区异常时如何排查？
+  domain: kafka
+  learning_depth: L5
+  verified_direct:
+    independent_count: 3
+    company_count: 2
+    publisher_count: 1
+    ids:
+    - ev-bytedance-2025-09-21-data-dev-001
+    - ev-bytedance-2025-summer-data-ecommerce-002
+    - ev-didi-2025-11-04-data-dev-001
+    companies:
+    - ByteDance
+    - Didi
+    publishers:
+    - NowCoder
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 10
+- id: iq-olap-engine-selection-001
+  question: OLAP 引擎如何选型？Doris、StarRocks、ClickHouse、Trino 等方案应该怎么比较？
+  domain: serving
+  learning_depth: L5
+  verified_direct:
+    independent_count: 3
+    company_count: 2
+    publisher_count: 1
+    ids:
+    - ev-didi-2026-04-13-bigdata-final-003
+    - ev-didi-2026-07-26-data-dev-005
+    - ev-kuaishou-undated-social-bigdata-009
+    companies:
+    - Didi
+    - Kuaishou
+    publishers:
+    - NowCoder
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 11
+- id: iq-sql-window-lead-lag-001
+  question: LEAD / LAG 适合解决哪些时序分析问题？如何写出正确的窗口 SQL？
+  domain: sql
+  learning_depth: L4
+  verified_direct:
+    independent_count: 3
+    company_count: 2
+    publisher_count: 2
+    ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    - ev-meituan-2024-10-11-data-dev-003
+    - ev-meituan-2025-04-02-data-dev-002
+    companies:
+    - Amazon
+    - Meituan
+    publishers:
+    - LeetCode Discuss
+    - NowCoder
+  frequency:
+    band: repeated_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: true
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 12
+- id: iq-hdfs-read-path-001
+  question: HDFS 读取一份文件时，Client、NameNode、DataNode 之间的完整流程是什么？
+  domain: hdfs
+  learning_depth: L4
+  verified_direct:
+    independent_count: 2
+    company_count: 2
+    publisher_count: 1
+    ids:
+    - ev-alibabacloud-2025-11-13-bigdata-002
+    - ev-meituan-2025-10-31-bigdata-001
+    companies:
+    - Alibaba Cloud
+    - Meituan
+    publishers:
+    - NowCoder
+  frequency:
+    band: supported_cross_company
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 13
+- id: iq-spark-job-stage-task-001
+  question: Spark 的 Job、Stage、Task 如何划分？Shuffle 为什么形成 Stage 边界？
+  domain: spark
+  learning_depth: L5
+  verified_direct:
+    independent_count: 2
+    company_count: 2
+    publisher_count: 2
+    ids:
+    - ev-bytedance-2025-11-13-data-dev-005
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - ByteDance
+    - EPAM
+    publishers:
+    - NowCoder
+    - Reddit
+  frequency:
+    band: supported_cross_company
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 14
+- id: iq-sql-performance-plan-index-001
+  question: SQL 变慢时如何利用执行计划、索引和数据分布定位瓶颈？
+  domain: sql
+  learning_depth: L5
+  verified_direct:
+    independent_count: 2
+    company_count: 2
+    publisher_count: 2
+    ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    - ev-meituan-2024-10-11-data-dev-003
+    companies:
+    - Amazon
+    - Meituan
+    publishers:
+    - LeetCode Discuss
+    - NowCoder
+  frequency:
+    band: supported_cross_company
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 15
+- id: iq-realtime-offline-consistency-001
+  question: 实时指标和离线指标不一致时如何判断谁对，并定位不一致原因？
+  domain: realtime
+  learning_depth: L5
+  verified_direct:
+    independent_count: 2
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-didi-2026-04-13-bigdata-final-003
+    - ev-didi-2026-07-26-data-dev-005
+    companies:
+    - Didi
+    publishers:
+    - NowCoder
+  frequency:
+    band: supported_single_company
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 16
+- id: iq-cdc-vs-scd-001
+  question: CDC 和 SCD 分别解决什么问题？两者在数仓链路里是什么关系？
+  domain: cdc
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - EPAM
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 17
+- id: iq-data-lake-integrity-001
+  question: 对象存储 / Data Lake 缺少传统数据库约束时，如何保障数据完整性和一致性？
+  domain: lakehouse
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    companies:
+    - Amazon
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 18
+- id: iq-data-platform-batch-realtime-001
+  question: 如何设计同时支持批处理和实时处理的数据平台？关键一致性与故障边界是什么？
+  domain: architecture
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-salesforce-2025-09-23-de-001
+    companies:
+    - Salesforce
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 19
+- id: iq-data-product-system-design-001
+  question: 从原始数据到可消费 Data Product，如何设计访问、处理、存储和数仓模型？
+  domain: architecture
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-meta-2022-02-de-onsite-001
+    companies:
+    - Meta
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 20
+- id: iq-dimensional-partial-late-data-001
+  question: 事实数据部分到达或迟到时，数仓模型和下游指标如何处理？
+  domain: warehouse
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    companies:
+    - Amazon
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 21
+- id: iq-dimensional-primary-key-001
+  question: 事实表和维表的主键、业务键应该怎么设计？
+  domain: warehouse
+  learning_depth: L4
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    companies:
+    - Amazon
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 22
+- id: iq-etl-join-slowdown-001
+  question: ETL 中某个 Join 突然变慢，如何从数据分布、执行计划和资源层定位？
+  domain: spark
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    companies:
+    - Amazon
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 23
+- id: iq-large-dataset-tech-selection-001
+  question: 面对大规模数据集，如何选择 Spark、流处理、仓库或湖仓方案？
+  domain: architecture
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    companies:
+    - Amazon
+    publishers:
+    - LeetCode Discuss
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 24
+- id: iq-parquet-columnar-format-001
+  question: Parquet 为什么适合分析型数据？列式存储相比行式/CSV 有什么优势和代价？
+  domain: storage
+  learning_depth: L4
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - EPAM
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 25
+- id: iq-scd1-vs-scd2-001
+  question: SCD Type 1 和 Type 2 有什么区别？如何选择并实现？
+  domain: warehouse
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - EPAM
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 26
+- id: iq-spark-cache-persist-001
+  question: Spark Cache 和 Persist 有什么区别？什么时候缓存，什么时候释放？
+  domain: spark
+  learning_depth: L4
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - EPAM
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 27
+- id: iq-spark-large-scale-limited-resource-001
+  question: 数据量很大但 Spark 资源有限时，如何设计和优化处理链路？
+  domain: spark
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-uber-2023-02-01-de-001
+    companies:
+    - Uber
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 28
+- id: iq-spark-repartition-vs-coalesce-001
+  question: Spark Repartition 和 Coalesce 有什么区别，生产中怎么选？
+  domain: spark
+  learning_depth: L4
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    companies:
+    - EPAM
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 29
+- id: iq-system-concurrency-fault-tolerance-001
+  question: 数据系统设计中如何处理高并发、容错、CAP 与存储选型？
+  domain: architecture
+  learning_depth: L5
+  verified_direct:
+    independent_count: 1
+    company_count: 1
+    publisher_count: 1
+    ids:
+    - ev-reddit-uber-2023-02-01-de-001
+    companies:
+    - Uber
+    publishers:
+    - Reddit
+  frequency:
+    band: single_verified
+    scope: current_verified_corpus
+    absolute_industry_frequency_claim: false
+  answer_curated: false
+  selected_first_bank_30: true
+  publishable: false
+  priority_rank: 30

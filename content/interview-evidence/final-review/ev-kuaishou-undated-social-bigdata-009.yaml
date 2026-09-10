@@ -1,0 +1,33 @@
+id: ev-kuaishou-undated-social-bigdata-009
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/f85763b34b2c45fca4e92d0b76ef0336
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: null
+  captured_at: '2026-09-11'
+  reliability: B
+interview_context:
+  company: Kuaishou
+  role: 大数据开发（社招）
+  round: null
+origin_fingerprint: be7368cf38b640b5
+independence_group: ev-kuaishou-undated-social-bigdata-009
+question_evidence:
+- canonical_question_id: iq-data-quality-diagnosis-001
+  mapping: direct_question
+  summary: DQC 规则、触发后如何止损。
+- canonical_question_id: iq-data-governance-framework-001
+  mapping: direct_question
+  summary: 数据治理如何做、有什么量化指标。
+- canonical_question_id: iq-olap-engine-selection-001
+  mapping: direct_question
+  summary: 多个 OLAP 引擎为什么要选型、各自优缺点。
+- canonical_question_id: iq-lake-vs-warehouse-001
+  mapping: direct_question
+  summary: 为什么大公司追求湖仓一体。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the traceable first-hand source. Source
+    metadata not visible in the page remains null.

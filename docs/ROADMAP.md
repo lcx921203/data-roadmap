@@ -17,34 +17,39 @@
 - [x] Evidence independence
 - [x] Normalization / dedup rules
 - [x] Evidence schema
-- [x] Frequency model
 - [x] Publishing gate
 - [x] Seed corpus
 - [x] 32-source expansion
-- [x] Add LeetCode / Reddit source diversity
-- [x] Split broad clusters into canonical candidates
-- [x] Conservative canonical frequency recalibration
-- [x] Select first 10 answer-ready questions
-- [x] Curate first 5 complete answers
-- [x] Review first-answer-slice density / structure
+- [x] Add non-NowCoder source diversity
+- [x] Canonical question refinement
+- [x] Direct-only question-level recalibration
 - [x] Freeze Interview Answer V1
-- [x] Curate remaining 5 answer-ready questions
-- [x] 10 / 10 answer-ready questions now have Curated Answers
-- [ ] Complete full question-level review of historical candidate support
-- [ ] Calibrate final frequency bands
-- [ ] Select first 30 publishable questions
+- [x] Curate first 10 answer-ready questions
+- [x] Complete final evidence-calibration pass
+- [x] Freeze Frequency Band V1
+- [x] Select Interview Bank V1 first 30
+- [x] Close V0.3 Evidence Model milestone
+
+### Continuing content pipeline
+- [ ] Curate the remaining 20 selected answers
+- [ ] Continue adding independent first-hand sources
+- [ ] Run Project Fact Check when project claims are published
 
 ## V0.4 Design System
-- [ ] Study selected awesome-design-md references
+- [ ] Review selected design references
 - [ ] Define DataRoadmap DESIGN.md
-- [ ] Technical diagram language
-- [ ] Mobile-first navigation
-- [ ] Learn / Interview / Scale Lab / Project prototypes
+- [ ] Define typography / spacing / surfaces
+- [ ] Define technical diagram language
+- [ ] Define mobile-first navigation
+- [ ] Prototype Learn Mode
+- [ ] Prototype Interview Mode
+- [ ] Prototype Scale Lab
+- [ ] Prototype Project Case
 
 ## V0.5 Web Foundation
 - [ ] React + TypeScript + Vite
 - [ ] Markdown front-matter loader
-- [ ] Taxonomy loader
+- [ ] Taxonomy / Interview registry loader
 - [ ] Routing
 - [ ] GitHub Pages
 
@@ -52,5 +57,5 @@
 - [ ] Iceberg knowledge path
 - [ ] Project Case
 - [ ] Scale Lab
-- [ ] Real Interview Questions
-- [ ] Curated answers
+- [ ] Interview Bank integration
+- [ ] Curated-answer rendering

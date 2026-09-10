@@ -1,0 +1,20 @@
+version: 0.3.8
+as_of: '2026-09-11'
+corpus_summary:
+  prior_nowcoder_sources: 32
+  non_nowcoder_sources_added_in_v0_3_3: 10
+  new_first_hand_sources_v0_3_8: 4
+  traceable_source_count: 46
+  question_level_direct_evidence_source_count: 26
+completed:
+  frequency_band_v1_frozen: true
+  first_bank_30_selected: true
+  all_frequency_counts_use_direct_verified_only: true
+  topic_only_frequency_contribution_zero: true
+remaining_as_content_pipeline_not_model_blocker:
+  curate_answers_for_selected_questions: 20
+  continue_source_diversity: true
+  project_fact_check_when_claimed: true
+important_note: V0.3 Evidence Model is closed as a product-model milestone. Future
+  evidence additions continue incrementally; this does not claim the corpus is a complete
+  sample of the industry.

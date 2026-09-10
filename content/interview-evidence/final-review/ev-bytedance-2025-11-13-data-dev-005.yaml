@@ -1,0 +1,30 @@
+id: ev-bytedance-2025-11-13-data-dev-005
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/de035ab97f694d07acd990dcdff752a4
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-11-13'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: ByteDance
+  role: 数据开发
+  round: 一面
+origin_fingerprint: 11c90965f6b944dc
+independence_group: ev-bytedance-2025-11-13-data-dev-005
+question_evidence:
+- canonical_question_id: iq-spark-data-skew-salting-001
+  mapping: direct_question
+  summary: 直接问数据倾斜。
+- canonical_question_id: iq-spark-job-stage-task-001
+  mapping: direct_question
+  summary: Spark Stage 怎么划分、什么算子触发宽依赖。
+- canonical_question_id: iq-warehouse-layering-001
+  mapping: direct_question
+  summary: 对数仓分层的理解。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the traceable first-hand source. Source
+    metadata not visible in the page remains null.
