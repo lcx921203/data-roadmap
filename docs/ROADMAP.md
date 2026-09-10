@@ -19,17 +19,18 @@
 - [x] Evidence schema
 - [x] Frequency model
 - [x] Publishing gate
-- [x] Seed corpus: 8 independent sources
-- [x] Expand corpus to 32 independent NowCoder sources
-- [x] First provisional cross-company frequency calibration
-- [x] Add non-NowCoder evidence sources (LeetCode / Reddit)
-- [x] Define direct-question vs topic-only mapping policy
-- [x] Split broad clusters into canonical question candidates
-- [ ] Re-map existing 32-source corpus at question level
-- [ ] Recalculate canonical frequency
-- [ ] Select first answer-ready questions
-- [ ] Curate first answer slice
-- [ ] Select first 30 publishable high-value questions
+- [x] Seed corpus
+- [x] 32-source expansion
+- [x] Add LeetCode / Reddit source diversity
+- [x] Split broad clusters into canonical candidates
+- [x] Fix canonical coverage gaps
+- [x] Remap prior 32-source corpus conservatively at question level
+- [x] Recalculate verified canonical support
+- [x] Select first 10 answer-ready questions
+- [ ] Curate first 3–5 complete answers
+- [ ] Complete full question-level review of remaining candidate support
+- [ ] Calibrate final frequency bands
+- [ ] Select first 30 publishable questions
 
 ## V0.4 Design System
 - [ ] Study selected awesome-design-md references

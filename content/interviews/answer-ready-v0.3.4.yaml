@@ -1,0 +1,75 @@
+version: 0.3.4
+criteria:
+  rule_a: '>=2 verified direct independent sources across >=2 companies'
+  rule_b: '>=3 verified direct sources across >=2 publishers'
+  publishable: false
+  meaning: Enough evidence to justify curating an answer; not yet final Interview
+    Bank publication.
+count: 10
+questions:
+- id: iq-warehouse-layering-001
+  question: 数仓为什么要分层？ODS、DWD/DWM、DWS/ADS 等层分别解决什么问题？
+  direct_count: 6
+  company_count: 3
+  publishers:
+  - NowCoder
+- id: iq-data-quality-diagnosis-001
+  question: 如何建立数据质量体系？某个指标突然不准时如何快速定位到具体环节？
+  direct_count: 5
+  company_count: 3
+  publishers:
+  - NowCoder
+- id: iq-dimensional-fact-dimension-design-001
+  question: 给定业务场景，如何确定事实表、维表和数据粒度？
+  direct_count: 4
+  company_count: 4
+  publishers:
+  - LeetCode Discuss
+  - NowCoder
+- id: iq-data-governance-framework-001
+  question: 数据治理应该从哪些方面展开？如何衡量治理效果？
+  direct_count: 4
+  company_count: 4
+  publishers:
+  - NowCoder
+- id: iq-lake-vs-warehouse-001
+  question: Data Lake 和 Data Warehouse 有什么区别？湖仓一体解决了什么问题？
+  direct_count: 4
+  company_count: 3
+  publishers:
+  - NowCoder
+  - Reddit
+- id: iq-spark-data-skew-salting-001
+  question: Spark 数据倾斜如何定位和解决？什么时候使用 Salting，salt 数量如何确定？
+  direct_count: 3
+  company_count: 3
+  publishers:
+  - LeetCode Discuss
+  - NowCoder
+  - Reddit
+- id: iq-flink-exactly-once-checkpoint-001
+  question: Flink Exactly-once 如何实现？Checkpoint、State 与 Barrier 在其中分别做什么？
+  direct_count: 3
+  company_count: 2
+  publishers:
+  - NowCoder
+- id: iq-kafka-reliability-001
+  question: Kafka 如何保证不丢、不重和可恢复？出现 Lag 或分区异常时如何排查？
+  direct_count: 3
+  company_count: 2
+  publishers:
+  - NowCoder
+- id: iq-sql-window-lead-lag-001
+  question: LEAD / LAG 适合解决哪些时序分析问题？如何写出正确的窗口 SQL？
+  direct_count: 2
+  company_count: 2
+  publishers:
+  - LeetCode Discuss
+  - NowCoder
+- id: iq-spark-broadcast-join-001
+  question: Spark Broadcast Join 什么时候适用？如何结合表大小和 Executor 内存判断？
+  direct_count: 2
+  company_count: 2
+  publishers:
+  - NowCoder
+  - Reddit

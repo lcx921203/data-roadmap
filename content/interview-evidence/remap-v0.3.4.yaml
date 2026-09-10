@@ -1,0 +1,287 @@
+version: 0.3.4
+prior_corpus_size: 32
+source_remap:
+- source_id: ev-bytedance-2025-09-21-data-dev-001
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-data-quality-diagnosis-001
+  - iq-flink-exactly-once-checkpoint-001
+  - iq-kafka-reliability-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-bytedance-2025-summer-data-ecommerce-002
+  candidate_question_ids:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-kafka-reliability-001
+  - iq-spark-data-skew-salting-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-bytedance-2025-09-06-offline-warehouse-003
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-data-quality-diagnosis-001
+  - iq-spark-data-skew-salting-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-meituan-2025-10-31-bigdata-001
+  candidate_question_ids:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-star-vs-snowflake-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-meituan-2025-04-02-data-dev-002
+  candidate_question_ids:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-spark-broadcast-join-001
+  - iq-sql-window-lead-lag-001
+  - iq-star-vs-snowflake-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-tencent-2025-02-13-bigdata-platform-001
+  candidate_question_ids:
+  - iq-kafka-reliability-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-alibaba-2025-03-05-warehouse-001
+  candidate_question_ids:
+  - iq-data-quality-diagnosis-001
+  - iq-dimensional-fact-dimension-design-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-alibabacloud-2025-11-13-bigdata-002
+  candidate_question_ids: []
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-10-12-data-dev-001
+  candidate_question_ids:
+  - iq-data-quality-diagnosis-001
+  - iq-spark-cache-persist-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-10-12-data-rd-002
+  candidate_question_ids:
+  - iq-large-dataset-tech-selection-001
+  - iq-sql-window-lead-lag-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-01-29-data-intern-003
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-11-10-data-dev-004
+  candidate_question_ids:
+  - iq-lake-vs-warehouse-001
+  - iq-parquet-columnar-format-001
+  - iq-spark-data-skew-salting-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-09-05-social-data-dev-005
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-data-quality-diagnosis-001
+  - iq-lake-vs-warehouse-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2025-11-11-growth-data-dev-006
+  candidate_question_ids:
+  - iq-data-quality-diagnosis-001
+  - iq-dimensional-fact-dimension-design-001
+  - iq-spark-data-skew-salting-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2026-06-10-data-rd-intern-007
+  candidate_question_ids:
+  - iq-sql-window-lead-lag-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-kuaishou-2026-04-19-data-tech-final-008
+  candidate_question_ids:
+  - iq-flink-exactly-once-checkpoint-001
+  - iq-lake-vs-warehouse-001
+  - iq-large-dataset-tech-selection-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2025-11-04-data-dev-001
+  candidate_question_ids:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-flink-exactly-once-checkpoint-001
+  - iq-kafka-reliability-001
+  - iq-spark-cache-persist-001
+  - iq-warehouse-layering-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2025-04-02-bigdata-intern-002
+  candidate_question_ids:
+  - iq-data-platform-batch-realtime-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2026-04-13-bigdata-final-003
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-dimensional-fact-dimension-design-001
+  - iq-flink-exactly-once-checkpoint-001
+  - iq-olap-engine-selection-001
+  - iq-realtime-offline-consistency-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2026-04-19-bigdata-first-004
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-data-platform-batch-realtime-001
+  - iq-data-quality-diagnosis-001
+  - iq-spark-data-skew-salting-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2026-07-26-data-dev-005
+  candidate_question_ids:
+  - iq-data-quality-diagnosis-001
+  - iq-flink-exactly-once-checkpoint-001
+  - iq-lake-vs-warehouse-001
+  - iq-olap-engine-selection-001
+  - iq-realtime-offline-consistency-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2026-08-25-data-rd-006
+  candidate_question_ids:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-large-dataset-tech-selection-001
+  - iq-spark-broadcast-join-001
+  - iq-star-vs-snowflake-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-didi-2026-09-10-data-rd-007
+  candidate_question_ids: []
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-jd-2025-10-26-bigdata-social-001
+  candidate_question_ids:
+  - iq-spark-data-skew-salting-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-jd-2025-05-15-data-dev-002
+  candidate_question_ids:
+  - iq-large-dataset-tech-selection-001
+  - iq-sql-window-lead-lag-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-jd-2025-09-06-warehouse-003
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-data-quality-diagnosis-001
+  - iq-dimensional-fact-dimension-design-001
+  - iq-lake-vs-warehouse-001
+  mapping_status: partially_direct_verified
+  frequency_contribution: per-question
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-baidu-2024-05-29-data-intern-001
+  candidate_question_ids:
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-baidu-2023-08-22-bigdata-rd-002
+  candidate_question_ids:
+  - iq-olap-engine-selection-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-baidu-2022-07-22-bigdata-003
+  candidate_question_ids:
+  - iq-data-quality-diagnosis-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-tencent-2025-11-13-bigdata-002
+  candidate_question_ids: []
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-tencent-2025-04-17-cloud-data-intern-003
+  candidate_question_ids:
+  - iq-data-governance-framework-001
+  - iq-spark-data-skew-salting-001
+  - iq-sql-window-lead-lag-001
+  - iq-warehouse-layering-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
+- source_id: ev-tencent-2025-03-12-techops-data-004
+  candidate_question_ids:
+  - iq-data-platform-batch-realtime-001
+  - iq-parquet-columnar-format-001
+  - iq-scd1-vs-scd2-001
+  mapping_status: structured_candidate
+  frequency_contribution: 0
+  note: Mapped from existing extracted_topic_candidates. Does not count as direct
+    frequency until source question text is re-reviewed.
