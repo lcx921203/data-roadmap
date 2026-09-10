@@ -31,53 +31,50 @@
 - [x] Close V0.4 milestone
 
 ## V0.5 Web Foundation
-
-### V0.5.0 Application Bootstrap
 - [x] React + TypeScript + Vite
-- [x] Hash routing
-- [x] Design Token CSS
-- [x] Four top-level routes
-- [x] YAML content loader
-- [x] Static content registry
-- [x] Build validation
-
-### V0.5.1 GitHub Pages Deployment
-- [x] Install Pages workflow
-- [x] Enable GitHub Actions Pages
-- [x] Build
-- [x] Deploy
-- [x] Live URL
-
-### V0.5.2 Detail-page Foundation
-- [x] Route-level deep links
-- [x] Stage Detail
-- [x] Knowledge Detail
-- [x] Markdown Front Matter parser
-- [x] Interview Detail
+- [x] GitHub Pages
+- [x] Deep links
+- [x] Markdown Front Matter
 - [x] Evidence Bottom Sheet
-- [x] Interview / Learn Reading Segment
-- [x] Code Collapse / Copy
-- [x] Curated-answer content gate
-- [x] Knowledge content gate
-
-### V0.5 Close Condition
-- [ ] Deploy V0.5.2 to Pages
-- [ ] Mobile smoke test
-- [ ] Close V0.5 milestone
+- [x] Reading Segment
+- [x] Code Collapse
+- [x] Detail-page Foundation
+- [x] Close V0.5 milestone
 
 ## V0.6 First Vertical Slice
 
-### Next: V0.6.0 Iceberg Knowledge Spine
-- [ ] Iceberg L5 chapter map
-- [ ] Table Metadata / Snapshot
-- [ ] Manifest List / Manifest
-- [ ] Partition Evolution
-- [ ] Write Distribution / Ordering
-- [ ] Schema Evolution
-- [ ] Concurrent Commit
-- [ ] Maintenance / Small Files
-- [ ] Failure Recovery
-- [ ] Trino read path
-- [ ] Project mapping with fact boundary
-- [ ] Scale Lab mapping
-- [ ] Interview mapping
+### V0.6.0 Iceberg Knowledge Spine
+- [x] Iceberg L5 10-node chapter map
+- [x] Table Metadata / Snapshot
+- [x] Manifest List / Manifest
+- [x] Hidden Partitioning / Partition Evolution
+- [x] Schema Evolution / Field ID
+- [x] Write Distribution / Ordering
+- [x] Optimistic Commit / Conflict / Recovery
+- [x] Maintenance / Small Files
+- [x] Trino Read Path
+- [x] Production Troubleshooting
+- [x] Previous / Next learning sequence
+- [x] Quick Navigation
+- [x] Three hypothetical Scale Scenario seeds
+- [x] Project truthfulness boundary
+- [x] Interview evidence boundary
+
+### Next: V0.6.1 Project Case Fact Boundary
+- [ ] North America fact checklist
+- [ ] Actual / Boundary / Mapping structure
+- [ ] Only verified project facts rendered as Actual
+- [ ] Connect Iceberg Knowledge nodes
+- [ ] Connect Scale scenarios without experience inflation
+
+### V0.6.2 Scale Lab Detail
+- [ ] Scenario loader
+- [ ] Scale Lab detail route
+- [ ] 10B Backfill detail
+- [ ] Streaming Small-files detail
+- [ ] Concurrent Writer detail
+
+### V0.6.3 Interview Integration
+- [ ] Knowledge → evidence-backed Interview mapping
+- [ ] Do not synthesize fake Iceberg frequency
+- [ ] Curated answer / knowledge cross-navigation

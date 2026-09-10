@@ -1,7 +1,10 @@
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
 import { MarkdownSections } from '../components/MarkdownSections'
 import { TopBar } from '../components/TopBar'
-import { getKnowledgeById } from '../content/registry'
+import {
+  getKnowledgeById,
+  getKnowledgeNeighbors,
+} from '../content/registry'
 import { splitH2Sections } from '../content/loaders'
 
 interface KnowledgeDetailPageProps {
@@ -27,6 +30,7 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
   const sections = splitH2Sections(article.body)
   const quick = sections.find((section) => section.title === '30 秒理解')
   const rest = sections.filter((section) => section.title !== '30 秒理解')
+  const neighbors = getKnowledgeNeighbors(id)
 
   return (
     <>
@@ -55,6 +59,34 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
           )}
         </div>
 
+        {rest.length > 0 && (
+          <nav className="quick-navigation" aria-label="本页快速导航">
+            {rest.slice(0, 8).map((section) => (
+              <a
+                key={section.title}
+                href={`#section-${encodeURIComponent(section.title)}`}
+                onClick={(event) => {
+                  event.preventDefault()
+                  document
+                    .getElementById(
+                      `section-${encodeURIComponent(section.title)}`,
+                    )
+                    ?.scrollIntoView({
+                      block: 'start',
+                      behavior: window.matchMedia(
+                        '(prefers-reduced-motion: reduce)',
+                      ).matches
+                        ? 'auto'
+                        : 'smooth',
+                    })
+                }}
+              >
+                {section.title}
+              </a>
+            ))}
+          </nav>
+        )}
+
         {quick && (
           <section className="quick-answer">
             <span className="quick-answer__label">30 秒理解</span>
@@ -62,7 +94,41 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
           </section>
         )}
 
-        <MarkdownSections sections={rest} />
+        <div className="article-sections">
+          {rest.map((section) => (
+            <section
+              className="article-section"
+              key={section.title}
+              id={`section-${encodeURIComponent(section.title)}`}
+            >
+              <h2>{section.title}</h2>
+              <MarkdownBlocks markdown={section.body} />
+            </section>
+          ))}
+        </div>
+
+        <nav className="knowledge-sequence" aria-label="Iceberg 学习顺序">
+          {neighbors.previous ? (
+            <a href={`#/learn/${neighbors.previous.meta.id}`}>
+              <span>上一节</span>
+              <strong>{neighbors.previous.meta.title}</strong>
+            </a>
+          ) : (
+            <span />
+          )}
+
+          {neighbors.next ? (
+            <a
+              className="knowledge-sequence__next"
+              href={`#/learn/${neighbors.next.meta.id}`}
+            >
+              <span>下一节</span>
+              <strong>{neighbors.next.meta.title}</strong>
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
       </article>
     </>
   )

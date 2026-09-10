@@ -25,6 +25,15 @@ export const knowledgeArticles = listMarkdownAssets('content/knowledge/')
     parseFrontMatter<KnowledgeFrontMatter>(asset.path, asset.raw),
   )
   .filter((document) => document.meta.type === 'knowledge')
+  .sort((left, right) => {
+    const stageCompare = left.meta.stage_id.localeCompare(right.meta.stage_id)
+    if (stageCompare !== 0) return stageCompare
+
+    const orderCompare = (left.meta.order ?? 999) - (right.meta.order ?? 999)
+    if (orderCompare !== 0) return orderCompare
+
+    return left.meta.title.localeCompare(right.meta.title)
+  })
 
 const evidenceRecords = listYamlAssets(
   'content/interview-evidence/final-review/',
@@ -42,6 +51,25 @@ export function getKnowledgeForStage(
   stageId: string,
 ): MarkdownDocument<KnowledgeFrontMatter>[] {
   return knowledgeArticles.filter((article) => article.meta.stage_id === stageId)
+}
+
+export function getKnowledgeNeighbors(id: string): {
+  previous: MarkdownDocument<KnowledgeFrontMatter> | null
+  next: MarkdownDocument<KnowledgeFrontMatter> | null
+} {
+  const current = getKnowledgeById(id)
+  if (!current) return { previous: null, next: null }
+
+  const stageArticles = getKnowledgeForStage(current.meta.stage_id)
+  const index = stageArticles.findIndex((article) => article.meta.id === id)
+
+  return {
+    previous: index > 0 ? stageArticles[index - 1] : null,
+    next:
+      index >= 0 && index < stageArticles.length - 1
+        ? stageArticles[index + 1]
+        : null,
+  }
 }
 
 export function getQuestionEvidence(questionId: string): QuestionEvidenceView[] {

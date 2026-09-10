@@ -1,0 +1,22 @@
+id: sc-iceberg-streaming-small-files-001
+type: scenario
+title: 10-second streaming commits causing file and manifest explosion
+domain: lakehouse
+scenario_type:
+- troubleshooting
+- architecture_evolution
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+- throughput
+- latency
+- cost
+- operations
+knowledge:
+- kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-maintenance-small-files-001
+- kb-iceberg-production-troubleshooting-001
+projects:
+- north-america
+interviews: []
+status: v0.6.0_seed

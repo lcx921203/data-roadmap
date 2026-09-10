@@ -74,12 +74,22 @@ export interface KnowledgeFrontMatter {
   id: string
   type: 'knowledge'
   title: string
+  title_cn?: string
   stage_id: string
   domain?: string
+  topic?: string
+  order?: number
   learning_depth?: string
   stack_role?: string
+  difficulty?: string
   content_status?: string
   summary?: string
+  prerequisites?: string[]
+  related?: string[]
+  project_relevance?: string[]
+  interview_relevance?: string[]
+  scale_scenarios?: string[]
+  project_fact_status?: string
 }
 
 export interface InterviewAnswerFrontMatter {

@@ -86,25 +86,87 @@ for (const question of interviewBank.questions) {
   }
 }
 
-const knowledge = readFrontMatter(
-  'content/knowledge/kb-iceberg-overview-001.md',
-)
+const spine = readYaml('content/knowledge/iceberg-spine-v0.6.0.yaml')
 
 if (
-  knowledge.meta?.id !== 'kb-iceberg-overview-001' ||
-  knowledge.meta?.type !== 'knowledge' ||
-  knowledge.meta?.stage_id !== '04'
+  spine?.version !== '0.6.0' ||
+  spine?.topic !== 'iceberg' ||
+  !Array.isArray(spine?.nodes) ||
+  spine.nodes.length !== 10
 ) {
-  throw new Error('Iceberg knowledge seed Front Matter is invalid')
+  throw new Error('Iceberg V0.6.0 spine must contain exactly 10 ordered nodes')
 }
 
-if (!/##\s+30 秒理解/.test(knowledge.body)) {
-  throw new Error('Iceberg knowledge seed missing 30 秒理解')
+const knowledgeIds = new Set()
+const orders = new Set()
+
+for (const node of spine.nodes) {
+  const candidates = fs
+    .readdirSync(path.join(root, 'content/knowledge'))
+    .filter((name) => name.endsWith('.md'))
+
+  let found = null
+
+  for (const name of candidates) {
+    const relativePath = `content/knowledge/${name}`
+    const document = readFrontMatter(relativePath)
+    if (document.meta?.id === node.id) {
+      found = { relativePath, ...document }
+      break
+    }
+  }
+
+  if (!found) {
+    throw new Error(`Iceberg spine node has no Markdown file: ${node.id}`)
+  }
+
+  if (
+    found.meta?.type !== 'knowledge' ||
+    found.meta?.stage_id !== '04' ||
+    found.meta?.topic !== 'iceberg' ||
+    found.meta?.learning_depth !== 'L5'
+  ) {
+    throw new Error(`Invalid Iceberg knowledge metadata: ${node.id}`)
+  }
+
+  if (found.meta?.order !== node.order) {
+    throw new Error(`Iceberg knowledge order mismatch: ${node.id}`)
+  }
+
+  if (!/##\s+30 秒理解/.test(found.body)) {
+    throw new Error(`Iceberg knowledge missing 30 秒理解: ${node.id}`)
+  }
+
+  if (knowledgeIds.has(node.id)) {
+    throw new Error(`Duplicate Iceberg knowledge ID: ${node.id}`)
+  }
+
+  if (orders.has(node.order)) {
+    throw new Error(`Duplicate Iceberg knowledge order: ${node.order}`)
+  }
+
+  knowledgeIds.add(node.id)
+  orders.add(node.order)
+}
+
+const scenarioFiles = [
+  'sc-iceberg-10b-backfill-001.yaml',
+  'sc-iceberg-streaming-small-files-001.yaml',
+  'sc-iceberg-concurrent-commit-001.yaml',
+]
+
+for (const file of scenarioFiles) {
+  const scenario = readYaml(`content/scenarios/${file}`)
+  if (scenario?.type !== 'scenario' || scenario?.hypothetical !== true) {
+    throw new Error(`Scale scenario must remain explicitly hypothetical: ${file}`)
+  }
 }
 
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
     `${interviewBank.questions.length} interview questions, ` +
-    `${curatedCount} curated answers, Knowledge detail seed valid, ` +
+    `${curatedCount} curated answers, ` +
+    `${spine.nodes.length} Iceberg L5 spine nodes, ` +
+    `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
     `Design System V1 frozen.`,
 )

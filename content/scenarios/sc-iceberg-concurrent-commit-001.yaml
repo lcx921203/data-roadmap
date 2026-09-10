@@ -1,0 +1,23 @@
+id: sc-iceberg-concurrent-commit-001
+type: scenario
+title: 100 concurrent writers contending on one hot Iceberg table
+domain: lakehouse
+scenario_type:
+- concurrency
+- reliability
+- troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+- concurrency
+- reliability
+- availability
+- operations
+knowledge:
+- kb-iceberg-commit-concurrency-001
+- kb-iceberg-production-troubleshooting-001
+projects:
+- north-america
+interviews:
+- iq-system-concurrency-fault-tolerance-001
+status: v0.6.0_seed

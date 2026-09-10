@@ -1,0 +1,31 @@
+id: sc-iceberg-10b-backfill-001
+type: scenario
+title: 10B rows historical backfill without destroying online Trino SLO
+domain: lakehouse
+scenario_type:
+- system_design
+- capacity
+- troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+- volume
+- throughput
+- concurrency
+- latency
+- reliability
+- cost
+constraints:
+  rows: 10B
+  window: 24h
+  online_query_slo: 99.9% availability; protect interactive P95
+knowledge:
+- kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-commit-concurrency-001
+- kb-iceberg-maintenance-small-files-001
+- kb-iceberg-trino-read-path-001
+projects:
+- north-america
+interviews:
+- iq-large-dataset-tech-selection-001
+status: v0.6.0_seed

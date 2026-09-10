@@ -2,101 +2,133 @@
 id: kb-iceberg-overview-001
 type: knowledge
 title: Apache Iceberg
+title_cn: Iceberg 总览
 stage_id: "04"
 domain: lakehouse
+topic: iceberg
+order: 1
 learning_depth: L5
 stack_role: core
-content_status: foundation_seed
-summary: "开放表格式如何用 Metadata、Snapshot 与 Manifest 把对象存储上的文件组织成可演进、可事务提交的逻辑表。"
+difficulty: advanced
+content_status: v0.6.0_spine
+project_relevance:
+  - north-america
+project_fact_status: needs_fact_check
+summary: "先建立总图：Iceberg 是开放表格式，用 Metadata、Snapshot、Manifest 和原子提交把对象存储上的文件组织成可事务、可演进的逻辑表。"
+prerequisites:
+  - kb-storage-file-formats
+related:
+  - kb-iceberg-metadata-snapshot-001
+  - kb-iceberg-manifest-tree-001
+scale_scenarios:
+  - sc-iceberg-10b-backfill-001
+  - sc-iceberg-streaming-small-files-001
 ---
 
 # Apache Iceberg
 
 ## 30 秒理解
 
-Iceberg 是 **Table Format（表格式）**，不是新的数据文件格式。底层数据仍然可以是 Parquet、ORC 等文件，但 Reader 不再通过“扫描目录里有哪些文件”来定义一张表，而是读取一个已经提交的 Snapshot（快照）。
+Iceberg 是 **Table Format（表格式）**，不是 Parquet 的替代品。Parquet 解决“单个文件怎么存”，Iceberg 解决“一张表由哪些文件组成、当前版本是什么、如何提交、如何演进、如何让多个引擎看到一致的表状态”。
 
-这让表具备 Snapshot 隔离、Schema Evolution（模式演进）、Partition Evolution（分区演进）和更可靠的并发提交语义。
-
-## 架构位置
+一句话抓住主线：
 
 ```text
-CDC / Batch / Events
+Object Storage / HDFS
+        ↑
+Data Files
+        ↑
+Manifest
+        ↑
+Manifest List
+        ↑
+Snapshot
+        ↑
+Table Metadata
+        ↑
+Catalog Pointer
+```
+
+Reader 读取的是某个已提交 Snapshot 所代表的稳定表状态，而不是临时去目录里猜“现在有哪些文件”。
+
+## 为什么需要它
+
+传统 Hive 风格表常把分区目录放进 Metastore，再依赖文件系统 List 找数据文件。数据规模上来以后，会遇到分区元数据膨胀、目录 List 开销、Schema/Partition 演进困难，以及多 Writer 提交一致性等问题。
+
+Iceberg 把“表状态”显式写进 Metadata Tree（元数据树），让计算引擎能在对象存储上获得更接近数据库表的版本与提交语义。
+
+## 在架构中的位置
+
+```text
+MySQL / SaaS / Events
+        ↓
+Kafka / Batch
         ↓
 Spark / Flink
         ↓
-Apache Iceberg
+      Iceberg
         ↓
-Trino / Serving
+Trino / Spark / Flink
+        ↓
+Semantic / Serving / BI / Agent
 ```
 
-Iceberg 位于计算引擎和对象存储之间的表管理层。Spark、Flink 负责读写计算，Trino 等查询引擎消费已提交的表状态。
+Spark、Flink、Trino 是 Engine（引擎）；S3、OSS、HDFS 是 Storage（存储）；Iceberg 处在两者之间，定义表的元数据、快照、文件集合和提交协议。
 
-## 核心原理
+## L5 学习主线
 
-### Metadata → Snapshot → Manifest
-
-一条简化读取链路：
+本章不是把十个概念孤立背下来，而是按一条读写链学习：
 
 ```text
-Table Metadata
-    ↓
-Snapshot
-    ↓
-Manifest List
-    ↓
-Manifest
-    ↓
-Data File
+表状态
+→ Snapshot
+→ Manifest
+→ Partition / Schema
+→ Write Distribution / Ordering
+→ Commit
+→ Maintenance
+→ Trino Read Path
+→ Production Troubleshooting
 ```
 
-Snapshot 指向一次已提交的表状态。Manifest List 组织本次 Snapshot 涉及的 Manifest，Manifest 再记录 Data File / Delete File 等文件级元数据。
-
-因此读取一张表的关键不是“目录下现在有多少 Parquet”，而是“当前 Snapshot 引用了哪些文件”。
-
-### 为什么这很重要
-
-对象存储通常没有传统数据库那种目录级事务。Iceberg 把提交点放在 Metadata / Snapshot 层，使 Reader 只看到完整提交后的版本。
+理解这条线后，再看源码、配置和故障现象会容易很多。
 
 ## Production 实现
 
-生产环境重点不是创建一张 Iceberg 表就结束，而是持续管理：
+生产设计至少要回答：
 
-- Commit Concurrency（提交并发）；
-- Small Files（小文件）；
-- Manifest 数量和规划成本；
-- Snapshot Expiration；
-- Compaction；
-- Schema / Partition Evolution；
-- Writer Distribution 与 Ordering。
+- Catalog 用什么，谁保存当前 Metadata Pointer；
+- Writer 如何分布数据、控制文件尺寸；
+- 并发 Commit 冲突如何重试；
+- Snapshot / Manifest / Orphan File 如何维护；
+- Schema / Partition 如何无停机演进；
+- Query 如何利用 Manifest 与文件统计裁剪；
+- 监控哪些指标能提前发现小文件、元数据膨胀和 Commit Contention（提交争用）。
 
-## 性能与故障
+## 项目案例
 
-常见问题包括：
+当前 DataRoadmap 只把 `north-america` 标为 **project relevance（项目相关）**，不在这里写“项目实际使用了哪些 Iceberg 参数、规模和故障案例”。
 
-- Writer 并发过高导致 Commit 冲突和重试；
-- 大量小文件让扫描和规划开销上升；
-- Snapshot / Manifest 长期不维护导致 Metadata 膨胀；
-- 错误的分区或写入分布让下游查询扫描过多数据。
+这些事实必须经过 Project Fact Check 后才能进入 `Actual`。
 
-排查时需要把问题拆成：
+## 大规模下会发生什么
+
+当写入频率、分区数、并发 Writer、Backfill 规模继续增长，最先出现的问题往往不是“Parquet 读不动”，而是：
 
 ```text
-Write
-↓
-Commit
-↓
-Metadata Planning
-↓
-File Scan
-↓
-Query Engine
+Too many tiny files
+        +
+Too many manifests
+        +
+Commit contention
+        +
+Planning cost
+        +
+Maintenance pressure
 ```
 
-不能把所有慢查询都归因于 Iceberg 本身。
+因此 Iceberg 的生产能力，本质上是“文件布局 + 元数据布局 + 提交协议 + 生命周期维护”四件事一起做。
 
-## 关联内容
+## 关联知识
 
-这个页面目前是 V0.5.2 的 **Foundation Seed（详情页基础种子）**，用来验证 Knowledge Markdown → Front Matter → React Detail 的完整链路。
-
-V0.6 会把 Iceberg 扩展为完整 L5 Vertical Slice，包括 Manifest、分区、Write Ordering、Schema Evolution、并发提交、维护、故障恢复、项目映射、Scale Lab 与 Interview Mapping。
+下一节先进入最上层的 **Table Metadata 与 Snapshot**，理解为什么 Reader 能看到稳定版本。
