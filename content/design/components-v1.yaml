@@ -1,5 +1,5 @@
-version: '1.3'
-frozen_at: 0.6.0.7
+version: '1.4'
+frozen_at: 0.6.0.8
 status: frozen
 viewport_baseline:
   width: 390
@@ -16,6 +16,8 @@ principles:
   interview_scale_is_not_top_level_scale: true
   motion_is_stateful_not_decorative: true
   descriptive_metadata_uses_middle_dot: true
+  technical_diagrams_mobile_first: true
+  diagram_text_is_real_dom_text: true
 components:
 - id: app-shell
   status: frozen
@@ -118,3 +120,37 @@ components:
   - no_multicolor_neon
   - reduced_motion_off
   - static_hairline_fallback
+- id: technical-diagram
+  status: frozen
+  anatomy:
+  - header
+  - canvas
+  - caption
+  rules:
+  - mobile_first_390
+  - same_component_responsive
+  - no_raster_text
+  - no_default_shadow
+  - figcaption_required
+  - color_not_only_semantic
+  - diagram_directive_from_markdown
+- id: diagram-node
+  status: frozen
+  rules:
+  - real_dom_text
+  - one_pixel_border
+  - ten_pixel_radius
+  - short_subtitle_optional
+  - semantic_palette_diagram_only
+- id: diagram-arrow
+  status: frozen
+  rules:
+  - thin_hairline
+  - label_optional
+  - direction_must_be_unambiguous
+- id: diagram-branch
+  status: frozen
+  rules:
+  - mobile_max_two_visible_columns
+  - one_to_many_must_be_visually_explicit
+  - ellipsis_allowed_for_repetition

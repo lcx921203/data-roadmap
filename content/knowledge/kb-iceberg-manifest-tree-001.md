@@ -38,19 +38,7 @@ related:
 
 ## 元数据树
 
-```text
-Table Metadata
-    ↓
-Snapshot
-    ↓
-Manifest List
-    ↓
-Manifest A ── Data File 1
-           ├─ Data File 2
-           └─ Data File 3
-
-Manifest B ── Data File 4
-           └─ Delete File 1
+```diagram-iceberg-manifest-tree
 ```
 
 Manifest List 存的是“Manifest 的元数据”，例如 Manifest 级别的文件数和 Partition Summary（分区范围摘要）。

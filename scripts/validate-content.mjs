@@ -119,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.3') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1.3')
+if (components?.status !== 'frozen' || components?.version !== '1.4') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.4')
 }
 
 const ids = new Set()
@@ -457,11 +457,51 @@ if (!followUpV13.includes("aria-expanded={expanded}")) {
 
 console.log('Motion & metadata V0.6.0.7 validation passed.')
 
+
+const markdownBlocksSource = readText('src/components/MarkdownBlocks.tsx')
+if (
+  !markdownBlocksSource.includes("language.startsWith('diagram-')") ||
+  !markdownBlocksSource.includes('<TechnicalDiagram')
+) {
+  throw new Error('Markdown renderer must route diagram-* directives')
+}
+
+const technicalDiagramSource = readText('src/components/TechnicalDiagram.tsx')
+for (const id of ['iceberg-metadata-tree', 'iceberg-manifest-tree']) {
+  if (!technicalDiagramSource.includes(id)) {
+    throw new Error(`Missing Technical Diagram registry entry: ${id}`)
+  }
+}
+
+const overviewDiagram = readText(
+  'content/knowledge/kb-iceberg-overview-001.md',
+)
+if (!overviewDiagram.includes('```diagram-iceberg-metadata-tree')) {
+  throw new Error('Iceberg overview must use the metadata diagram')
+}
+
+const manifestDiagram = readText(
+  'content/knowledge/kb-iceberg-manifest-tree-001.md',
+)
+if (!manifestDiagram.includes('```diagram-iceberg-manifest-tree')) {
+  throw new Error('Manifest knowledge must use the manifest diagram')
+}
+
+const diagramCss = readText('src/styles/diagram-system-v1.css')
+if (
+  !diagramCss.includes('.technical-diagram') ||
+  !diagramCss.includes('.diagram-branch__children')
+) {
+  throw new Error('Technical Diagram CSS contract is incomplete')
+}
+
+console.log('Technical Diagram System V0.6.0.8 validation passed.')
+
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
     `${interviewBank.questions.length} interview questions, ` +
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1.3 frozen.`,
+    `Design System V1.4 frozen.`,
 )

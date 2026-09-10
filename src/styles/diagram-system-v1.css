@@ -1,0 +1,335 @@
+/* V0.6.0.8 — Technical Diagram System V1 */
+
+:root {
+  --diagram-blue-bg: #eef6ff;
+  --diagram-blue-border: #8cbcff;
+  --diagram-blue-ink: #174f96;
+
+  --diagram-green-bg: #eef9f3;
+  --diagram-green-border: #8fd3ad;
+  --diagram-green-ink: #176540;
+
+  --diagram-amber-bg: #fff8e8;
+  --diagram-amber-border: #e8bf62;
+  --diagram-amber-ink: #7a5200;
+
+  --diagram-violet-bg: #f5f1ff;
+  --diagram-violet-border: #b7a5ef;
+  --diagram-violet-ink: #55408f;
+
+  --diagram-rose-bg: #fff1f2;
+  --diagram-rose-border: #eba3aa;
+  --diagram-rose-ink: #8a3540;
+
+  --diagram-cyan-bg: #eef9fb;
+  --diagram-cyan-border: #8ecbd6;
+  --diagram-cyan-ink: #286772;
+}
+
+.technical-diagram {
+  margin: 18px 0;
+  overflow: hidden;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+}
+
+.technical-diagram__header {
+  min-height: 48px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.technical-diagram__header strong {
+  color: var(--color-ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.technical-diagram__header span {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.technical-diagram__canvas {
+  padding: 18px 14px 16px;
+}
+
+.technical-diagram figcaption {
+  padding: 12px 14px;
+  border-top: 1px solid var(--color-hairline);
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.diagram-stack {
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.diagram-node {
+  width: min(100%, 270px);
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 11px 14px;
+  display: grid;
+  place-content: center;
+  gap: 3px;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.diagram-node strong {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.diagram-node span {
+  font-size: 11px;
+  line-height: 1.45;
+  opacity: .82;
+}
+
+.diagram-node--compact {
+  width: 100%;
+  min-height: 61px;
+  padding: 9px 8px;
+}
+
+.diagram-node--compact strong {
+  font-size: 13px;
+}
+
+.diagram-node--compact span {
+  font-size: 10px;
+}
+
+.diagram-node--blue {
+  border-color: var(--diagram-blue-border);
+  background: var(--diagram-blue-bg);
+  color: var(--diagram-blue-ink);
+}
+
+.diagram-node--green {
+  border-color: var(--diagram-green-border);
+  background: var(--diagram-green-bg);
+  color: var(--diagram-green-ink);
+}
+
+.diagram-node--amber {
+  border-color: var(--diagram-amber-border);
+  background: var(--diagram-amber-bg);
+  color: var(--diagram-amber-ink);
+}
+
+.diagram-node--violet {
+  border-color: var(--diagram-violet-border);
+  background: var(--diagram-violet-bg);
+  color: var(--diagram-violet-ink);
+}
+
+.diagram-node--rose {
+  border-color: var(--diagram-rose-border);
+  background: var(--diagram-rose-bg);
+  color: var(--diagram-rose-ink);
+}
+
+.diagram-node--cyan {
+  border-color: var(--diagram-cyan-border);
+  background: var(--diagram-cyan-bg);
+  color: var(--diagram-cyan-ink);
+}
+
+.diagram-arrow {
+  width: 52px;
+  height: 46px;
+  margin: 0 auto;
+  position: relative;
+  display: grid;
+  place-items: start center;
+}
+
+.diagram-arrow > span {
+  margin-top: 4px;
+  padding: 0 5px;
+  position: relative;
+  z-index: 2;
+  background: var(--color-surface-raised);
+  color: var(--color-ink-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.diagram-arrow > i {
+  width: 1px;
+  height: 26px;
+  position: absolute;
+  top: 10px;
+  background: var(--color-hairline-strong);
+}
+
+.diagram-arrow > i::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  border-right: 1px solid var(--color-ink-muted);
+  border-bottom: 1px solid var(--color-ink-muted);
+  transform: translate(-50%, 1px) rotate(45deg);
+}
+
+.diagram-branch {
+  margin-top: 0;
+  position: relative;
+  padding-top: 38px;
+}
+
+.diagram-branch__stem {
+  width: 50%;
+  height: 32px;
+  position: absolute;
+  left: 25%;
+  top: 0;
+  border-top: 1px solid var(--color-hairline-strong);
+}
+
+.diagram-branch__stem::before,
+.diagram-branch__stem::after {
+  content: '';
+  width: 1px;
+  height: 32px;
+  position: absolute;
+  top: 0;
+  background: var(--color-hairline-strong);
+}
+
+.diagram-branch__stem::before {
+  left: 0;
+}
+
+.diagram-branch__stem::after {
+  right: 0;
+}
+
+.diagram-branch__children {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.diagram-branch__children > div {
+  min-width: 0;
+}
+
+.diagram-branch__more {
+  margin-top: 8px;
+  display: block;
+  color: var(--color-ink-muted);
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
+.diagram-note {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-left: 2px solid var(--color-signal);
+  background: var(--color-surface);
+}
+
+.diagram-note strong {
+  display: block;
+  color: var(--color-ink);
+  font-size: 12px;
+}
+
+.diagram-note p {
+  margin: 4px 0 0 !important;
+  color: var(--color-ink-soft);
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+}
+
+.diagram-note--split {
+  display: grid;
+  gap: 12px;
+}
+
+.diagram-note--split > div + div {
+  padding-top: 12px;
+  border-top: 1px solid var(--color-hairline);
+}
+
+.diagram-leaf-list {
+  margin-top: 9px;
+  border-top: 1px solid var(--color-hairline);
+}
+
+.diagram-leaf-list span {
+  min-height: 34px;
+  padding: 7px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink-soft);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.diagram-leaf-list__delete {
+  color: var(--diagram-rose-ink) !important;
+}
+
+.quick-answer .technical-diagram {
+  margin-left: -2px;
+  margin-right: -2px;
+  background: rgba(255, 255, 255, .74);
+}
+
+.quick-answer .technical-diagram__canvas,
+.quick-answer .technical-diagram__header,
+.quick-answer .technical-diagram figcaption {
+  background: transparent;
+}
+
+@media (min-width: 768px) {
+  .technical-diagram__canvas {
+    padding: 24px;
+  }
+
+  .diagram-node {
+    width: min(100%, 320px);
+  }
+
+  .diagram-branch__children {
+    gap: 18px;
+  }
+
+  .diagram-note--split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .diagram-note--split > div + div {
+    padding-top: 0;
+    padding-left: 12px;
+    border-top: 0;
+    border-left: 1px solid var(--color-hairline);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .technical-diagram * {
+    scroll-behavior: auto;
+  }
+}

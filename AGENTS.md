@@ -83,7 +83,7 @@ DESIGN.md
 content/design/components-v1.yaml
 ```
 
-当前：Design System V1.3。
+当前：Design System V1.4。
 
 核心：
 
@@ -111,3 +111,28 @@ Markdown / YAML
 Static First
 GitHub Pages
 ```
+
+
+## Technical Diagram rules
+
+技术结构、流程、分支关系优先考虑 Diagram，不使用黑色 CodeBlock 模拟图。
+
+Markdown Directive：
+
+```text
+```diagram-<stable-id>
+```
+```
+
+规则：
+
+- 390px Mobile First；
+- 不把桌面宽图整体缩小；
+- Diagram Text 必须是真实 DOM Text；
+- Diagram 使用低饱和 Semantic Palette，但不得扩散到普通 UI；
+- 不允许仅靠颜色表达含义；
+- 每张图必须有文字 Caption；
+- 默认无 Shadow / Neon / Glass；
+- 一对多关系必须从连接结构上可见；
+- Diagram 只表达结构，正文继续解释为什么；
+- SQL / Config / Command 仍使用 CodeBlock。

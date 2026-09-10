@@ -1,10 +1,10 @@
 # DataRoadmap Design System
 
-> Version: **1.3 / Motion & Metadata Refinement at V0.6.0.7**
+> Version: **1.4 / Technical Diagram System at V0.6.0.8**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
-V1.3 延续 V1.2 的 Mobile-first 视觉语言，重点冻结 Metadata Grammar（元信息语法）与 Current State Motion（当前状态动效）边界。
+V1.4 延续 V1.3 的 Mobile-first 视觉语言，新增并冻结 Technical Diagram System（技术图表系统），用于准确表达层级、流向、分支和系统关系。
 
 ```text
 Content is the interface.
@@ -344,7 +344,143 @@ Continue Learning
 
 动效用于提示“当前状态”，不用于装饰。
 
-## 19. Dynamic Numbers
+
+## 19. Technical Diagram System
+
+Technical Diagram 用于表达文本难以直观说明的：
+
+```text
+Hierarchy
+Flow
+Branch
+Dependency
+Read / Write Path
+State Transition
+```
+
+优先适用于：
+
+- Iceberg Metadata / Snapshot / Manifest；
+- CDC 链路；
+- Spark / Flink 执行与状态流；
+- Data Governance 血缘；
+- Agent Router / Planner / Executor；
+- Serving / Semantic 数据路径。
+
+### Mobile-first
+
+390px 下必须首先可读。
+
+移动端默认：
+
+```text
+纵向主链
+↓
+必要时双列分支
+↓
+节点下短说明
+```
+
+不得把桌面宽图整体缩小塞进手机。
+
+Desktop 可以增加横向空间和并列信息，但必须使用同一份 Diagram Data / Component，不维护两套内容。
+
+### Diagram Palette
+
+主 UI 仍保持 Signal Blue 单 Accent。
+
+Diagram 内允许独立的低饱和 Semantic Palette，用于区分不同“节点类型”，不是交互状态：
+
+```text
+Blue    external / catalog
+Green   table metadata
+Amber   snapshot / state
+Violet  list / index
+Rose    manifest / change
+Cyan    data file / storage object
+```
+
+限制：
+
+- 只在技术图内部使用；
+- 低饱和浅底 + 深色文字；
+- 不作为按钮或导航颜色；
+- 不依赖颜色单独表达语义；
+- 节点必须有文字标签；
+- 禁止 Neon、强 Gradient、Heavy Shadow。
+
+### Diagram Anatomy
+
+```text
+DiagramFrame
+├─ Header
+├─ Canvas
+│  ├─ DiagramNode
+│  ├─ DiagramArrow
+│  └─ DiagramBranch
+└─ Caption
+```
+
+默认：
+
+- 1px Border；
+- 10px Radius；
+- no shadow；
+- 结构优先于装饰；
+- 文本使用系统字体，不生成图片文字。
+
+### Content-as-Code
+
+Markdown 使用 Diagram Directive：
+
+```text
+```diagram-iceberg-metadata-tree
+```
+```
+
+Renderer 将 `diagram-*` fence 交给 TechnicalDiagram，而不是 CodeBlock。
+
+这样 Diagram：
+
+- 与 Markdown 一起版本管理；
+- 可响应式；
+- 文字可搜索；
+- 可复制；
+- 不会像 PNG 一样缩放模糊；
+- 不依赖 Figma / AI 生图额度。
+
+### Accessibility
+
+- Diagram 内文字必须是真实 DOM Text；
+- 必须有 `figcaption` 或等价文字说明；
+- 关系不能只靠颜色；
+- 手机无需横向拖动才能理解主关系；
+- 关键图不得要求用户放大后才能读；
+- 后续复杂 SVG 需要 Text Fallback。
+
+### Diagram vs CodeBlock
+
+以下优先 Diagram：
+
+- Metadata Tree；
+- 读取路径；
+- 写入 / Commit 流程；
+- 一对多结构；
+- 状态转换。
+
+以下保持 CodeBlock：
+
+- SQL；
+- Python；
+- YAML / JSON；
+- Shell Command；
+- 真实配置；
+- 需要复制执行的代码。
+
+纯文本结构不再为了“像图”而塞进黑色 CodeBlock。
+
+
+## 20. Dynamic Numbers
 
 动态计算：
 
@@ -359,7 +495,7 @@ Continue Learning
 
 `30 秒回答`、L1–L5 和 Scale Scenario 的固定约束不是库存数字。
 
-## 20. BottomSheet
+## 21. BottomSheet
 
 - mobile max-height 82vh；
 - top radius 14px；
@@ -369,7 +505,7 @@ Continue Learning
 - focus trap；
 - restore focus。
 
-## 21. Project Truthfulness
+## 22. Project Truthfulness
 
 Project Case 继续区分：
 
@@ -383,7 +519,7 @@ Scale Extension
 
 Production Pattern / Scale / Curated Extension 不得自动变成真实项目经历。
 
-## 22. Change Policy
+## 23. Change Policy
 
 以下变化继续要求版本化：
 
@@ -397,3 +533,6 @@ Production Pattern / Scale / Curated Extension 不得自动变成真实项目经
 
 - Metadata Grammar；
 - Current State Motion exception。
+
+- Technical Diagram System；
+- Diagram Semantic Palette。

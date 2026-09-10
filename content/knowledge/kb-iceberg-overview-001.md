@@ -33,20 +33,7 @@ Iceberg 是 **Table Format（表格式）**，不是 Parquet 的替代品。Parq
 
 一句话抓住主线：
 
-```text
-Object Storage / HDFS
-        ↑
-Data Files
-        ↑
-Manifest
-        ↑
-Manifest List
-        ↑
-Snapshot
-        ↑
-Table Metadata
-        ↑
-Catalog Pointer
+```diagram-iceberg-metadata-tree
 ```
 
 Reader 读取的是某个已提交 Snapshot 所代表的稳定表状态，而不是临时去目录里猜“现在有哪些文件”。
@@ -75,9 +62,9 @@ Semantic / Serving / BI / Agent
 
 Spark、Flink、Trino 是 Engine（引擎）；S3、OSS、HDFS 是 Storage（存储）；Iceberg 处在两者之间，定义表的元数据、快照、文件集合和提交协议。
 
-## Iceberg 的完整链路
+## L5 学习主线
 
-Iceberg 的读写与运维可以沿下面这条链理解：
+本章不是把十个概念孤立背下来，而是按一条读写链学习：
 
 ```text
 表状态
@@ -105,6 +92,11 @@ Iceberg 的读写与运维可以沿下面这条链理解：
 - Query 如何利用 Manifest 与文件统计裁剪；
 - 监控哪些指标能提前发现小文件、元数据膨胀和 Commit Contention（提交争用）。
 
+## 项目案例
+
+当前 DataRoadmap 只把 `north-america` 标为 **project relevance（项目相关）**，不在这里写“项目实际使用了哪些 Iceberg 参数、规模和故障案例”。
+
+这些事实必须经过 Project Fact Check 后才能进入 `Actual`。
 
 ## 大规模下会发生什么
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CodeBlock } from './CodeBlock'
+import { TechnicalDiagram } from './TechnicalDiagram'
 
 interface MarkdownBlocksProps {
   markdown: string
@@ -55,6 +56,17 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
         i += 1
       }
       i += 1
+
+      if (language.startsWith('diagram-')) {
+        blocks.push(
+          <TechnicalDiagram
+            key={`diagram-${blocks.length}`}
+            id={language.slice('diagram-'.length)}
+          />,
+        )
+        continue
+      }
+
       blocks.push(
         <CodeBlock
           key={`code-${blocks.length}`}
