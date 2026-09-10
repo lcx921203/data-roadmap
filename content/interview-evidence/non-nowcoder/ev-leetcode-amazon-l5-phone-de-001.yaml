@@ -1,0 +1,34 @@
+id: ev-leetcode-amazon-l5-phone-de-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/1079822/amazon-data-engineer-phone-interview-seattle-aws-l5/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: null
+  captured_at: '2026-09-11'
+  reliability: B
+interview_context:
+  company: Amazon
+  role: Data Engineer L5
+  round: Phone Screen
+  location: Seattle
+origin_fingerprint: 98bb96fab4fe8c4d
+independence_group: ev-leetcode-amazon-l5-phone-de-001
+question_evidence:
+- intent: etl_join_slowdown
+  mapping: direct_question
+  summary: ETL 因 account_id Join 变慢时如何定位和处理？
+- intent: data_lake_integrity
+  mapping: direct_question
+  summary: S3 / Data Lake 中如何约束或保障数据完整性？
+- intent: spark_data_skew
+  mapping: direct_question
+  summary: Spark 数据倾斜是什么，为什么会发生？
+- intent: sql_window_lead_lag
+  mapping: direct_question
+  summary: 使用 LEAD / LAG 完成时序 SQL。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

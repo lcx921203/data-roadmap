@@ -1,0 +1,49 @@
+id: ev-reddit-epam-2025-10-28-senior-de-001
+type: interview_evidence
+source:
+  url: https://www.reddit.com/r/dataengineersindia/comments/1oi4yhy/epam_senior_data_engineertechnical_lead_interview/
+  source_type: first_hand_interview_experience
+  publisher: Reddit r/dataengineersindia
+  published_at: '2025-10-28'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: EPAM
+  role: Senior Data Engineer / Technical Lead
+  round: Technical Round 2
+  location: null
+origin_fingerprint: bd797a00214754d3
+independence_group: ev-reddit-epam-2025-10-28-senior-de-001
+question_evidence:
+- intent: spark_data_skew_salting
+  mapping: direct_question
+  summary: Spark Salting 的原理和使用方式。
+- intent: spark_job_stage_task
+  mapping: direct_question
+  summary: 如何判断 Spark Job / Stage / Task 的数量。
+- intent: spark_cache_persist
+  mapping: direct_question
+  summary: Cache 与 Persist 的区别以及何时释放缓存。
+- intent: spark_repartition_coalesce
+  mapping: direct_question
+  summary: Repartition 与 Coalesce 的区别和使用场景。
+- intent: spark_broadcast_join
+  mapping: direct_question
+  summary: 大表与较小表 Join 时如何判断是否适合 Broadcast Join，并结合 Executor 内存判断。
+- intent: data_warehouse_vs_lake
+  mapping: direct_question
+  summary: Data Warehouse 与 Data Lake 的区别。
+- intent: scd1_scd2
+  mapping: direct_question
+  summary: SCD Type 1 与 Type 2 的差异以及实现方式。
+- intent: cdc_vs_scd
+  mapping: direct_question
+  summary: CDC 与 SCD 的区别。
+- intent: parquet_vs_row_format
+  mapping: direct_question
+  summary: Parquet 与 CSV、列式与行式文件格式的区别。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

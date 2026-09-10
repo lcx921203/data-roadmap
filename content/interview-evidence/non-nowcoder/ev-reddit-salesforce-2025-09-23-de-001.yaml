@@ -1,0 +1,28 @@
+id: ev-reddit-salesforce-2025-09-23-de-001
+type: interview_evidence
+source:
+  url: https://www.reddit.com/r/dataengineersindia/comments/1nkvpil/upcoming_interview_with_salesforce_data_engineer/
+  source_type: first_hand_interview_experience
+  publisher: Reddit r/dataengineersindia
+  published_at: '2025-09-23'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Salesforce
+  role: Data Engineer / Big Data
+  round: Big Data / Design Round
+  location: null
+origin_fingerprint: e5f0f0b729e33daf
+independence_group: ev-reddit-salesforce-2025-09-23-de-001
+question_evidence:
+- intent: flink_spark_iceberg_project_depth
+  mapping: round_topic
+  summary: 围绕候选人项目深入追问 Flink、Spark、Iceberg、Kubernetes。
+- intent: batch_realtime_platform_design
+  mapping: direct_question
+  summary: 设计同时支持批处理和实时处理的数据平台，并讨论 Kafka、Spark 与 CAP。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

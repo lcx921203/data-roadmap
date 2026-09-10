@@ -1,0 +1,31 @@
+id: ev-leetcode-amazon-senior-de-2022-01-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/1724110/amazon-senior-data-engineer-usa-jan-2022-offer/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: '2022-01-01'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Amazon
+  role: Senior Data Engineer
+  round: Phone + Onsite
+  location: USA
+origin_fingerprint: 87011793ad3c7a7f
+independence_group: ev-leetcode-amazon-senior-de-2022-01-001
+question_evidence:
+- intent: etl_workflow_design
+  mapping: round_topic
+  summary: 设计 ETL Workflow，并解释数据库架构与大数据量处理。
+- intent: data_modeling_normalization
+  mapping: round_topic
+  summary: 数据建模、规范化/反规范化以及模型可用性。
+- intent: big_data_performance
+  mapping: round_topic
+  summary: 大数据性能问题与优化。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

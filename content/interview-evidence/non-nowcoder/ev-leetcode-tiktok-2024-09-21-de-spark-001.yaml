@@ -1,0 +1,31 @@
+id: ev-leetcode-tiktok-2024-09-21-de-spark-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/5814092/TikTok-Data-Engineer-Interview-First-Round-E/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: '2024-09-21'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: TikTok
+  role: Data Engineer
+  round: Technical Interview - Round 1
+  location: Singapore
+origin_fingerprint: 86c04ad6d58a0f64
+independence_group: ev-leetcode-tiktok-2024-09-21-de-spark-001
+question_evidence:
+- intent: spark_data_skew_salting
+  mapping: direct_question
+  summary: 给定热门商品导致分区极度不均的场景，如何用 salting 缓解 Spark 数据倾斜？
+- intent: spark_salting_cardinality
+  mapping: direct_followup
+  summary: Salting 时如何决定 salt 数量？
+- intent: spark_salting_tradeoff
+  mapping: direct_followup
+  summary: Salting 对性能有什么代价，如何优化？
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

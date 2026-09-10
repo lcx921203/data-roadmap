@@ -1,0 +1,26 @@
+version: 0.3.3
+broad_cluster_splits:
+  spark_performance:
+  - iq-spark-data-skew-salting-001
+  - iq-spark-repartition-vs-coalesce-001
+  - iq-spark-broadcast-join-001
+  - iq-spark-job-stage-task-001
+  - iq-spark-cache-persist-001
+  - iq-spark-large-scale-limited-resource-001
+  - iq-etl-join-slowdown-001
+  dimensional_modeling:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-dimensional-primary-key-001
+  - iq-scd1-vs-scd2-001
+  pipeline_reliability:
+  - iq-dimensional-partial-late-data-001
+  - iq-data-platform-batch-realtime-001
+  lakehouse_vs_warehouse:
+  - iq-lake-vs-warehouse-001
+  - iq-data-lake-integrity-001
+  - iq-parquet-columnar-format-001
+  scale_design:
+  - iq-data-product-system-design-001
+  - iq-system-concurrency-fault-tolerance-001
+  - iq-large-dataset-tech-selection-001
+  - iq-spark-large-scale-limited-resource-001

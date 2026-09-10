@@ -1,0 +1,20 @@
+version: 0.3.3
+question_mapping_confidence:
+  direct_question:
+    counts_toward_canonical_frequency: true
+    description: 来源明确记录面试官实际问了同一核心意图的问题。
+  direct_followup:
+    counts_toward_canonical_frequency: true
+    description: 来源明确记录该题的实际追问，作为对应 canonical intent 的直接证据。
+  round_topic:
+    counts_toward_canonical_frequency: false
+    description: 来源只说明该轮覆盖某主题，没有足够精确的问题文本；只用于研究优先级。
+  editorial_inference:
+    counts_toward_canonical_frequency: false
+    description: 由编辑者从上下文推断，不作为面试频率证据。
+publish_rule:
+  minimum_traceable_evidence: 1
+  requires_direct_mapping: true
+  requires_curated_answer: true
+  requires_dedup_review: true
+  frequency_label_requires_multiple_independence_groups: true

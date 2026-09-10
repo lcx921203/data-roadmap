@@ -20,14 +20,16 @@
 - [x] Frequency model
 - [x] Publishing gate
 - [x] Seed corpus: 8 independent sources
-- [x] Expand corpus to 32 independent sources
-- [x] Add Kuaishou / Didi / JD / Baidu and more Tencent coverage
+- [x] Expand corpus to 32 independent NowCoder sources
 - [x] First provisional cross-company frequency calibration
-- [ ] Add non-NowCoder source diversity
-- [ ] Split broad candidate clusters into canonical questions
-- [ ] Review question-level evidence mappings
+- [x] Add non-NowCoder evidence sources (LeetCode / Reddit)
+- [x] Define direct-question vs topic-only mapping policy
+- [x] Split broad clusters into canonical question candidates
+- [ ] Re-map existing 32-source corpus at question level
+- [ ] Recalculate canonical frequency
+- [ ] Select first answer-ready questions
+- [ ] Curate first answer slice
 - [ ] Select first 30 publishable high-value questions
-- [ ] Curate answers
 
 ## V0.4 Design System
 - [ ] Study selected awesome-design-md references

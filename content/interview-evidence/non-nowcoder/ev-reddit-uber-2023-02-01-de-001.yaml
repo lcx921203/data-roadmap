@@ -1,0 +1,31 @@
+id: ev-reddit-uber-2023-02-01-de-001
+type: interview_evidence
+source:
+  url: https://www.reddit.com/r/dataengineering/comments/10qzicp/
+  source_type: first_hand_interview_experience
+  publisher: Reddit r/dataengineering
+  published_at: '2023-02-01'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Uber
+  role: Data Engineer
+  round: Spark/SQL/Scaling + System Design
+  location: null
+origin_fingerprint: e96eb50b41e83570
+independence_group: ev-reddit-uber-2023-02-01-de-001
+question_evidence:
+- intent: spark_scale_limited_resources
+  mapping: direct_question
+  summary: 把 SQL 方案迁移到 Spark，并在数据量大、资源有限时讨论优化。
+- intent: system_design_concurrency_fault_tolerance
+  mapping: direct_question
+  summary: 系统设计中处理并发、容错、CAP 与存储选型。
+- intent: sql_sequence_behavior
+  mapping: direct_question
+  summary: 按时间顺序分析用户访问城市序列，并讨论 SQL 复杂度。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

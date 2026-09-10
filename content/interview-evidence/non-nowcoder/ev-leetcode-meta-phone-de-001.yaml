@@ -1,0 +1,31 @@
+id: ev-leetcode-meta-phone-de-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/1832158/meta-data-engineer-phone-interview/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: null
+  captured_at: '2026-09-11'
+  reliability: B
+interview_context:
+  company: Meta
+  role: Data Engineer
+  round: Phone Screen
+  location: null
+origin_fingerprint: fade79d1c8f20b41
+independence_group: ev-leetcode-meta-phone-de-001
+question_evidence:
+- intent: sql_group_having
+  mapping: direct_question
+  summary: 按作者聚合并通过 HAVING 过滤满足多类别条件的记录。
+- intent: sql_conditional_aggregation
+  mapping: direct_question
+  summary: 通过 Join 和条件聚合计算交易比例。
+- intent: sql_window_min_max
+  mapping: direct_question
+  summary: 使用窗口函数处理客户交易日期的最小/最大边界条件。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

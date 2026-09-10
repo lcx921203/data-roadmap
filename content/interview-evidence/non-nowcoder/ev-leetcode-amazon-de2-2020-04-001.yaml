@@ -1,0 +1,37 @@
+id: ev-leetcode-amazon-de2-2020-04-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/576111/amazon-de2-april-2020-seattle-rej/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: '2020-04-09'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Amazon
+  role: Data Engineer L5
+  round: Virtual Onsite
+  location: Seattle
+origin_fingerprint: c68f0de7f9de72cb
+independence_group: ev-leetcode-amazon-de2-2020-04-001
+question_evidence:
+- intent: large_dataset_tech_selection
+  mapping: direct_question
+  summary: 面对大规模数据集，如何选择处理技术并解释理由？
+- intent: sql_performance_tuning
+  mapping: direct_question
+  summary: 如何利用执行计划、索引等手段定位 SQL 性能问题？
+- intent: fact_dimension_model
+  mapping: direct_question
+  summary: 如何设计事实表和维表模型？
+- intent: model_primary_key
+  mapping: direct_followup
+  summary: 事实/维度模型中的主键如何设计？
+- intent: partial_data_handling
+  mapping: direct_followup
+  summary: 数据不完整或部分到达时模型和管道如何处理？
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

@@ -1,0 +1,31 @@
+id: ev-reddit-senior-de-2026-08-13-spark-gap-001
+type: interview_evidence
+source:
+  url: https://www.reddit.com/r/dataengineeringjobs/comments/1vn9bef/trying_to_move_deeper_into_data_engineering_and/
+  source_type: first_hand_interview_experience
+  publisher: Reddit r/dataengineeringjobs
+  published_at: '2026-08-13'
+  captured_at: '2026-09-11'
+  reliability: B
+interview_context:
+  company: null
+  role: Senior Data Engineer
+  round: Technical
+  location: null
+origin_fingerprint: 892342f4b7cf78c5
+independence_group: ev-reddit-senior-de-2026-08-13-spark-gap-001
+question_evidence:
+- intent: spark_data_skew
+  mapping: round_topic
+  summary: 面试深入追问 Spark 数据倾斜。
+- intent: spark_repartition_coalesce
+  mapping: round_topic
+  summary: 面试追问 coalesce 等分区调整。
+- intent: spark_cluster_compute
+  mapping: round_topic
+  summary: 面试追问 Cluster / Compute 和 PySpark 性能优化。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

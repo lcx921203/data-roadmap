@@ -1,0 +1,34 @@
+id: ev-leetcode-meta-2022-02-de-onsite-001
+type: interview_evidence
+source:
+  url: https://leetcode.com/discuss/post/1765664/facebook-data-engineer-feb-2022-meta-usa-waiting-for-result/
+  source_type: first_hand_interview_experience
+  publisher: LeetCode Discuss
+  published_at: '2022-02-01'
+  captured_at: '2026-09-11'
+  reliability: A
+interview_context:
+  company: Meta
+  role: Data Engineer
+  round: Virtual Onsite
+  location: USA
+origin_fingerprint: b80264978eafe877
+independence_group: ev-leetcode-meta-2022-02-de-onsite-001
+question_evidence:
+- intent: data_product_system_design
+  mapping: direct_question
+  summary: 围绕产品数据构建大数据处理系统、数据访问策略和数仓模型。
+- intent: product_metrics
+  mapping: round_topic
+  summary: 定义产品指标以及应该跟踪什么。
+- intent: fact_dimension_model
+  mapping: round_topic
+  summary: ETL 设计中的事实表/维表以及关系建模。
+- intent: sql_window
+  mapping: round_topic
+  summary: SQL 中使用 LEAD、LAG、SUM、CASE 等窗口/条件计算。
+review:
+  extraction_status: question_level_reviewed
+  human_verified: false
+  notes: Question wording is paraphrased from the source to preserve provenance without
+    copying long passages.

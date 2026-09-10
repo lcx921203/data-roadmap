@@ -1,0 +1,446 @@
+version: 0.3.3
+as_of: '2026-09-11'
+candidate_count: 21
+candidates:
+- id: iq-spark-data-skew-salting-001
+  type: interview
+  question: Spark 数据倾斜如何定位？什么时候使用 Salting，如何决定 salt 数量？
+  domain: spark
+  learning_depth: L5
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-leetcode-tiktok-2024-09-21-de-spark-001
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 2
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-spark-repartition-vs-coalesce-001
+  type: interview
+  question: Spark Repartition 和 Coalesce 有什么区别，生产中怎么选？
+  domain: spark
+  learning_depth: L4
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-spark-broadcast-join-001
+  type: interview
+  question: Spark Broadcast Join 什么时候适用？如何结合表大小和 Executor 内存判断？
+  domain: spark
+  learning_depth: L5
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-spark-job-stage-task-001
+  type: interview
+  question: Spark 的 Job、Stage、Task 是如何划分的？Shuffle 为什么会形成 Stage 边界？
+  domain: spark
+  learning_depth: L5
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-spark-cache-persist-001
+  type: interview
+  question: Spark Cache 和 Persist 有什么区别？什么时候缓存，什么时候释放？
+  domain: spark
+  learning_depth: L4
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-spark-large-scale-limited-resource-001
+  type: interview
+  question: 数据量很大但 Spark 资源有限时，你会怎样设计和优化处理链路？
+  domain: spark
+  learning_depth: L5
+  parent_cluster_v0_3_2: scale_design
+  evidence:
+    direct_ids:
+    - ev-reddit-uber-2023-02-01-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-etl-join-slowdown-001
+  type: interview
+  question: ETL 中某个 Join 突然变慢，你会如何从数据分布、执行计划和资源层定位？
+  domain: spark
+  learning_depth: L5
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-dimensional-fact-dimension-design-001
+  type: interview
+  question: 给定业务场景，如何确定事实表、维表和粒度？
+  domain: warehouse
+  learning_depth: L5
+  parent_cluster_v0_3_2: dimensional_modeling
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-dimensional-primary-key-001
+  type: interview
+  question: 事实表和维表的主键、业务键应该怎么设计？
+  domain: warehouse
+  learning_depth: L4
+  parent_cluster_v0_3_2: dimensional_modeling
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-dimensional-partial-late-data-001
+  type: interview
+  question: 事实数据部分到达或迟到时，数仓模型和下游指标如何处理？
+  domain: warehouse
+  learning_depth: L5
+  parent_cluster_v0_3_2: pipeline_reliability
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-scd1-vs-scd2-001
+  type: interview
+  question: SCD Type 1 和 Type 2 有什么区别？如何选择并实现？
+  domain: warehouse
+  learning_depth: L5
+  parent_cluster_v0_3_2: dimensional_modeling
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-cdc-vs-scd-001
+  type: interview
+  question: CDC 和 SCD 分别解决什么问题？两者在数仓链路里是什么关系？
+  domain: cdc
+  learning_depth: L5
+  parent_cluster_v0_3_2: realtime_offline_consistency
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-lake-vs-warehouse-001
+  type: interview
+  question: Data Lake 和 Data Warehouse 有什么区别？湖仓一体解决了什么问题？
+  domain: lakehouse
+  learning_depth: L4
+  parent_cluster_v0_3_2: lakehouse_vs_warehouse
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-data-lake-integrity-001
+  type: interview
+  question: 对象存储 / Data Lake 缺少传统数据库约束时，如何保障数据完整性和一致性？
+  domain: lakehouse
+  learning_depth: L5
+  parent_cluster_v0_3_2: data_quality
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-sql-window-lead-lag-001
+  type: interview
+  question: LEAD / LAG 适合解决哪些时序分析问题？如何写出正确且可维护的窗口 SQL？
+  domain: sql
+  learning_depth: L4
+  parent_cluster_v0_3_2: sql_window
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-l5-phone-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-sql-performance-plan-index-001
+  type: interview
+  question: SQL 变慢时如何利用执行计划、索引和数据分布定位瓶颈？
+  domain: sql
+  learning_depth: L5
+  parent_cluster_v0_3_2: spark_performance
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-data-platform-batch-realtime-001
+  type: interview
+  question: 如何设计同时支持批处理和实时处理的数据平台？关键一致性与故障边界是什么？
+  domain: architecture
+  learning_depth: L5
+  parent_cluster_v0_3_2: pipeline_reliability
+  evidence:
+    direct_ids:
+    - ev-reddit-salesforce-2025-09-23-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-data-product-system-design-001
+  type: interview
+  question: 从原始数据到可消费数据产品，如何设计访问、处理、存储和数仓模型？
+  domain: architecture
+  learning_depth: L5
+  parent_cluster_v0_3_2: scale_design
+  evidence:
+    direct_ids:
+    - ev-leetcode-meta-2022-02-de-onsite-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-system-concurrency-fault-tolerance-001
+  type: interview
+  question: 数据系统设计中如何处理高并发、容错、CAP 与存储选型？
+  domain: architecture
+  learning_depth: L5
+  parent_cluster_v0_3_2: scale_design
+  evidence:
+    direct_ids:
+    - ev-reddit-uber-2023-02-01-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-large-dataset-tech-selection-001
+  type: interview
+  question: 面对大规模数据集，如何选择 Spark、流处理、仓库或湖仓等处理方案？
+  domain: architecture
+  learning_depth: L5
+  parent_cluster_v0_3_2: scale_design
+  evidence:
+    direct_ids:
+    - ev-leetcode-amazon-de2-2020-04-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
+- id: iq-parquet-columnar-format-001
+  type: interview
+  question: Parquet 为什么适合分析型数据？列式存储相比行式/CSV 有什么优势和代价？
+  domain: storage
+  learning_depth: L4
+  parent_cluster_v0_3_2: lakehouse_vs_warehouse
+  evidence:
+    direct_ids:
+    - ev-reddit-epam-2025-10-28-senior-de-001
+    direct_independent_count: 1
+    topic_only_ids: []
+  frequency:
+    global: unrated
+    note: Canonical-level frequency will be recalculated after question-level review
+      across the existing 32-source corpus.
+  verification:
+    question_intent_reviewed: true
+    dedup_reviewed: true
+    answer_curated: false
+    publishable: false
+  status: candidate
