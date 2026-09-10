@@ -83,7 +83,7 @@ DESIGN.md
 content/design/components-v1.yaml
 ```
 
-当前：Design System V1.2。
+当前：Design System V1.3。
 
 核心：
 
@@ -96,6 +96,10 @@ content/design/components-v1.yaml
 - 禁止 Glassmorphism / decorative gradient；
 - Evidence 必须可见；
 - Top-level Scale 与 Interview 规模追问必须语义区分。
+- 描述性 Metadata 统一使用 `A · B · C`，不做假交互 Chip。
+- Continue Learning 可使用唯一的低频 Signal Border 流动高光；仅限边框，无外发光/Shadow/多色霓虹；Reduced Motion 必须关闭。
+- Interview 规模追问不显示 `INTERVIEW FOLLOW-UP` 内部 Kicker，ASCII 树符号要转换为视觉层级。
+- 关联追问整行可点击，`+ / −` 只是状态指示，不做圆形二级按钮。
 
 ## Web baseline
 

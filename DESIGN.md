@@ -1,10 +1,10 @@
 # DataRoadmap Design System
 
-> Version: **1.2 / Interview Semantics Revision at V0.6.0.6**
+> Version: **1.3 / Motion & Metadata Refinement at V0.6.0.7**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
-V1.2 延续 V1.1 的 Mobile-first 视觉语言，重点冻结 Interview 内“规模追问”和“关联追问”的组件语义。
+V1.3 延续 V1.2 的 Mobile-first 视觉语言，重点冻结 Metadata Grammar（元信息语法）与 Current State Motion（当前状态动效）边界。
 
 ```text
 Content is the interface.
@@ -105,6 +105,9 @@ Position Bar
 
 - 整块点击；
 - Signal Soft Surface + Signal Hairline；
+- 允许仅在 1px Border 内使用低频 Signal 单色流动高光；
+- 动效周期建议 7–9 秒，无外发光、无 Shadow、无多色霓虹；
+- `prefers-reduced-motion: reduce` 时必须关闭流动高光并回退静态 Hairline；
 - 无单独 CTA；
 - 无 Shadow；
 - N / M 动态；
@@ -209,6 +212,8 @@ ScaleFollowUpSection
 
 `text` fenced block 在这个 Section 内应转换为轻量 Row / Divider / Constraint Surface，而非 Code Surface。
 
+前台不显示 `INTERVIEW FOLLOW-UP` 等内部英文 Kicker。树状文本中的 `├── / └──` 不直接打印，转换为真正的视觉层级。
+
 ## 13. Related Follow-ups
 
 组件名称：
@@ -233,6 +238,7 @@ Concise Curated Answer
 
 - Question Row >=44px；
 - 使用 Hairline 分隔；
+- 整行是唯一点击区域；`+ / −` 只作为安静状态指示，不使用圆形按钮边框；
 - 默认折叠；
 - 一次可展开一条；
 - 不使用 Card Wall；
@@ -272,6 +278,10 @@ Recovery
 
 Scale List 的难度字段只有在用户有明确解释和筛选价值时才显示；不得直接打印 `SENIOR` 等内部枚举。
 
+Scale List 不重复显示 `Scale / SCALE LAB / 生产场景` 三层标题；保留 TopBar `Scale` + 页面标题 `生产场景` 即可。
+
+场景的 Secondary Metadata 使用统一中点语法，例如：`数据规模 · 资源隔离 · 查询 SLO · 成本`，不把纯描述性元信息做成独立 Chip。
+
 ## 16. Projects
 
 Project List 使用用户熟悉的项目名称为主标题；关联技术作为 Secondary Metadata。
@@ -286,7 +296,55 @@ PROJECTS
 
 一个页面只保留必要层级。
 
-## 17. Dynamic Numbers
+
+## 17. Metadata Grammar
+
+纯描述性、同层级的 Secondary Metadata 统一使用：
+
+```text
+A · B · C · D
+```
+
+适用：
+
+- Scale 场景训练重点；
+- Projects 关联技术；
+- Company / Role / Round 等简短并列元信息。
+
+规则：
+
+- 中点两侧保留一个空格；
+- 非交互 Metadata 不做 Chip / Pill；
+- Chip 只用于真实筛选、选择或状态切换；
+- 同一页面相同语义使用相同排版语言。
+
+## 18. Motion
+
+默认原则仍然是 Calm / Reduced Motion Friendly。
+
+允许的 Current State Motion Exception：
+
+```text
+Continue Learning
+→ 1px Signal Border Moving Highlight
+```
+
+限制：
+
+- 只允许 Continue Learning 当前学习状态使用；
+- 只在 Border 内运动；
+- Signal Blue 单色系；
+- 推荐 7–9 秒一圈；
+- 无外发光；
+- 无 Shadow；
+- 无多色 Gradient / Neon；
+- 不在 Question / Scale / Projects / Evidence 卡片复制；
+- `prefers-reduced-motion` 必须关闭；
+- 不支持 Mask 的浏览器自动回退静态 Hairline。
+
+动效用于提示“当前状态”，不用于装饰。
+
+## 19. Dynamic Numbers
 
 动态计算：
 
@@ -301,7 +359,7 @@ PROJECTS
 
 `30 秒回答`、L1–L5 和 Scale Scenario 的固定约束不是库存数字。
 
-## 18. BottomSheet
+## 20. BottomSheet
 
 - mobile max-height 82vh；
 - top radius 14px；
@@ -311,7 +369,7 @@ PROJECTS
 - focus trap；
 - restore focus。
 
-## 19. Project Truthfulness
+## 21. Project Truthfulness
 
 Project Case 继续区分：
 
@@ -325,7 +383,7 @@ Scale Extension
 
 Production Pattern / Scale / Curated Extension 不得自动变成真实项目经历。
 
-## 20. Change Policy
+## 22. Change Policy
 
 以下变化继续要求版本化：
 
@@ -336,3 +394,6 @@ Production Pattern / Scale / Curated Extension 不得自动变成真实项目经
 - Evidence Visibility Policy；
 - Project / Scale Truthfulness Boundary；
 - Interview Follow-up Semantics。
+
+- Metadata Grammar；
+- Current State Motion exception。

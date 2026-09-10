@@ -6,7 +6,6 @@ export function ScalePage() {
     <>
       <TopBar title="Scale" />
       <div className="page">
-        <p className="eyebrow">Scale Lab</p>
         <h1>生产场景</h1>
         <p className="page-lead">
           在规模、并发和故障约束下练习架构设计与排障。
@@ -27,13 +26,14 @@ export function ScalePage() {
 
               {scenario.summary && <p>{scenario.summary}</p>}
 
-              {scenario.display_tags && (
-                <div className="scenario-row__tags">
-                  {scenario.display_tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-              )}
+              {scenario.display_tags?.length ? (
+                <p
+                  className="scenario-row__tags"
+                  aria-label="训练重点"
+                >
+                  {scenario.display_tags.join(' · ')}
+                </p>
+              ) : null}
             </article>
           ))}
         </section>

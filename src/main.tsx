@@ -10,6 +10,7 @@ import './styles/discovery-refine.css'
 import './styles/evidence-discovery-polish.css'
 import './styles/ui-conformance-v1.1.css'
 import './styles/interview-semantics-v1.2.css'
+import './styles/motion-metadata-v1.3.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

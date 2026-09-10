@@ -119,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.2') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1.2')
+if (components?.status !== 'frozen' || components?.version !== '1.3') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.3')
 }
 
 const ids = new Set()
@@ -416,7 +416,46 @@ if (!followUpSource.includes('aria-expanded')) {
   throw new Error('Follow-up disclosure must expose aria-expanded')
 }
 
-console.log('Interview semantics V0.6.0.6 validation passed.')
+console.log('Interview semantics V0.6.0.7 validation passed.')
+
+
+const scalePageSource = readText('src/pages/ScalePage.tsx')
+if (scalePageSource.includes('<p className="eyebrow">Scale Lab</p>')) {
+  throw new Error('Scale page must not repeat the Scale Lab eyebrow')
+}
+if (!scalePageSource.includes("scenario.display_tags.join(' · ')")) {
+  throw new Error('Scale descriptive metadata must use middle-dot grammar')
+}
+
+const scaleFollowupV13 = readText('src/components/ScaleFollowUpSection.tsx')
+if (scaleFollowupV13.includes('INTERVIEW FOLLOW-UP')) {
+  throw new Error('Internal Interview follow-up kicker leaked to frontstage')
+}
+if (
+  scaleFollowupV13.includes("branch[2].trim()") === false ||
+  scaleFollowupV13.includes("line.last") === false
+) {
+  throw new Error('Scale ASCII branch text must be converted to visual hierarchy')
+}
+
+const motionCss = readText('src/styles/motion-metadata-v1.3.css')
+if (
+  !motionCss.includes('.continue-focus-card::before') ||
+  !motionCss.includes('continue-border-flow') ||
+  !motionCss.includes('prefers-reduced-motion: reduce')
+) {
+  throw new Error('Continue Learning current-state motion contract is incomplete')
+}
+if (motionCss.includes('box-shadow:')) {
+  throw new Error('Current-state flow highlight must not use box-shadow')
+}
+
+const followUpV13 = readText('src/components/FollowUpDisclosure.tsx')
+if (!followUpV13.includes("aria-expanded={expanded}")) {
+  throw new Error('Follow-up row must remain the accessible disclosure control')
+}
+
+console.log('Motion & metadata V0.6.0.7 validation passed.')
 
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
@@ -424,5 +463,5 @@ console.log(
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1.2 frozen.`,
+    `Design System V1.3 frozen.`,
 )

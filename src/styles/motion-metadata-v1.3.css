@@ -1,0 +1,162 @@
+/* V0.6.0.7 — Motion + Metadata refinement / Design System V1.3 */
+
+@property --continue-border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Current-state motion exception:
+   a single Signal-family highlight moves inside the 1px border only.
+   No outer glow, no shadow, no multicolor neon. */
+.continue-focus-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.continue-focus-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    conic-gradient(
+      from var(--continue-border-angle),
+      transparent 0deg 294deg,
+      color-mix(in srgb, var(--color-signal) 4%, transparent) 304deg,
+      color-mix(in srgb, var(--color-signal) 58%, transparent) 326deg,
+      color-mix(in srgb, var(--color-signal) 10%, transparent) 344deg,
+      transparent 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: .72;
+  animation: continue-border-flow 8s linear infinite;
+}
+
+@keyframes continue-border-flow {
+  to {
+    --continue-border-angle: 360deg;
+  }
+}
+
+/* Scale list: metadata is descriptive text, not interactive chips. */
+.scenario-row__tags {
+  margin: 10px 0 0;
+  display: block;
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+/* Interview-scale hierarchy:
+   node → node → children. No ASCII tree glyphs are printed to the user. */
+.scale-followup-panel {
+  margin: 14px 0;
+  padding: 0;
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.scale-followup-panel__node {
+  min-height: 48px;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.scale-followup-panel__arrow {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink-muted);
+  font-size: 16px;
+}
+
+.scale-followup-panel__branch {
+  position: relative;
+  min-height: 48px;
+  padding: 12px 0 12px 30px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.scale-followup-panel__branch::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-hairline-strong);
+}
+
+.scale-followup-panel__branch::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 24px;
+  width: 12px;
+  height: 1px;
+  background: var(--color-hairline-strong);
+}
+
+.scale-followup-panel__branch--last::before {
+  bottom: 24px;
+}
+
+.scale-followup-panel > :last-child {
+  border-bottom: 0;
+}
+
+/* Related follow-ups: the row is the control.
+   The + / − is only a quiet state indicator, not a second circular button. */
+.followup-row__indicator {
+  width: 32px;
+  min-width: 32px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  color: var(--color-ink-muted);
+  font-size: 21px;
+  font-weight: 350;
+  line-height: 1;
+}
+
+.followup-row[aria-expanded='true'] .followup-row__indicator {
+  color: var(--color-signal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .continue-focus-card::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Fallback: if masking is unavailable, the static Continue Learning hairline remains. */
+@supports not ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+  .continue-focus-card::before {
+    display: none;
+  }
+}

@@ -1,5 +1,5 @@
-version: '1.2'
-frozen_at: 0.6.0.6
+version: '1.3'
+frozen_at: 0.6.0.7
 status: frozen
 viewport_baseline:
   width: 390
@@ -14,6 +14,8 @@ principles:
   dynamic_counts_from_content: true
   runtime_ai_answers: false
   interview_scale_is_not_top_level_scale: true
+  motion_is_stateful_not_decorative: true
+  descriptive_metadata_uses_middle_dot: true
 components:
 - id: app-shell
   status: frozen
@@ -30,6 +32,10 @@ components:
   - no_separate_cta
   - dynamic_position
   - position_not_completion
+  - signal_border_moving_highlight_allowed
+  - motion_period_7_to_9_seconds
+  - border_only_no_outer_glow
+  - reduced_motion_static_fallback
 - id: question-row
   status: frozen
   rules:
@@ -58,6 +64,8 @@ components:
   - text_fence_renders_as_semantic_rows
   - no_copy_action_for_scale_parameters
   - no_code_surface_for_plain_constraints
+  - no_internal_english_kicker
+  - ascii_tree_converts_to_visual_hierarchy
 - id: followup-disclosure
   status: frozen
   frontstage_title: 关联追问
@@ -69,6 +77,8 @@ components:
   - canonical_question_can_link_internally
   - pending_answer_labeled
   - no_runtime_ai
+  - whole_row_is_click_target
+  - indicator_is_quiet_no_circle
 - id: code-block
   status: frozen
   rules:
@@ -87,3 +97,24 @@ components:
   mobile:
     max_height: 82vh
     top_radius: 14px
+- id: secondary-metadata-line
+  status: frozen
+  format: A · B · C
+  rules:
+  - descriptive_only
+  - not_a_chip
+  - middle_dot_with_spaces
+  - same_semantics_same_visual_grammar
+- id: current-state-motion
+  status: frozen
+  allowed_on:
+  - continue-learning
+  rules:
+  - signal_family_only
+  - border_only
+  - period_7_to_9_seconds
+  - no_outer_glow
+  - no_shadow
+  - no_multicolor_neon
+  - reduced_motion_off
+  - static_hairline_fallback
