@@ -6,6 +6,7 @@ import './styles/global.css'
 import './styles/app.css'
 import './styles/iceberg-spine.css'
 import './styles/frontstage-cleanup.css'
+import './styles/discovery-refine.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

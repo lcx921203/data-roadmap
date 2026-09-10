@@ -40,44 +40,48 @@ export function LearnPage() {
 
         {current && (
           <section className="continue-section" aria-label="继续学习">
-            <div className="section-heading section-heading--compact">
-              <h2>{hasRememberedPosition ? '继续学习' : '开始学习'}</h2>
-              <span>
-                {hasRememberedPosition && total > 0
-                  ? `第 ${step} / ${total} 节`
-                  : total > 0
-                    ? `${total} 节`
-                    : ''}
-              </span>
-            </div>
-
             <a
-              className="continue-row"
+              className="continue-focus-card"
               href={`#/learn/${current.meta.id}`}
               aria-label={`${hasRememberedPosition ? '继续' : '开始'}学习 ${current.meta.title}`}
             >
-              <span className="continue-row__body">
-                <small>
-                  {current.meta.stage_id} · {current.meta.topic ?? 'Knowledge'}
-                </small>
-                <strong>{current.meta.title_cn ?? current.meta.title}</strong>
-                <span>{current.meta.summary}</span>
+              <span className="continue-focus-card__top">
+                <strong>{hasRememberedPosition ? '继续学习' : '开始学习'}</strong>
+                <span>
+                  {hasRememberedPosition && total > 0
+                    ? `${step} / ${total}`
+                    : total > 0
+                      ? `${total} 节`
+                      : ''}
+                </span>
               </span>
-              <span className="continue-row__action">
-                {hasRememberedPosition ? '继续' : '开始'}
+
+              <span className="continue-focus-card__meta">
+                {current.meta.stage_id} ·{' '}
+                {current.meta.topic === 'iceberg'
+                  ? 'Iceberg'
+                  : current.meta.domain ?? 'Knowledge'}
+              </span>
+
+              <strong className="continue-focus-card__title">
+                {current.meta.title_cn ?? current.meta.title}
+              </strong>
+
+              <span className="continue-focus-card__summary">
+                {current.meta.summary}
+              </span>
+
+              <span
+                className="continue-focus-card__progress"
+                role="progressbar"
+                aria-label="当前学习位置"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+              >
+                <span style={{ width: `${progress}%` }} />
               </span>
             </a>
-
-            <div
-              className="continue-progress"
-              role="progressbar"
-              aria-label="当前学习位置"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progress}
-            >
-              <span style={{ width: `${progress}%` }} />
-            </div>
           </section>
         )}
 

@@ -1,0 +1,339 @@
+version: 0.6.0.3
+type: interview_discovery_index
+quick_tags:
+- id: spark
+  label: Spark
+- id: flink
+  label: Flink
+- id: kafka
+  label: Kafka
+- id: sql
+  label: SQL
+- id: hdfs
+  label: HDFS
+- id: olap
+  label: OLAP
+- id: warehouse
+  label: 数仓
+- id: lakehouse
+  label: 湖仓
+- id: governance
+  label: 治理
+- id: architecture
+  label: 架构
+questions:
+- id: iq-warehouse-layering-001
+  tags:
+  - warehouse
+  search_terms:
+  - 数仓
+  - 分层
+  - ODS
+  - DWD
+  - DWM
+  - DWS
+  - ADS
+  - 数据清洗
+  - 复用
+  - 解耦
+  - 历史回填
+  - Backfill
+- id: iq-data-quality-diagnosis-001
+  tags:
+  - governance
+  search_terms:
+  - 数据质量
+  - 指标不准
+  - 指标异常
+  - 对账
+  - 血缘
+  - 定位
+  - 质量体系
+- id: iq-spark-data-skew-salting-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - 数据倾斜
+  - 热点
+  - Salting
+  - Join
+  - Shuffle
+  - 性能
+- id: iq-lake-vs-warehouse-001
+  tags:
+  - lakehouse
+  - warehouse
+  search_terms:
+  - 数据湖
+  - 数仓
+  - 湖仓
+  - Lakehouse
+  - Data Lake
+  - Data Warehouse
+  - 架构选型
+- id: iq-data-governance-framework-001
+  tags:
+  - governance
+  search_terms:
+  - 数据治理
+  - 元数据
+  - 血缘
+  - 质量
+  - 权限
+  - 治理效果
+- id: iq-dimensional-fact-dimension-design-001
+  tags:
+  - warehouse
+  search_terms:
+  - 事实表
+  - 维表
+  - 粒度
+  - Grain
+  - 维度建模
+  - 数仓建模
+- id: iq-flink-exactly-once-checkpoint-001
+  tags:
+  - flink
+  search_terms:
+  - Flink
+  - Exactly Once
+  - Checkpoint
+  - State
+  - Barrier
+  - 容错
+  - 恢复
+- id: iq-star-vs-snowflake-001
+  tags:
+  - warehouse
+  search_terms:
+  - 星型模型
+  - 雪花模型
+  - 维度建模
+  - 数仓建模
+- id: iq-spark-broadcast-join-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - Broadcast Join
+  - 广播
+  - Executor
+  - 内存
+  - Join
+- id: iq-kafka-reliability-001
+  tags:
+  - kafka
+  search_terms:
+  - Kafka
+  - 不丢
+  - 不重
+  - Lag
+  - 分区异常
+  - 可靠性
+  - 恢复
+- id: iq-olap-engine-selection-001
+  tags:
+  - olap
+  search_terms:
+  - OLAP
+  - Doris
+  - StarRocks
+  - ClickHouse
+  - Trino
+  - 选型
+  - 查询引擎
+- id: iq-sql-window-lead-lag-001
+  tags:
+  - sql
+  search_terms:
+  - SQL
+  - LEAD
+  - LAG
+  - 窗口函数
+  - 时序分析
+- id: iq-hdfs-read-path-001
+  tags:
+  - hdfs
+  search_terms:
+  - HDFS
+  - NameNode
+  - DataNode
+  - Client
+  - 读取流程
+- id: iq-spark-job-stage-task-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - Job
+  - Stage
+  - Task
+  - Shuffle
+  - 执行流程
+- id: iq-sql-performance-plan-index-001
+  tags:
+  - sql
+  search_terms:
+  - SQL
+  - 执行计划
+  - 索引
+  - 数据分布
+  - 慢查询
+  - 性能
+- id: iq-realtime-offline-consistency-001
+  tags:
+  - flink
+  - warehouse
+  search_terms:
+  - 实时
+  - 离线
+  - 指标不一致
+  - 一致性
+  - 对账
+  - 延迟数据
+- id: iq-cdc-vs-scd-001
+  tags:
+  - warehouse
+  search_terms:
+  - CDC
+  - SCD
+  - 数仓
+  - 变更数据
+  - 慢变维
+- id: iq-data-lake-integrity-001
+  tags:
+  - lakehouse
+  search_terms:
+  - Data Lake
+  - 数据湖
+  - 对象存储
+  - 完整性
+  - 一致性
+  - 约束
+- id: iq-data-platform-batch-realtime-001
+  tags:
+  - spark
+  - flink
+  - kafka
+  search_terms:
+  - 批处理
+  - 实时处理
+  - 数据平台
+  - Spark
+  - Flink
+  - Kafka
+  - 一致性
+  - 故障
+- id: iq-data-product-system-design-001
+  tags:
+  - warehouse
+  - lakehouse
+  search_terms:
+  - Data Product
+  - 数据产品
+  - 系统设计
+  - 访问
+  - 处理
+  - 存储
+  - 数仓模型
+- id: iq-dimensional-partial-late-data-001
+  tags:
+  - warehouse
+  search_terms:
+  - 迟到数据
+  - 部分到达
+  - Late Data
+  - 事实表
+  - 指标
+- id: iq-dimensional-primary-key-001
+  tags:
+  - warehouse
+  search_terms:
+  - 事实表
+  - 维表
+  - 主键
+  - 业务键
+  - Surrogate Key
+- id: iq-etl-join-slowdown-001
+  tags:
+  - spark
+  - sql
+  search_terms:
+  - ETL
+  - Join
+  - 变慢
+  - 数据分布
+  - 执行计划
+  - 资源
+  - 性能
+- id: iq-large-dataset-tech-selection-001
+  tags:
+  - spark
+  - flink
+  - lakehouse
+  - warehouse
+  search_terms:
+  - 大规模数据
+  - 选型
+  - Spark
+  - 流处理
+  - 湖仓
+  - 数仓
+  - 架构
+- id: iq-parquet-columnar-format-001
+  tags:
+  - lakehouse
+  search_terms:
+  - Parquet
+  - 列式存储
+  - CSV
+  - 行式
+  - 分析型数据
+  - 文件格式
+- id: iq-scd1-vs-scd2-001
+  tags:
+  - warehouse
+  search_terms:
+  - SCD
+  - Type 1
+  - Type 2
+  - 慢变维
+  - 历史
+- id: iq-spark-cache-persist-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - Cache
+  - Persist
+  - 缓存
+  - 释放
+- id: iq-spark-large-scale-limited-resource-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - 资源有限
+  - 大数据量
+  - 优化
+  - 处理链路
+- id: iq-spark-repartition-vs-coalesce-001
+  tags:
+  - spark
+  search_terms:
+  - Spark
+  - Repartition
+  - Coalesce
+  - 分区
+  - Shuffle
+- id: iq-system-concurrency-fault-tolerance-001
+  tags:
+  - architecture
+  search_terms:
+  - 高并发
+  - 容错
+  - CAP
+  - 存储选型
+  - 系统设计
+  - 可靠性
