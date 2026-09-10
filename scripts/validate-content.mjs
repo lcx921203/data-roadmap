@@ -103,7 +103,7 @@ const orders = new Set()
 for (const node of spine.nodes) {
   const candidates = fs
     .readdirSync(path.join(root, 'content/knowledge'))
-    .filter((name) => name.endsWith('.md'))
+    .filter((name) => name.startsWith('kb-') && name.endsWith('.md'))
 
   let found = null
 
