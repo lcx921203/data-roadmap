@@ -1,0 +1,26 @@
+id: ev-alibabacloud-2025-11-13-bigdata-002
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/1542671607cc45f68d51b3d5a5089863
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-11-13'
+  captured_at: '2026-09-10'
+  reliability: B
+interview_context:
+  company: Alibaba Cloud
+  role: 大数据数仓 / 数据开发
+  round: null
+origin_fingerprint: 9d8bea7e64f013b0
+independence_group: ev-alibabacloud-2025-11-13-bigdata-002
+extracted_topic_candidates:
+- hadoop_rpc
+- hdfs_read
+- hdfs_failure
+- hbase
+- jvm_observability
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

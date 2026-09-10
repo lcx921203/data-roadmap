@@ -1,0 +1,29 @@
+id: ev-meituan-2025-04-02-data-dev-002
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/discuss/737064043504054272
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-04-02'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Meituan
+  role: 数据开发
+  round: 一面/二面
+origin_fingerprint: 55cff7893f8c1ad4
+independence_group: ev-meituan-2025-04-02-data-dev-002
+extracted_topic_candidates:
+- warehouse_modeling
+- warehouse_layering
+- spark_join
+- mapreduce
+- hive_tuning
+- star_vs_snowflake
+- warehouse_project
+- sql_window
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

@@ -1,0 +1,30 @@
+id: ev-bytedance-2025-summer-data-ecommerce-002
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/discuss/758979062436995072
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-06-01'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: ByteDance
+  role: 大数据开发 / Data 电商
+  round: 多轮
+origin_fingerprint: f2bb21b722f4706e
+independence_group: ev-bytedance-2025-summer-data-ecommerce-002
+extracted_topic_candidates:
+- warehouse_end_to_end
+- flink_out_of_order
+- data_skew
+- dimensional_modeling
+- hdfs_failure
+- kafka_reliability
+- spark_shuffle
+- spark_tuning
+- sql
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

@@ -1,0 +1,29 @@
+id: ev-bytedance-2025-09-21-data-dev-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/discuss/799411541979168768
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-09-21'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: ByteDance
+  role: 大数据开发工程师
+  round: 一面
+origin_fingerprint: b7857c5ccaa16f32
+independence_group: ev-bytedance-2025-09-21-data-dev-001
+extracted_topic_candidates:
+- warehouse_layering
+- data_quality
+- lineage
+- hive_tuning
+- flink_exactly_once
+- flink_state
+- kafka_lag
+- kafka_partition
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

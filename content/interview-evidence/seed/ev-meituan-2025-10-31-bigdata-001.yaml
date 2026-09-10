@@ -1,0 +1,27 @@
+id: ev-meituan-2025-10-31-bigdata-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/a57069752b5c439ca6ad9848512155ab
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-10-31'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Meituan
+  role: 大数据开发工程师
+  round: 一面
+origin_fingerprint: 6b6fdf285eee1e44
+independence_group: ev-meituan-2025-10-31-bigdata-001
+extracted_topic_candidates:
+- warehouse_layering
+- dimensional_modeling
+- star_vs_snowflake
+- hdfs_read
+- spark_dependency
+- hive_tuning
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

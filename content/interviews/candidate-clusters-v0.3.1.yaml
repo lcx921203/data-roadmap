@@ -1,0 +1,133 @@
+version: 0.3.1
+as_of: '2026-09-10'
+candidates:
+- id: iq-candidate-warehouse-layering-001
+  question: 数仓为什么要分层，各层职责和数据流如何设计？
+  topic: warehouse_layering
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-meituan-2025-04-02-data-dev-002
+  - ev-alibaba-2025-03-05-warehouse-001
+  knowledge:
+  - warehouse-architecture
+  seed_independent_count: 6
+  seed_company_count: 3
+  seed_score: 5.4
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-data-quality-001
+  question: 如何保证数仓数据质量，指标异常时如何定位？
+  topic: data_quality
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-alibaba-2025-03-05-warehouse-001
+  knowledge:
+  - modeling-quality
+  - data-quality
+  seed_independent_count: 3
+  seed_company_count: 2
+  seed_score: 2.7
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-spark-performance-001
+  question: Spark 任务慢、Shuffle 或数据倾斜时如何定位和优化？
+  topic: spark_performance
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-meituan-2025-04-02-data-dev-002
+  knowledge:
+  - spark
+  seed_independent_count: 3
+  seed_company_count: 2
+  seed_score: 2.55
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-kafka-reliability-001
+  question: Kafka 如何保证可靠消费，出现丢失、重复或 Lag 时如何处理？
+  topic: kafka_reliability
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-tencent-2025-02-13-bigdata-platform-001
+  knowledge:
+  - kafka
+  seed_independent_count: 3
+  seed_company_count: 2
+  seed_score: 2.7
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-flink-reliability-001
+  question: Flink 的 Exactly-once、状态与故障恢复如何实现？
+  topic: flink_reliability
+  evidence_ids:
+  - ev-bytedance-2025-09-21-data-dev-001
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  knowledge:
+  - flink
+  seed_independent_count: 2
+  seed_company_count: 1
+  seed_score: 1.85
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-star-snowflake-001
+  question: 星型模型和雪花模型有什么区别，分别适合什么场景？
+  topic: star_vs_snowflake
+  evidence_ids:
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-meituan-2025-04-02-data-dev-002
+  knowledge:
+  - dimensional-modeling
+  seed_independent_count: 2
+  seed_company_count: 1
+  seed_score: 1.85
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-hdfs-io-001
+  question: HDFS 读写流程以及 DataNode 故障时如何处理？
+  topic: hdfs_io
+  evidence_ids:
+  - ev-bytedance-2025-summer-data-ecommerce-002
+  - ev-meituan-2025-10-31-bigdata-001
+  - ev-alibabacloud-2025-11-13-bigdata-002
+  knowledge:
+  - hdfs-hive
+  seed_independent_count: 3
+  seed_company_count: 3
+  seed_score: 2.6
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.
+- id: iq-candidate-data-governance-001
+  question: 数据治理应从哪些方面展开，如何衡量治理效果？
+  topic: data_governance
+  evidence_ids:
+  - ev-bytedance-2025-09-06-offline-warehouse-003
+  - ev-alibaba-2025-03-05-warehouse-001
+  knowledge:
+  - datahub
+  - governance-operations
+  seed_independent_count: 2
+  seed_company_count: 2
+  seed_score: 1.7
+  frequency: unrated
+  verification:
+    publishable: false
+  note: Seed corpus only; do not interpret as final industry frequency.

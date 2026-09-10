@@ -1,0 +1,24 @@
+id: ev-tencent-2025-02-13-bigdata-platform-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/d8a4b70e510f43dfb6fc4d04956ef39d
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-02-13'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Tencent
+  role: PCG 大数据平台暑期实习
+  round: 一面
+origin_fingerprint: 1d6c6d2f921f84fd
+independence_group: ev-tencent-2025-02-13-bigdata-platform-001
+extracted_topic_candidates:
+- kafka_consumer_failure
+- spark_selection
+- flink_backpressure
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

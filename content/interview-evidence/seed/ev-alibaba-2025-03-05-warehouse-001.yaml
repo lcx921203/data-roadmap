@@ -1,0 +1,31 @@
+id: ev-alibaba-2025-03-05-warehouse-001
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/364d5e34588b4c639139d08d5aa2a807
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-03-05'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: Alibaba
+  role: 数仓开发
+  round: 多轮技术面
+origin_fingerprint: 1fec0c128a35789e
+independence_group: ev-alibaba-2025-03-05-warehouse-001
+extracted_topic_candidates:
+- spark
+- hive
+- flink
+- warehouse_modeling
+- warehouse_layering
+- model_standard
+- data_quality
+- data_domain
+- freshness
+- anomaly_handling
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.

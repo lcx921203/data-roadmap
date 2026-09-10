@@ -1,0 +1,29 @@
+id: ev-bytedance-2025-09-06-offline-warehouse-003
+type: interview_evidence
+source:
+  url: https://www.nowcoder.com/feed/main/detail/cb85a19d31604beda1bf68e5b1050268
+  source_type: first_hand_interview_experience
+  publisher: NowCoder
+  published_at: '2025-09-06'
+  captured_at: '2026-09-10'
+  reliability: A
+interview_context:
+  company: ByteDance
+  role: 离线数仓开发
+  round: null
+origin_fingerprint: 543b44e545458261
+independence_group: ev-bytedance-2025-09-06-offline-warehouse-003
+extracted_topic_candidates:
+- warehouse_design
+- warehouse_layering
+- data_skew
+- spark_tuning
+- data_governance
+- data_quality
+- freshness
+- spark_dependency
+review:
+  extraction_status: seed_reviewed
+  human_verified: false
+  notes: Seed corpus record. Source exists and interview context is visible; question-level
+    extraction will be reviewed before publish.
