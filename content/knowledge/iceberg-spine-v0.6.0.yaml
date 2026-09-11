@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: iceberg
 learning_depth: L5
-status: frozen_v1
+status: frozen_iceberg_v1
 nodes:
 - order: 1
   id: kb-iceberg-overview-001
@@ -25,7 +25,7 @@ nodes:
   focus: schema evolution and field id
 - order: 7
   id: kb-iceberg-trino-read-path-001
-  focus: query planning pruning and read path
+  focus: query planning pruning delete applicability and read path
 - order: 8
   id: kb-iceberg-write-distribution-ordering-001
   focus: writer layout and manifest creation
@@ -39,9 +39,9 @@ nodes:
   id: kb-iceberg-production-troubleshooting-001
   focus: production troubleshooting and capacity
 truthfulness:
-  project_actual: fact_check_required
+  project_actual: backstage_only
   production_pattern: publishable_as_knowledge
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
-frozen_at: 0.6.1.3
-content_standard: correctness_and_knowledge_structure_first
+frozen_at: 0.6.6
+content_standard: progressive_learning_single_relation_owner_truth_boundary_frozen

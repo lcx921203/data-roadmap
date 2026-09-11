@@ -7,8 +7,8 @@ interface ReadingSegmentProps {
 }
 
 const options: Array<{ value: ReadingMode; label: string }> = [
-  { value: 'interview', label: 'Interview' },
-  { value: 'learn', label: 'Learn' },
+  { value: 'interview', label: '面试回答' },
+  { value: 'learn', label: '深入理解' },
 ]
 
 export function ReadingSegment({

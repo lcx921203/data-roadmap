@@ -217,21 +217,15 @@ export function getKnowledgeNeighbors(id: string): {
 export function getScalesForKnowledge(
   knowledgeId: string,
 ): ScaleScenario[] {
-  const article = getKnowledgeById(knowledgeId)
-  const explicitIds = new Set(article?.meta.scale_scenarios ?? [])
-
-  return scaleScenarios.filter(
-    (scenario) =>
-      explicitIds.has(scenario.id) ||
-      scenario.knowledge?.includes(knowledgeId),
+  return scaleScenarios.filter((scenario) =>
+    scenario.knowledge?.includes(knowledgeId),
   )
 }
 
 export function getInterviewIdsForKnowledge(
   knowledgeId: string,
 ): string[] {
-  const article = getKnowledgeById(knowledgeId)
-  const ids = new Set(article?.meta.interview_relevance ?? [])
+  const ids = new Set<string>()
 
   for (
     const mapping of
@@ -256,10 +250,8 @@ export function getKnowledgeForInterview(
     ),
   )
 
-  return knowledgeArticles.filter(
-    (article) =>
-      configuredIds.has(article.meta.id) ||
-      article.meta.interview_relevance?.includes(interviewId),
+  return knowledgeArticles.filter((article) =>
+    configuredIds.has(article.meta.id),
   )
 }
 

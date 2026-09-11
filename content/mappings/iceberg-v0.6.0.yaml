@@ -1,4 +1,4 @@
-version: 0.6.5
+version: 0.6.6
 topic: iceberg
 
 project:
@@ -32,17 +32,16 @@ cross_navigation:
       knowledge:
         - kb-iceberg-overview-001
 
-    - interview: iq-large-dataset-tech-selection-001
-      knowledge:
-        - kb-iceberg-production-troubleshooting-001
-
     - interview: iq-system-concurrency-fault-tolerance-001
       knowledge:
         - kb-iceberg-commit-concurrency-001
 
   policy:
+    interview_to_knowledge: explicit_curated_mapping
+    knowledge_to_interview: derived_from_interview_to_knowledge
     knowledge_to_scale: derived_from_scale_scenario_knowledge
     scale_to_knowledge: scale_scenario_owns_knowledge_ids
     interview_to_scale: derived_from_scale_scenario_interviews
     scale_to_interview: scale_scenario_owns_interview_ids
     reverse_links: derived_not_duplicated
+    mapping_precision: do_not_force_direct_links_for_graph_completeness

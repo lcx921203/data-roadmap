@@ -36,6 +36,10 @@ Iceberg V2 支持两类行级删除：
 
 Iceberg V3 又增加 **Deletion Vector（删除向量）** 来表达位置删除。
 
+这一节先建立“Data 与 Delete 怎样表达”的模型。
+
+**Delete 到底怎样判断是否适用于某个 Data File，等学完 Partition 和 Schema 后，在 Trino Read Path 一次讲完整。**
+
 ## 为什么 Data File 还在，行却可以“没了”
 
 Parquet、ORC 这类 Data File 写完以后通常作为不可变文件使用。
@@ -65,7 +69,7 @@ Position Delete 直接指定：
 
 在 V2 中，这类删除通常编码在 Position Delete File 中。
 
-在 V3 中，新增删除位置应使用 Deletion Vector；升级自 V2 的表仍然可能包含旧 Position Delete File。
+在 V3 中，新增的位置删除应使用 Deletion Vector；升级自 V2 的表仍然可能包含旧 Position Delete File。
 
 ## Equality Delete
 
@@ -77,7 +81,11 @@ Equality Delete 不直接保存物理行位置，而是保存用于匹配的字�
 
 Reader 需要拿 Equality Field ID（等值删除字段 ID）对应的列和值，与 Data File 中的行做匹配。
 
-因此它表达的是“符合这些字段值的旧数据行不可见”。
+因此它表达的是：
+
+**符合这些字段值、并且处于这份 Delete 作用范围内的数据行不可见。**
+
+这里先不要背它和 Data File 的精确新旧比较规则，后面的 Read Path 会统一讲。
 
 ## Deletion Vector
 
@@ -100,17 +108,23 @@ Deletion Vector 是 V3 引入的位置删除表示。
 
 这正好把上一节的 Manifest 结构和这一节的 Row-level Delete 串起来。
 
-## Delete 为什么不会随便应用到所有 Data File
+## Delete Applicability 这一节先记什么
 
-Reader 不能把所有 Delete 信息无条件套到所有 Data File。
+现在只记三个维度，不在这里提前背完整规则：
 
-不同 Delete 类型的 Scope（作用范围）不同：
+1. **Target（目标）**：Position Delete / Deletion Vector 会和具体 Data File 建立更直接的关系；
+2. **Partition（分区）**：Delete 通常不会无条件跨任意 Partition 生效；
+3. **Sequence Number（序列号）**：它表达文件内容的相对新旧，Reader 会用它判断一份 Delete 是否应该作用到某份 Data。
 
-- **Deletion Vector**：目标 Data File 必须匹配 `referenced_data_file`，Partition Spec / Value 必须相同，并且 Data Sequence Number ≤ Delete Sequence Number；
-- **Position Delete File**：按 File Path + Position 精确删除，同样受 Partition 与 Sequence Number 约束；
-- **Equality Delete File**：通常只应用到更旧的数据，也就是 Data Sequence Number < Delete Sequence Number；同时要求相同 Partition，只有使用 Unpartitioned Spec 的 Equality Delete 才可以作为 Global Delete（全局删除）。
+所以不是：
 
-所以 Sequence Number（序列号）不是普通版本号，它参与判断一份 Delete 到底能不能作用到某个 Data File。
+**看到 Delete → 对所有 Data File 都应用。**
+
+而是：
+
+**候选 Data File + 满足 Scope 的 Delete → 当前可见行。**
+
+下一节先把 Partition Spec / Partition Value 学完整；第 7 节 Read Path 再把精确适用条件一次讲完。
 
 ## Copy-on-Write 与 Merge-on-Read
 

@@ -82,16 +82,29 @@
 - [x] Remove author-specific Project sections from public Interview rendering
 - [x] Complete Iceberg Learn / Interview / Scale graph
 
-### Next: V0.6.6 Iceberg Vertical Slice Audit
-- [ ] Audit cross-tab knowledge progression
-- [ ] Audit duplicated or fragmented explanations
-- [ ] Audit mapping precision
-- [ ] Audit mobile content density
-- [ ] Audit truth / evidence boundaries
-- [ ] Freeze Iceberg V1 product loop
+### V0.6.6 Iceberg Vertical Slice Audit
+- [x] Audit cross-tab knowledge progression
+- [x] Move exact Delete applicability to the correct learning layer
+- [x] Audit duplicated / fragmented explanations
+- [x] Freeze single-owner cross-tab relationship policy
+- [x] Remove forced Large Dataset -> Troubleshooting direct mapping
+- [x] Audit mobile content density
+- [x] Add Scale quick navigation without reducing production depth
+- [x] Rename nested Interview reading modes to avoid top-level Tab confusion
+- [x] Audit truth / evidence boundaries
+- [x] Freeze Iceberg V1 product loop
 
-### Later: UI Review
-- [ ] Review information hierarchy with complete Iceberg content
-- [ ] Review mobile reading density
-- [ ] Review navigation and cross-link interaction
-- [ ] Remove legacy Projects source files when safe
+### Next: V0.6.7 UI Review & Polish
+- [ ] Audit Learn list / detail hierarchy
+- [ ] Audit Interview discovery / detail hierarchy
+- [ ] Audit Scale list / detail hierarchy
+- [ ] Audit three-tab navigation consistency
+- [ ] Audit mobile spacing and reading density
+- [ ] Audit cross-link interaction and visual priority
+- [ ] Sync Design System copy with final three-tab semantics
+- [ ] Remove or isolate remaining legacy Projects frontstage source files
+- [ ] Freeze Iceberg V1 UI
+
+### After UI Freeze
+- [ ] Select the next technology vertical slice
+- [ ] Reuse the frozen Learn / Scale / Interview contract

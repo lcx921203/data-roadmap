@@ -8,16 +8,18 @@ import type {
 } from '../types/content'
 
 function DetailSection({
+  id,
   title,
   items,
 }: {
+  id: string
   title: string
   items?: ScaleScenarioDetailItem[]
 }) {
   if (!items?.length) return null
 
   return (
-    <section className="scale-detail__section">
+    <section className="scale-detail__section" id={id}>
       <h2>{title}</h2>
       <div className="scale-detail__list">
         {items.map((item) => (
@@ -39,7 +41,10 @@ function ParameterSection({
   if (!items?.length) return null
 
   return (
-    <section className="scale-detail__section">
+    <section
+      className="scale-detail__section"
+      id="scale-section-parameters"
+    >
       <h2>场景参数</h2>
       <dl className="scale-parameters">
         {items.map((item) => (
@@ -52,6 +57,17 @@ function ParameterSection({
     </section>
   )
 }
+
+const sectionLinks = [
+  ['scale-section-parameters', '场景参数'],
+  ['scale-section-constraints', '约束'],
+  ['scale-section-failures', '瓶颈与故障'],
+  ['scale-section-design', '设计'],
+  ['scale-section-tradeoffs', '权衡'],
+  ['scale-section-observability', '可观测性'],
+  ['scale-section-cost', '成本'],
+  ['scale-section-recovery', '恢复'],
+] as const
 
 export function ScaleDetailPage({ id }: { id: string }) {
   const scenario =
@@ -70,6 +86,31 @@ export function ScaleDetailPage({ id }: { id: string }) {
       </>
     )
   }
+
+  const visibleSections = sectionLinks.filter(([sectionId]) => {
+    if (sectionId === 'scale-section-parameters') {
+      return Boolean(scenario.parameters?.length)
+    }
+    if (sectionId === 'scale-section-constraints') {
+      return Boolean(scenario.constraints?.length)
+    }
+    if (sectionId === 'scale-section-failures') {
+      return Boolean(scenario.failure_bottlenecks?.length)
+    }
+    if (sectionId === 'scale-section-design') {
+      return Boolean(scenario.design?.length)
+    }
+    if (sectionId === 'scale-section-tradeoffs') {
+      return Boolean(scenario.tradeoffs?.length)
+    }
+    if (sectionId === 'scale-section-observability') {
+      return Boolean(scenario.observability?.length)
+    }
+    if (sectionId === 'scale-section-cost') {
+      return Boolean(scenario.cost?.length)
+    }
+    return Boolean(scenario.recovery?.length)
+  })
 
   return (
     <>
@@ -90,6 +131,30 @@ export function ScaleDetailPage({ id }: { id: string }) {
           </p>
         )}
 
+        {visibleSections.length > 0 && (
+          <nav className="quick-navigation" aria-label="本页快速导航">
+            {visibleSections.map(([sectionId, label]) => (
+              <a
+                key={sectionId}
+                href={`#${sectionId}`}
+                onClick={(event) => {
+                  event.preventDefault()
+                  document.getElementById(sectionId)?.scrollIntoView({
+                    block: 'start',
+                    behavior: window.matchMedia(
+                      '(prefers-reduced-motion: reduce)',
+                    ).matches
+                      ? 'auto'
+                      : 'smooth',
+                  })
+                }}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+        )}
+
         {scenario.quick_answer && (
           <section className="scale-detail__quick">
             <h2>先抓住主线</h2>
@@ -98,13 +163,41 @@ export function ScaleDetailPage({ id }: { id: string }) {
         )}
 
         <ParameterSection items={scenario.parameters} />
-        <DetailSection title="约束" items={scenario.constraints} />
-        <DetailSection title="瓶颈与故障" items={scenario.failure_bottlenecks} />
-        <DetailSection title="设计" items={scenario.design} />
-        <DetailSection title="权衡" items={scenario.tradeoffs} />
-        <DetailSection title="可观测性" items={scenario.observability} />
-        <DetailSection title="成本" items={scenario.cost} />
-        <DetailSection title="恢复" items={scenario.recovery} />
+        <DetailSection
+          id="scale-section-constraints"
+          title="约束"
+          items={scenario.constraints}
+        />
+        <DetailSection
+          id="scale-section-failures"
+          title="瓶颈与故障"
+          items={scenario.failure_bottlenecks}
+        />
+        <DetailSection
+          id="scale-section-design"
+          title="设计"
+          items={scenario.design}
+        />
+        <DetailSection
+          id="scale-section-tradeoffs"
+          title="权衡"
+          items={scenario.tradeoffs}
+        />
+        <DetailSection
+          id="scale-section-observability"
+          title="可观测性"
+          items={scenario.observability}
+        />
+        <DetailSection
+          id="scale-section-cost"
+          title="成本"
+          items={scenario.cost}
+        />
+        <DetailSection
+          id="scale-section-recovery"
+          title="恢复"
+          items={scenario.recovery}
+        />
 
         <RelatedKnowledgeSection ids={scenario.knowledge} />
         <RelatedInterviewSection ids={scenario.interviews} />

@@ -45,6 +45,7 @@
 
 .scale-detail__section {
   margin-top: 34px;
+  scroll-margin-top: calc(var(--top-bar-height) + 16px);
 }
 
 .scale-detail__list {

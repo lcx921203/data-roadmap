@@ -88,18 +88,52 @@ Reader 还可以继续排除不可能命中 Predicate 的文件。
 
 如果 Snapshot 中存在 Delete Manifest，Reader 还需要判断哪些 Delete File / Deletion Vector 适用于哪些候选 Data File。
 
-判断会用到前面学过的：
+到这里前面已经学过：
 
+- Data / Delete Content；
 - Partition Spec / Partition Value；
-- Sequence Number；
-- Referenced Data File；
-- Equality Field IDs。
+- Schema / Field ID。
 
-所以 Data File 找出来以后，Scan Planning 还没有结束。
+还差一个概念：**Sequence Number（序列号）**。
 
-最终要形成的是：
+这里把它先理解成“文件内容的相对新旧标记”；它在成功 Commit 时怎样获得，后面的 Commit 章节再解释。
 
-**候选 Data File + 对它生效的 Delete 信息**
+最终 Scan Planning 要形成：
+
+**候选 Data File + 对它真正生效的 Delete 信息**
+
+## Delete Applicability 在这里一次讲完整
+
+现在再看三种删除信息的精确 Scope（作用范围）。
+
+### Deletion Vector
+
+一份 Deletion Vector 适用于某个 Data File，需要同时满足：
+
+- `referenced_data_file` 指向这个 Data File；
+- Data File 的 Data Sequence Number ≤ Deletion Vector 的 Data Sequence Number；
+- 两者的 Partition Spec 和 Partition Value 一致。
+
+### Position Delete File
+
+一份 Position Delete File 适用于某个 Data File，核心条件是：
+
+- 如果它声明了 `referenced_data_file`，目标文件必须匹配；
+- Data File 的 Data Sequence Number ≤ Delete File 的 Data Sequence Number；
+- Partition Spec 和 Partition Value 一致；
+- 如果同一个 Data File 已经存在应该应用的 Deletion Vector，Reader 不能再重复应用被 DV 覆盖的位置删除。
+
+### Equality Delete File
+
+Equality Delete 的新旧规则更严格：
+
+- Data File 的 Data Sequence Number **必须小于** Equality Delete 的 Data Sequence Number；
+- 通常要求相同 Partition Spec / Partition Value；
+- 如果 Equality Delete 使用 Unpartitioned Spec，可以作为 Global Delete（全局删除）。
+
+所以第 4 节那句话现在可以补完整：
+
+**不是“有 Delete 就应用”，而是先按 Target、Partition、Sequence Number 判断 Scope，再把真正适用的 Delete 合并进 Scan。**
 
 ## 第五步：生成 Split，交给 Worker 扫描
 
@@ -166,7 +200,7 @@ SELECT * FROM "orders$properties";
 
 **Partition / Metrics 决定“哪些文件可以跳过”**
 
-**Delete 决定“哪些行在当前版本不可见”**
+**Delete Scope 决定“哪些删除信息真正作用到候选 Data File”**
 
 **Worker 最后才真正扫描数据**
 
