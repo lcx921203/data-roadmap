@@ -203,50 +203,17 @@ Current snapshot 是谁
 
 尤其不能在不知道 Snapshot 引用关系时直接手工删对象存储目录。
 
-## 项目怎么结合
 
-Project Case 只允许填写三类信息：
 
-```text
-ACTUAL
-真实使用组件、真实数据链路、真实故障
+## 相关生产场景
 
-BOUNDARY
-没有做过或没有验证过的部分
+可以继续用三个假设生产场景训练：
 
-SCALE EXTENSION
-如果规模 ×10 / ×100，生产上如何演进
-```
+- 百亿级历史 Backfill；
+- 流式低延迟写入造成的小文件与 Manifest 膨胀；
+- 多 Writer 并发提交争用。
 
-当前 V0.6.0 仍保持 `needs_fact_check`，不会把本章 Production Pattern 写成用户个人经历。
-
-## Interview Mapping
-
-当前 First 30 Interview Bank 中，与这一章直接相关的是湖仓/技术选型等更高层问题。
-
-对于：
-
-```text
-Manifest List 有几个？
-Write Ordering 源码在哪里？
-Concurrent Commit 怎么做？
-```
-
-如果当前 Evidence Corpus 没有真实 Direct Evidence，DataRoadmap **不会为了覆盖知识点就伪造“高频面试题”**。
-
-知识可以先完整，Interview Frequency 必须等真实面经证据。
-
-## Scale Lab
-
-本轮新增三个独立 Scale Scenario：
-
-```text
-sc-iceberg-10b-backfill-001
-sc-iceberg-streaming-small-files-001
-sc-iceberg-concurrent-commit-001
-```
-
-它们全部明确是 Hypothetical（假设训练），不是项目经历。
+这些属于生产场景训练，不写成真实项目经历。
 
 ## 总结
 
@@ -266,4 +233,4 @@ Production
 = SLO + Capacity + Observability + Cost
 ```
 
-到这里，Iceberg 主干已经能支持后续 Project Case、Scale Lab 和 Interview 的真实挂接。
+

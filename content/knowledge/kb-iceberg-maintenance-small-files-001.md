@@ -219,10 +219,7 @@ Trino Iceberg Connector 可以暴露 Metadata Tables，并提供部分表维护�
 - Maintenance Resource Pool；
 - Query SLO 保护。
 
-## 项目案例
-
-当前不宣称项目实际执行过哪种 Maintenance Procedure。该部分在 Project Fact Check 后再挂 Actual。
 
 ## 关联知识
 
-下一节进入 Trino Read Path，观察前面的 Metadata 设计怎样直接影响查询规划。
+下一节进入 Production Troubleshooting，把 Write、Commit、Metadata、Planning、Scan 与 Maintenance 收成一套排障链路。
