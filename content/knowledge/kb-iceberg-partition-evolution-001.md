@@ -3,92 +3,51 @@ id: kb-iceberg-partition-evolution-001
 type: knowledge
 title: Hidden Partitioning & Partition Evolution
 title_cn: 隐藏分区与分区演进
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 5
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_read_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: Iceberg 用 Partition Spec 和 Transform 描述逻辑分区；查询不必手写物理分区列，分区策略也能随表演进。
+summary: "Iceberg 用 Partition Spec 和 Transform 描述逻辑分区；查询写业务字段，由引擎推导分区裁剪；新旧 Partition Spec 可以在同一张表中共存。"
 prerequisites:
-- kb-iceberg-row-level-changes-001
+  - kb-iceberg-row-level-changes-001
 related:
-- kb-iceberg-schema-evolution-001
-- kb-iceberg-trino-read-path-001
+  - kb-iceberg-schema-evolution-001
+  - kb-iceberg-trino-read-path-001
 ---
+
 # Hidden Partitioning & Partition Evolution
 
 ## 30 秒理解
 
-Hive 常见思路是让用户显式维护：
+Iceberg 的 Partition（分区）首先是 **逻辑 Metadata**，不是目录命名规则。
 
-```text
-dt=2026-09-10/hour=13/
-```
+Partition Spec 定义“业务字段怎样转换成分区值”，例如 `days(event_time)`、`bucket(64, user_id)`。
 
-Iceberg 把分区规则放在 Partition Spec（分区规范）中，例如：
+查询写业务字段，Engine 根据 Transform 推导可裁剪的 Partition，这就是 Hidden Partitioning（隐藏分区）。
 
-```text
-days(event_time)
-bucket(64, user_id)
-truncate(8, category_code)
-```
+Partition Spec 改变后，**旧文件继续使用旧 Spec，新文件使用新 Spec**，不要求为了改分区而重写全部历史数据。
 
-Query 写业务字段，Engine 根据 Spec 推导可裁剪的分区，这就是 Hidden Partitioning（隐藏分区）的核心体验。
+## Partition Spec 与 Transform
 
-## 为什么需要 Partition Evolution
+Partition Spec 由一个或多个 Partition Field 组成。
 
-一张表刚上线时每天 5 GB，按天分区没问题；两年后每天 5 TB，单日分区可能过大。
+每个 Partition Field 都会把 Source Column（源列）通过 Transform（转换）映射成 Partition Value。
 
-传统做法常要“重建整张表”。
+常见 Transform 包括：
 
-Iceberg 允许新增新的 Partition Spec，让**新数据使用新规则，历史数据继续保留旧 Spec**。
+- `identity`：直接使用原值；
+- `year / month / day / hour`：从时间字段得到时间粒度；
+- `bucket(N, col)`：Hash 后映射到固定桶；
+- `truncate(W, col)`：按宽度截断。
 
-```text
-Old files → Spec 0
-New files → Spec 1
-```
-
-Reader 读取时按每个文件对应的 Spec 正确解释。
-
-## Partition Spec 不是目录
-
-分区字段是逻辑 Metadata。
-
-对象存储路径可以带分区可读信息，也可以使用其他布局策略。正确性不应依赖“路径字符串能不能看懂”。
-
-这和 Manifest 也一样：不要把逻辑分区设计退化成目录命名规范。
-
-再补一个和上一节直接相关的约束：**一个 Manifest 可以覆盖多个 Partition Value，但一个 Manifest 中的 Content Files 使用同一个 Partition Spec。** 当 Spec 演进时，新旧 Spec 会由不同 Manifest 正确记录。
-
-## Production 选型
-
-分区字段的目标不是“字段基数越大越好”，而是平衡：
-
-```text
-Pruning selectivity
-File count
-Write distribution
-Partition count
-Maintenance cost
-Query patterns
-```
-
-典型错误：
-
-- 用高基数 ID 做 Identity Partition；
-- 每小时只有少量数据却再拆 minute；
-- 为单个临时报表修改全表分区；
-- 只看写入方便，不看主查询过滤条件。
-
-## 代码 / 配置
-
-Spark SQL 概念示例：
+例如：
 
 ```sql
 CREATE TABLE prod.analytics.events (
@@ -101,41 +60,76 @@ USING iceberg
 PARTITIONED BY (days(event_time), bucket(64, user_id));
 ```
 
-演进时应通过 Iceberg 的 Partition Evolution 命令修改 Spec，而不是直接移动历史文件目录。
+这里 Query 仍然可以写 `event_time` 和 `user_id`，不要求业务 SQL 手工维护物理分区列。
 
-## 性能与故障
+## Hidden Partitioning 隐藏的是什么
 
-如果查询有时间过滤却仍扫描大量文件，检查：
+隐藏的不是“没有分区”。
 
-```text
-Predicate 是否可推导到 Transform
-↓
-Manifest Partition Summary 是否有选择性
-↓
-Data File partition data 是否正确
-↓
-Query Engine 是否完成 Connector pushdown
-```
+而是：
 
-不要只看 SQL 里“写了 WHERE”就认为一定发生了有效 Pruning。
+**业务查询不需要把物理 Partition Value 当成业务字段来维护。**
 
-## Scale Lab
+Engine / Connector 根据表里的 Partition Spec 和查询 Predicate（谓词），判断 Predicate 能否转换到 Partition Transform，从而排除不相关分区。
 
-当日增量 ×100 时，重新评估：
+完整 Pruning 链路到第 7 节统一讲。
 
-- 单 Partition 数据量；
-- 每 Partition 的文件数量；
-- Writer 数；
+## Partition Evolution 为什么不用重写历史文件
+
+假设最开始使用：
+
+**Spec 0：days(event_time)**
+
+随着数据量增长，后面改成：
+
+**Spec 1：hours(event_time)**
+
+Iceberg 不要求把所有旧 Data File 重新写成小时分区。
+
+而是：
+
+- 旧文件继续带着 Spec 0 的语义；
+- 新文件按照 Spec 1 产生 Partition Value；
+- Reader 根据每个 Manifest / File 对应的 Spec 正确解释。
+
+因此 Partition Evolution 改变的是**未来数据布局**，不是强制重写全部历史布局。
+
+## 它和 Manifest 的关系
+
+上一节已经讲过：
+
+**一个 Manifest 只对应一个 Partition Spec。**
+
+因此当 Partition Spec 从 Spec 0 演进到 Spec 1 后，不会把两种不同 Spec 的文件混进同一个 Manifest。
+
+但在同一个 Spec 内，一个 Manifest 可以覆盖多个 Partition Value。
+
+这就是：
+
+**Partition Spec ≠ Partition Value ≠ Manifest**
+
+三个概念必须分开。
+
+## 分区设计真正要平衡什么
+
+Partition 不是越细越好。
+
+设计时至少同时考虑：
+
+- 主查询过滤条件；
+- 每个 Partition 的数据量；
+- File Count；
+- Writer Distribution；
 - 热分区；
-- Manifest 组织；
-- Trino 主要 Filter。
+- Metadata 数量；
+- Maintenance 成本。
 
-演进目标是改变**未来布局**，不是为了漂亮把所有历史文件强制重写。
-
-## 项目案例
-
-项目是否实际做过 Partition Evolution、采用什么 Transform，目前没有经过事实核验，不写进 Actual。
+例如高基数用户 ID 直接做 Identity Partition，通常会制造大量小 Partition 和小文件；过细的时间分区也可能让 Metadata 和 Writer 压力迅速增加。
 
 ## 关联知识
 
-下一节看 Schema Evolution，理解 Iceberg 为什么依赖 Field ID 而不是只靠列名和列位置。
+Partition Evolution 解决的是“数据怎么分组和裁剪”。
+
+下一节进入 **Schema Evolution & Field ID**，解决另一个问题：
+
+**字段改名、调整顺序、增加删除列以后，旧文件和新 Schema 怎样仍然保持字段语义一致。**

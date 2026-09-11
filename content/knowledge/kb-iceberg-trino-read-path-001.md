@@ -3,181 +3,173 @@ id: kb-iceberg-trino-read-path-001
 type: knowledge
 title: Trino Read Path on Iceberg
 title_cn: Trino 读取 Iceberg 的路径
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 7
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_read_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: Trino 先加载 Iceberg 表状态，再利用 Manifest/Partition/File Metrics 规划 Split，Worker
-  最后读取 Parquet/ORC/Avro；规划慢与扫描慢是不同问题。
+summary: "Trino 先固定 Iceberg 表状态，再按 Manifest、Partition 与 File Metrics 缩小候选文件，规划适用 Delete，最后生成 Split 给 Worker 扫描。"
 prerequisites:
-- kb-iceberg-schema-evolution-001
+  - kb-iceberg-schema-evolution-001
 related:
-- kb-iceberg-write-distribution-ordering-001
-- kb-iceberg-production-troubleshooting-001
+  - kb-iceberg-write-distribution-ordering-001
+  - kb-iceberg-production-troubleshooting-001
 ---
+
 # Trino Read Path on Iceberg
 
 ## 30 秒理解
 
-Trino 查 Iceberg 时不是：
+前面 6 节可以在这里第一次完整串起来：
 
-```text
-Metastore
-→ list partition directory
-→ list files
-→ scan all
-```
+**Catalog → Table Metadata → Snapshot → Manifest List → Manifest → 候选 Data Files + 适用 Delete → Splits → Worker Scan**
 
-核心链路是：
+所以 Trino 查询 Iceberg 时要区分两个阶段：
 
-```text
-Catalog
-↓
-Current Table Metadata
-↓
-Snapshot
-↓
-Manifest List
-↓
-Manifest
-↓
-Candidate Data Files
-+ applicable Delete Files / Deletion Vectors
-↓
-Splits
-↓
-Workers read and apply deletes
-```
+**Planning（规划）**：先决定“需要读哪些文件”。
 
-所以 Query Performance 需要区分 **Planning（规划）** 与 **Execution（执行）**。
+**Execution（执行）**：Worker 再真正读取这些文件和需要的列。
 
-## Coordinator 规划阶段
+## 第一步：固定表状态
 
-Coordinator / Iceberg Connector 需要：
+Trino Iceberg Connector 先通过 Catalog 找到当前 Table Metadata，再确定这次查询使用哪个 Snapshot。
 
-1. 加载表 Metadata；
-2. 确定 Snapshot；
-3. 根据 Predicate 做 Partition/Metadata Pruning；
-4. 读取需要的 Manifest；
-5. 从 File Metrics 进一步筛选 Data File；
-6. 规划适用于这些 Data File 的 Delete File / Deletion Vector；
-7. 生成可调度的 Split。
+从这一刻开始，本次 Query Planning 针对的是一个明确的逻辑版本。
 
-如果这里很慢，增加 Worker 数量通常帮助不大。
+这就是前面 Table Metadata & Snapshot 那一节在真实查询里的作用。
 
-## Worker 执行阶段
+## 第二步：Manifest 级裁剪
 
-Worker 接收 Split 后读取对象存储里的 Data File，并把适用的 Position / Equality Delete 或 Deletion Vector 应用到扫描结果。
+有了 Snapshot 后，Reader 找到 Manifest List。
 
-随后还可以利用 Parquet Statistics、Predicate Pushdown（谓词下推）、Column Projection（列裁剪）和 Dynamic Filtering（动态过滤）减少实际读取。
+Manifest List 中有 Manifest 级的 Partition Summary 和其他摘要信息。
 
-如果 Planning 很快但 Scan 慢，才更多看文件尺寸、压缩、网络、列裁剪、Join、Spill 和 Worker 资源。
+如果 Query Predicate 能明确排除某个 Manifest 覆盖的范围，这个 Manifest 就不需要继续展开。
 
-## Metadata Tables
+这是第一层 Metadata Pruning（元数据裁剪）。
 
-排查 Iceberg 表时，不要只看业务表。
+## 第三步：File 级裁剪
 
-Trino Connector 可以查询类似：
+对于不能在 Manifest 层排除的范围，Reader 再进入 Manifest。
+
+Manifest Entry 中保存每个 Content File 的：
+
+- Partition Data；
+- Lower / Upper Bounds；
+- Null Count；
+- Record Count；
+- 其他 Column Metrics。
+
+因此 Query 即使已经进入某个 Manifest，也不代表这个 Manifest 中所有 Data File 都要读取。
+
+Reader 还可以继续排除不可能命中 Predicate 的文件。
+
+## Partition Pruning 和 File Pruning 的区别
+
+**Partition Pruning（分区裁剪）**
+
+利用 Partition Spec、Transform 和 Partition Value 排除不相关范围。
+
+**File Pruning（文件裁剪）**
+
+利用 Manifest 中的文件级 Column Metrics 排除具体 Data File。
+
+两者不是同一个层次。
+
+所以 Iceberg 的查询优化不能只理解成“有没有分区”。
+
+## 第四步：把 Delete 应用关系规划进去
+
+如果 Snapshot 中存在 Delete Manifest，Reader 还需要判断哪些 Delete File / Deletion Vector 适用于哪些候选 Data File。
+
+判断会用到前面学过的：
+
+- Partition Spec / Partition Value；
+- Sequence Number；
+- Referenced Data File；
+- Equality Field IDs。
+
+所以 Data File 找出来以后，Scan Planning 还没有结束。
+
+最终要形成的是：
+
+**候选 Data File + 对它生效的 Delete 信息**
+
+## 第五步：生成 Split，交给 Worker 扫描
+
+Coordinator 完成文件规划后，生成可调度的 Split。
+
+Worker 才真正读取 Parquet / ORC / Avro，并继续利用：
+
+- Column Projection（列裁剪）；
+- Parquet Statistics；
+- Predicate Pushdown（谓词下推）；
+- Dynamic Filtering（动态过滤）；
+- Delete 应用。
+
+所以“Planning 慢”和“Scan 慢”是两类问题。
+
+## Planning 慢和 Execution 慢怎么区分
+
+如果 **Planning 慢**，优先看：
+
+- Manifest 是否太多；
+- Data File 是否太多；
+- Predicate 是否能有效推导到 Partition；
+- Manifest / File Metrics 是否有选择性；
+- Metadata Load 是否变重。
+
+增加 Worker 通常不能直接解决这些问题。
+
+如果 **Execution 慢**，再更多看：
+
+- 实际 Scan Bytes；
+- File Size；
+- Column Projection；
+- Join / Shuffle；
+- Spill；
+- Worker Memory；
+- Object Storage Latency。
+
+## Metadata Tables 怎么帮助排查
+
+Trino Iceberg Connector 可以通过 Metadata Tables 查看文件、分区和表属性等信息。具体表名和字段以实际 Trino Connector 版本为准。
+
+例如：
 
 ```sql
-SELECT *
-FROM "orders$files";
-
-SELECT *
-FROM "orders$partitions";
-
-SELECT *
-FROM "orders$properties";
+SELECT * FROM "orders$files";
+SELECT * FROM "orders$partitions";
+SELECT * FROM "orders$properties";
 ```
 
-不同 Trino 版本支持的 Metadata Table 名称和列可能有所差异，生产上以实际 Connector 版本文档为准。
+这些信息可以帮助回答：
 
-它们能帮助回答：
+- 到底有多少文件；
+- 文件尺寸是否健康；
+- 分区数据怎样分布；
+- 当前表属性是什么。
 
-```text
-到底有多少文件
-每个文件多大
-分区数据分布如何
-当前表属性是什么
-```
+## 前 7 节到这里形成什么模型
 
-## Partition Pruning 与 File Pruning
+到这里，Read Model（读取心智模型）已经完整：
 
-两者不是同一个层次：
+**表状态决定“哪个版本”**
 
-```text
-Partition Pruning
-→ 基于 Partition Spec 排除范围
+**Manifest 决定“哪些文件可能相关”**
 
-File Pruning
-→ 基于 Manifest 中列级统计排除 Data File
-```
+**Partition / Metrics 决定“哪些文件可以跳过”**
 
-即使表没有传统高粒度分区，File Metrics 仍可能让 Query 跳过大量文件。
+**Delete 决定“哪些行在当前版本不可见”**
 
-## 查询慢排查树
+**Worker 最后才真正扫描数据**
 
-```text
-Query total slow
-├─ Planning slow
-│  ├─ metadata load
-│  ├─ too many manifests
-│  ├─ too many files
-│  └─ weak pruning
-│
-└─ Execution slow
-   ├─ too much scan
-   ├─ bad file size
-   ├─ join/shuffle
-   ├─ memory/spill
-   └─ object storage latency
-```
+下一节回到写入侧：
 
-这比一句“Trino 慢了加 Worker”更接近生产排障。
-
-## Serving 边界
-
-Trino + Iceberg 很适合交互式分析和统一查询，但不意味着所有毫秒级 Serving 都应该直接打湖仓。
-
-如果消费要求：
-
-```text
-very high QPS
-strict low latency
-hot-key access
-fixed query shape
-```
-
-可能需要 Serving Table、Doris/ClickHouse 或 Cache。
-
-这是查询引擎与 Serving Layer 的职责边界。
-
-## Scale Lab
-
-十亿/百亿级 Backfill 同时在线查询时，需要做：
-
-```text
-Backfill resource isolation
-Writer commit control
-File size control
-Query resource group
-Metadata maintenance
-P95 / P99 monitoring
-```
-
-否则离线写入不仅抢 CPU，还会通过 File/Manifest Explosion 影响 Trino Planning。
-
-## 项目案例
-
-项目是否真实以 Trino 查询 Iceberg、具体并发和延迟目标，目前必须经过事实核验后才进入 Actual。
-
-## 关联知识
-
-下一节回到写入侧，理解 Writer 怎样通过 Distribution、Ordering 和文件滚动产生新的 Data File 与 Manifest。
+**这些 Data File、Manifest 和 Snapshot 是怎样被 Writer 一步步产生出来的？**

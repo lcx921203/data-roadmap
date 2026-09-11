@@ -3,133 +3,117 @@ id: kb-iceberg-metadata-snapshot-001
 type: knowledge
 title: Table Metadata & Snapshot
 title_cn: 表元数据与快照
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 2
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_read_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: Table Metadata 记录 Schema、Partition Spec、Properties 与 Snapshot；Snapshot 则定义某一时刻表中有效文件的逻辑状态。
+summary: "Catalog 定位当前 Table Metadata；Table Metadata 指向当前 Snapshot；Snapshot 是不可变的逻辑表版本，而不是一份全量数据副本。"
 prerequisites:
-- kb-iceberg-overview-001
+  - kb-iceberg-overview-001
 related:
-- kb-iceberg-manifest-tree-001
-- kb-iceberg-commit-concurrency-001
+  - kb-iceberg-manifest-tree-001
+  - kb-iceberg-commit-concurrency-001
 ---
+
 # Table Metadata & Snapshot
 
 ## 30 秒理解
 
-Iceberg 的一致性入口不是数据目录，而是 **当前 Table Metadata 文件的位置**。一次成功 Commit 会产生新的表元数据，并把 Catalog 中指向旧 Metadata 的 Pointer 原子地切换到新 Metadata。
+Iceberg 的 Reader 不是从数据目录开始，而是先找到 **Current Table Metadata（当前表元数据）**。
 
-Reader 在加载表时先固定一个 Metadata / Snapshot，因此查询期间即使别的 Writer 提交了新版本，当前 Reader 仍能继续读取自己看到的稳定快照。
+Table Metadata 再告诉 Reader 当前 Snapshot 是谁。
 
-## 工作原理
+**Snapshot = 某一时刻不可变的逻辑表版本，不是全表数据复制。**
 
-Table Metadata 记录的核心信息包括：
+只有已经成功提交并成为 Current 的 Snapshot，才属于当前可见表状态。
 
-```text
-Current Schema
-Partition Specs
-Sort Orders
-Table Properties
-Snapshots
-Current Snapshot ID
-Snapshot References / History
-```
+## Catalog 与 Table Metadata
 
-Snapshot 不是把全表数据复制一份，而是通过 Manifest List → Manifest 间接定义“本版本有效的数据文件和删除文件”。
+不同 Catalog 的实现可以不同，但对 Reader 来说都有一个共同职责：
 
-所以：
+**找到这张表当前使用哪份 Table Metadata。**
 
-```text
-Snapshot
-≠ 全量数据副本
-Snapshot
-= 一个不可变的逻辑表版本
-```
+Table Metadata 维护的是表级信息，例如：
 
-## Snapshot 生命周期
+- Current Schema；
+- Partition Specs；
+- Sort Orders；
+- Table Properties；
+- Snapshot 列表与历史；
+- Current Snapshot ID；
+- Branch / Tag 等 Snapshot Reference。
 
-一次典型 Append：
+因此 Table Metadata 描述的是“这张表现在是什么状态”，而不是存放业务行数据。
 
-```text
-Writer 生成 Data Files
-        ↓
-生成/复用 Manifest
-        ↓
-生成新 Manifest List
-        ↓
-生成新 Snapshot
-        ↓
-写新 Table Metadata
-        ↓
-原子更新 Metadata Pointer
-```
+## Snapshot 到底是什么
 
-只有最后 Pointer 成功切换，新 Snapshot 才成为 Current。
+Snapshot 可以理解成一个不可变的版本节点。
 
-这也是“数据文件已经写出来”与“数据已经对 Reader 可见”之间最重要的区别。
+它不会复制整张表，而是继续向下引用 Manifest List，再通过 Manifest 找到这个版本需要的数据和删除信息。
 
-## Time Travel 与 Rollback
+所以应该记成：
 
-历史 Snapshot 仍在 Metadata 中且引用的文件尚未被过期清理时，可以做 Time Travel（时间旅行）或 Rollback（回滚）。
+**Snapshot = 文件集合的逻辑版本**
 
-但历史版本不是无限保留。Snapshot Expiration（快照过期）会缩短可回溯窗口，并让不再被任何保留 Snapshot 引用的旧文件具备删除条件。
+而不是：
 
-## Production 实现
+**Snapshot = 一份完整的数据副本**
 
-需要明确 Retention Policy（保留策略）：
+这也是 Iceberg 能保留多个历史版本而不必每次复制全表的基础。
 
-```text
-业务审计需求
-+ 回滚窗口
-+ Backfill/重算周期
-+ 存储成本
-+ Metadata 规模
-```
+## Reader 为什么能看到稳定版本
 
-不能一边要求“可回滚 90 天”，一边每天无脑清掉 7 天前 Snapshot。
+假设 Reader 开始查询时读取到了 Snapshot S10。
 
-## 故障判断
+此时另一个 Writer 提交了 S11。
 
-如果 Writer 已经上传了 Parquet，但 Commit 失败：
+已经基于 S10 开始规划的 Reader 仍然可以继续沿 S10 的 Metadata 引用链完成这次读取；新的 Reader 再进入时，才可能看到更新后的 Current Snapshot。
 
-```text
-Data File exists
-        ↓
-Current Metadata pointer unchanged
-        ↓
-Reader does NOT see that file
-```
+这里先只理解一个结论：
 
-这时文件可能成为 Orphan File（孤儿文件），应由安全的孤儿文件清理流程处理，而不是人工随手删目录。
+**Reader 先固定一个已提交的表状态，再读取这个状态引用的文件。**
 
-## 源码理解抓手
+并发 Commit、Validation 和 Retry 放到后面的 Commit 章节集中讲。
 
-读源码时优先顺着概念找：
+## “文件已经写出来”和“数据已经可见”不是一回事
 
-```text
-TableOperations
-→ refresh current metadata
-→ commit(base, newMetadata)
-→ catalog-specific pointer swap
-```
+Writer 可以先把 Parquet、Manifest 等文件写到对象存储。
 
-不同 Catalog 的“原子切换”实现不同，但 Iceberg 的高层语义一致：**基于旧版本提交新版本，旧版本已变化时不能静默覆盖。**
+但只要 Current Table Metadata 没有成功切换到包含这些文件的新状态，Reader 就不会因为“目录里出现了文件”自动把它们读进来。
 
+因此：
 
-## 大规模下会发生什么
+**Physical File Exists（物理文件存在） ≠ Visible Table State（当前表状态可见）**
 
-高频写入会快速制造 Snapshot 和 Metadata JSON。若长期不维护，加载表、历史管理和对象数量都会变重。
+这个区别是理解 Iceberg 一致性的核心。
 
-因此 Snapshot 是一致性的基础，同时也是需要治理的 Metadata 生命周期对象。
+## Time Travel 为什么成立
 
-## 关联知识
+历史 Snapshot 如果仍被 Metadata 保留，并且其引用的文件还没有被生命周期策略清理，就可以继续作为历史版本读取。
 
-下一节进入 Manifest Tree，回答“一个 Snapshot 到底怎样找到成千上万个 Data File”。
+所以 Time Travel（时间旅行）的基础不是“备份了一份表”，而是：
+
+**历史 Snapshot + 仍然有效的 Metadata 引用链**
+
+至于 Snapshot Expiration（快照过期）怎样控制历史窗口，放到 Maintenance 章节统一讲。
+
+## 这一节和下一节怎么连接
+
+现在已经知道：
+
+**Table Metadata → Current Snapshot**
+
+但 Snapshot 自己并不会直接塞进成千上万个 Data File 路径。
+
+下一节继续向下：
+
+**Snapshot → Manifest List → Manifest**
+
+回答一个 Snapshot 怎样高效找到大量 Content File。
