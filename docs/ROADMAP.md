@@ -68,14 +68,15 @@
 - [x] Freeze cross-tab truth boundaries
 - [x] Define reverse-link policy
 
-### Next: V0.6.2 Project Case Fact Boundary
-- [ ] North America fact checklist
-- [ ] Actual / Boundary / Mapping structure
-- [ ] Only verified project facts rendered as Actual
-- [ ] Connect Iceberg Knowledge nodes
-- [ ] Connect Scale scenarios without experience inflation
+### V0.6.2 Project Case Fact Boundary
+- [x] North America fact checklist
+- [x] Actual / Boundary / Mapping structure
+- [x] Only verified project facts enter Actual
+- [x] Connect Iceberg Knowledge nodes
+- [x] Connect Scale scenarios without experience inflation
+- [x] Keep Demo / engineering evidence separate from production-runtime claims
 
-### V0.6.3 Scale Lab Detail
+### Next: V0.6.3 Scale Lab Detail
 - [ ] Scenario loader
 - [ ] Scale Lab detail route
 - [ ] 10B Backfill detail

@@ -1,0 +1,93 @@
+version: "0.6.2"
+project: north-america
+scope: iceberg
+reviewed_at: 2026-09-11
+
+truth_policy:
+  actual_requires: verified_project_artifact
+  production_claim_requires: production_runtime_evidence
+  knowledge_relevance_is_not_implementation_proof: true
+  scale_extension_is_hypothetical: true
+
+facts:
+  - id: na-iceberg-project-nature-001
+    statement: 北美项目当前事实源支持其作为 Shopify Order Domain 的现代数据平台 Demo / engineering case。
+    status: verified
+    evidence_scope: project_artifact
+    publish_as_actual: true
+
+  - id: na-iceberg-lakehouse-scope-001
+    statement: Iceberg 属于项目 Lakehouse 主链路和工程实现范围。
+    status: verified
+    evidence_scope: project_code_and_docs
+    publish_as_actual: true
+    production_runtime_proven: false
+
+  - id: na-iceberg-runtime-stack-001
+    statement: 项目工程资料包含 Polaris Catalog、Spark Compute、Object Storage 与 Iceberg Table 的本地运行/验证设计。
+    status: verified
+    evidence_scope: project_code_and_docs
+    publish_as_actual: true
+    production_runtime_proven: false
+
+  - id: na-iceberg-raw-normalize-001
+    statement: 项目存在围绕 Iceberg 的 Raw / Normalize 数据路径与相关工程代码。
+    status: verified
+    evidence_scope: project_code_and_docs
+    publish_as_actual: true
+    production_runtime_proven: false
+
+  - id: na-dagster-phase3a-001
+    statement: Dagster Definitions / Resources / Assets / Checks 等工程代码已存在，但阶段性资料中完整运行验收仍未全部完成。
+    status: partial_verified
+    evidence_scope: project_code_and_acceptance_notes
+    publish_as_actual: true
+    qualifier_required: true
+
+  - id: na-datahub-agent-001
+    statement: DataHub 与 Data Agent 在阶段性资料中属于后续演进方向，不能自动作为当前 Iceberg Project Case 的已落地事实。
+    status: boundary_verified
+    evidence_scope: project_roadmap
+    publish_as_actual: false
+
+  - id: na-iceberg-internal-incidents-001
+    statement: Manifest 膨胀、真实 Commit 冲突、真实 Small-file 事故等 Iceberg L5 问题没有项目证据证明曾作为实际线上故障发生。
+    status: not_verified
+    evidence_scope: none
+    publish_as_actual: false
+
+  - id: na-production-scale-001
+    statement: 10B 回填、100 并发 Writer、10 秒 Streaming Commit 等规模数字属于 Scale Lab 假设，不是项目事实。
+    status: hypothetical_only
+    evidence_scope: scale_scenarios
+    publish_as_actual: false
+
+knowledge:
+  relationship: explanatory_relevance_not_implementation_proof
+  ids:
+    - kb-iceberg-overview-001
+    - kb-iceberg-metadata-snapshot-001
+    - kb-iceberg-manifest-tree-001
+    - kb-iceberg-partition-evolution-001
+    - kb-iceberg-schema-evolution-001
+    - kb-iceberg-row-level-changes-001
+    - kb-iceberg-write-distribution-ordering-001
+    - kb-iceberg-commit-concurrency-001
+    - kb-iceberg-maintenance-small-files-001
+    - kb-iceberg-trino-read-path-001
+    - kb-iceberg-production-troubleshooting-001
+
+scale:
+  relationship: hypothetical_extension
+  ids:
+    - sc-iceberg-10b-backfill-001
+    - sc-iceberg-streaming-small-files-001
+    - sc-iceberg-concurrent-commit-001
+
+interviews:
+  policy: evidence_backed_existing_questions_only
+  ids:
+    - iq-lake-vs-warehouse-001
+    - iq-large-dataset-tech-selection-001
+    - iq-system-concurrency-fault-tolerance-001
+  iceberg_specific_frequency: not_claimed_without_direct_evidence

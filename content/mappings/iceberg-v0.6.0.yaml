@@ -1,20 +1,26 @@
-version: 0.6.0
+version: 0.6.2
 topic: iceberg
+
 project:
   north-america:
     relevance: high
-    actual_fact_status: needs_fact_check
+    project_case_id: pj-north-america-iceberg-001
+    fact_checklist: content/projects/north-america-fact-check-v0.6.2.yaml
+    actual_fact_status: artifact_verified_demo_boundary
+    production_runtime_proven: false
     rule: Knowledge relevance does not prove actual implementation.
+
 interview:
   evidence_policy: direct_evidence_only
   mapped_existing_questions:
-  - iq-lake-vs-warehouse-001
-  - iq-large-dataset-tech-selection-001
-  - iq-system-concurrency-fault-tolerance-001
+    - iq-lake-vs-warehouse-001
+    - iq-large-dataset-tech-selection-001
+    - iq-system-concurrency-fault-tolerance-001
   iceberg_specific_frequency: not_claimed_without_direct_evidence
+
 scale_lab:
   all_hypothetical: true
   scenario_ids:
-  - sc-iceberg-10b-backfill-001
-  - sc-iceberg-streaming-small-files-001
-  - sc-iceberg-concurrent-commit-001
+    - sc-iceberg-10b-backfill-001
+    - sc-iceberg-streaming-small-files-001
+    - sc-iceberg-concurrent-commit-001
