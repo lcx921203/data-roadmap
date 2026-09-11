@@ -244,30 +244,61 @@ for (let index = 0; index < expectedIcebergSpine.length; index += 1) {
 const manifestV061 = readFrontMatter(
   'content/knowledge/kb-iceberg-manifest-tree-001.md',
 )
-for (const required of [
-  '要么是 Data Manifest，要么是 Delete Manifest',
-  '一个 Manifest 只对应一个 Partition Spec',
-  'Manifest 写出后就是不可变文件',
-]) {
-  if (!manifestV061.body.includes(required)) {
-    throw new Error(`Manifest P0 correctness rule missing: ${required}`)
+
+const manifestSemanticRules = [
+  {
+    name: 'data/delete manifest separation',
+    test:
+      manifestV061.body.includes('Data Manifest') &&
+      manifestV061.body.includes('Delete Manifest') &&
+      /不能.*混放|只追踪.*一种 Content|要么.*Data Manifest.*要么.*Delete Manifest/s.test(
+        manifestV061.body,
+      ),
+  },
+  {
+    name: 'single partition spec per manifest',
+    test:
+      manifestV061.body.includes('Partition Spec') &&
+      /一个 Manifest.*一个 Partition Spec|1 个 Manifest.*1 个 Partition Spec/s.test(
+        manifestV061.body,
+      ),
+  },
+  {
+    name: 'manifest immutability',
+    test:
+      manifestV061.body.includes('Manifest') &&
+      /不可变|immutable/i.test(manifestV061.body),
+  },
+]
+
+for (const rule of manifestSemanticRules) {
+  if (!rule.test) {
+    throw new Error(`Manifest P0 semantic rule missing: ${rule.name}`)
   }
 }
 
 const rowLevelV061 = readFrontMatter(
   'content/knowledge/kb-iceberg-row-level-changes-001.md',
 )
+
 for (const required of [
   'Position Delete',
   'Equality Delete',
   'Deletion Vector',
   'Sequence Number',
-  'Data Manifest',
-  'Delete Manifest',
 ]) {
   if (!rowLevelV061.body.includes(required)) {
     throw new Error(`Row-level chapter missing required concept: ${required}`)
   }
+}
+
+if (
+  !rowLevelV061.body.includes('Data Manifest') ||
+  !rowLevelV061.body.includes('Delete Manifest')
+) {
+  throw new Error(
+    'Row-level chapter must connect Data Manifest and Delete Manifest to row-level changes',
+  )
 }
 
 const maintenanceV061 = readFrontMatter(

@@ -89,6 +89,17 @@ Deletion Vector 是 V3 引入的位置删除表示。
 
 一个 Snapshot 中，对同一个 Data File 最多有一个适用的 Deletion Vector。
 
+## Data Manifest 与 Delete Manifest
+
+在 Manifest 层，Data 和 Delete 也分开组织：
+
+- **Data Manifest** 追踪 Data Files；
+- **Delete Manifest** 追踪 Delete Files / Deletion Vector Metadata。
+
+同一个 Manifest 不会同时混放 Data 与 Delete Content；但同一个 Snapshot 的 Manifest List 可以同时引用 Data Manifest 和 Delete Manifest。
+
+这正好把上一节的 Manifest 结构和这一节的 Row-level Delete 串起来。
+
 ## Delete 为什么不会随便应用到所有 Data File
 
 Reader 不能把所有 Delete 信息无条件套到所有 Data File。
