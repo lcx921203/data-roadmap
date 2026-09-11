@@ -1,0 +1,110 @@
+/* V0.9.7 — Light / Dark Theme
+   Light mode keeps the frozen V1.9 palette unchanged.
+   Dark mode only overrides semantic tokens and a few legacy literal colors. */
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-canvas: #11110f;
+  --color-surface: #171714;
+  --color-surface-raised: #1d1d19;
+  --color-surface-strong: #282822;
+
+  --color-ink: #f2f2ed;
+  --color-ink-soft: #c1c1b8;
+  --color-ink-muted: #94948b;
+  --color-ink-faint: #6f6f68;
+
+  --color-hairline: #30302b;
+  --color-hairline-strong: #41413a;
+
+  --color-signal: #9eb2ff;
+  --color-signal-strong: #b9c7ff;
+  --color-signal-soft: #1b2440;
+
+  --color-success: #74d4a3;
+  --color-success-soft: #14261d;
+  --color-warning: #f0b866;
+  --color-warning-soft: #2a2112;
+  --color-danger: #f1837b;
+  --color-danger-soft: #2b1817;
+
+  --color-code-canvas: #0c0d10;
+  --color-code-surface: #13151a;
+  --color-code-ink: #f4f4f1;
+
+  --diagram-blue-bg: #17233a;
+  --diagram-blue-border: #355a8f;
+  --diagram-blue-ink: #a9c8ff;
+
+  --diagram-green-bg: #14271d;
+  --diagram-green-border: #2f6a49;
+  --diagram-green-ink: #93dcb4;
+
+  --diagram-amber-bg: #2a2111;
+  --diagram-amber-border: #7a5a22;
+  --diagram-amber-ink: #ebcb83;
+
+  --diagram-violet-bg: #211b33;
+  --diagram-violet-border: #5b4a86;
+  --diagram-violet-ink: #c3b7f0;
+
+  --diagram-rose-bg: #2b191c;
+  --diagram-rose-border: #7b3e48;
+  --diagram-rose-ink: #f0a7af;
+
+  --diagram-cyan-bg: #142629;
+  --diagram-cyan-border: #32666e;
+  --diagram-cyan-ink: #9bd8e1;
+}
+
+/* Legacy selected controls use `background: var(--color-ink)` + literal white.
+   In dark mode Ink becomes light, so the foreground must become dark. */
+:root[data-theme='dark']
+  .chip-row button[data-selected='true'],
+:root[data-theme='dark']
+  .interview-tech-scroll button[data-selected='true'],
+:root[data-theme='dark']
+  .primary-action {
+  color: var(--color-canvas);
+}
+
+/* Signal text is deliberately lighter in dark mode for reading contrast.
+   Keep small count badges on the stronger blue fill so white microcopy
+   remains legible. */
+:root[data-theme='dark'] .filter-control strong {
+  background: #315ddc;
+  color: #ffffff;
+}
+
+/* Quick Answer has two historical literal light-theme colors.
+   Rebind them to semantic dark-mode tokens. */
+:root[data-theme='dark'] .quick-answer {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--color-signal) 30%,
+      var(--color-hairline)
+    );
+}
+
+:root[data-theme='dark'] .quick-answer p {
+  color: var(--color-ink-soft);
+}
+
+/* Dark reading surfaces should stay calm rather than float with light-mode
+   shadows. */
+:root[data-theme='dark']
+  .reading-segment button[data-selected='true'],
+:root[data-theme='dark'] .bottom-sheet {
+  box-shadow: none;
+}
+
+/* The theme action uses the existing 44px IconButton contract. */
+.theme-toggle {
+  flex: none;
+}

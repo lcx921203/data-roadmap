@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { BackIcon, SearchIcon } from './Icons'
+import { ThemeToggle } from './ThemeToggle'
 
 interface TopBarProps {
   title?: string
@@ -22,7 +23,7 @@ export function TopBar({
     <header
       className="top-bar"
       data-detail={detail}
-      data-has-action={Boolean(action) || showSearch}
+      data-has-action={true}
     >
       {backHref ? (
         <div className="top-bar__side">
@@ -56,6 +57,7 @@ export function TopBar({
             <SearchIcon />
           </button>
         )}
+        <ThemeToggle />
       </div>
     </header>
   )

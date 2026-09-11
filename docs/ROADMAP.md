@@ -302,6 +302,22 @@
 - [x] Keep frozen V1.9 UI unchanged
 - [x] Freeze dbt V1
 
+## V0.9.7 UI Theme — Light / Dark
+
+### V0.9.7 Light / Dark Theme
+- [x] Keep the frozen Light palette unchanged
+- [x] Add a warm dark-reading semantic token palette
+- [x] Default to system Light / Dark preference on first visit
+- [x] Add pre-hydration theme resolution to avoid a bright startup flash
+- [x] Add a 44px Sun / Moon toggle to the shared TopBar
+- [x] Persist an explicit user Light / Dark override in localStorage
+- [x] Continue following system theme while no manual override exists
+- [x] Update mobile browser theme-color with the active theme
+- [x] Adapt status colors and technical-diagram color families for dark reading
+- [x] Correct legacy literal-light selected-control colors in dark mode
+- [x] Keep Learn / Interview / Scale layout and navigation unchanged
+- [x] Keep Design Contract V1.9 structure unchanged
+
 ## V1.0 Fifth Vertical Slice — MetricFlow / Semantic Layer
 
 ### Next: V1.0.0 MetricFlow Knowledge Spine Freeze

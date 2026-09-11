@@ -3,8 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#FCFCFA" />
     <meta name="description" content="DataRoadmap — From Data Engineering to AI" />
+    <script>
+      (() => {
+        const storageKey = 'dataroadmap-theme'
+        let storedTheme = null
+
+        try {
+          storedTheme = window.localStorage.getItem(storageKey)
+        } catch {
+          storedTheme = null
+        }
+
+        const systemTheme =
+          window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light'
+
+        const theme =
+          storedTheme === 'light' || storedTheme === 'dark'
+            ? storedTheme
+            : systemTheme
+
+        document.documentElement.dataset.theme = theme
+        document.documentElement.style.colorScheme = theme
+
+        const themeColor = document.querySelector(
+          'meta[name="theme-color"]',
+        )
+
+        if (themeColor) {
+          themeColor.setAttribute(
+            'content',
+            theme === 'dark' ? '#11110F' : '#FCFCFA',
+          )
+        }
+      })()
+    </script>
     <title>DataRoadmap</title>
   </head>
   <body>
