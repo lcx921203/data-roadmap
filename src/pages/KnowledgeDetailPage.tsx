@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
+import { RelatedInterviewSection } from '../components/RelatedInterviewSection'
 import { TopBar } from '../components/TopBar'
 import {
   getKnowledgeById,
@@ -111,6 +112,8 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
             </section>
           ))}
         </div>
+
+        <RelatedInterviewSection ids={article.meta.interview_relevance} />
 
         <nav className="knowledge-sequence" aria-label="学习顺序">
           {neighbors.previous ? (

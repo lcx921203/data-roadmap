@@ -51,44 +51,34 @@
 
 ### V0.6.1 Four-Tab Content Contract
 - [x] Historical contract completed
-- [x] Project IDs and truth boundaries clarified
 - [x] Superseded by V0.6.2.1 Three-Tab Product Reset
 
 ### V0.6.2 Project Case Fact Boundary
-- [x] Historical North America fact-boundary asset created
-- [x] Kept as backstage editorial context
-- [x] Removed from public vertical-slice completion criteria
+- [x] Historical asset retained as backstage context
+- [x] Removed from public vertical-slice criteria
 
 ### V0.6.2.1 Three-Tab Product Reset
 - [x] Public navigation = Learn / Interview / Scale
-- [x] Remove Projects from mobile navigation
-- [x] Remove Projects from desktop navigation
-- [x] Remove Projects public route
-- [x] Legacy #/projects falls back to Learn
-- [x] Public content model reduced to Knowledge / Interview / Scale
-- [x] Project assets reclassified as backstage context
-- [x] Iceberg vertical slice redefined around three public tabs
+- [x] Projects removed from public product
 
 ### V0.6.3 Scale Lab Detail
-- [x] Scenario detail schema
-- [x] Scale Lab detail route
-- [x] Clickable Scale scenario list
-- [x] 10B Backfill detail
-- [x] Streaming Small-files detail
-- [x] Concurrent Writer detail
-- [x] Constraints → Failure → Design → Trade-offs → Observability → Cost → Recovery
-- [x] Keep every scenario explicitly hypothetical
+- [x] Scenario detail schema and routes
+- [x] Three Iceberg Scale details
+- [x] Explicit hypothetical boundary
 
-### Next: V0.6.4 Interview Integration
-- [ ] Knowledge → evidence-backed Interview mapping
-- [ ] Scale → evidence-backed Interview mapping
-- [ ] Do not synthesize fake Iceberg frequency
-- [ ] Curated answer / knowledge cross-navigation
+### V0.6.4 Interview Integration
+- [x] Learn -> evidence-backed Interview mapping
+- [x] Scale -> evidence-backed Interview mapping
+- [x] Show current Evidence counts instead of copied frequency claims
+- [x] Show curated / pending answer status
+- [x] Do not synthesize Iceberg-specific frequency
 
-### V0.6.5 Three-Tab Cross Navigation
-- [ ] Knowledge → Interview / Scale
-- [ ] Interview → Knowledge / Scale
-- [ ] Scale → Knowledge / Interview
+### Next: V0.6.5 Three-Tab Cross Navigation
+- [ ] Interview -> Knowledge
+- [ ] Interview -> Scale
+- [ ] Knowledge -> related Scale scenarios
+- [ ] Scale -> related Knowledge nodes
+- [ ] Complete Iceberg Learn / Interview / Scale graph
 
 ### Later: UI Review
 - [ ] Review information hierarchy with complete Iceberg content
