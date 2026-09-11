@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '02'
 topic: spark
 learning_depth: L5
-status: memory_streaming_partial
+status: learn_v1_complete_pending_scale_interview
 technical_baseline:
   current_release_at_freeze: 4.2.0
   validation_date: '2026-09-11'
@@ -369,7 +369,7 @@ nodes:
   - preteach_flink_or_kafka_verticals
   handoff_to: scale_and_interview_integration
 freeze:
-  body_written: false
+  body_written: true
   ui_changes: false
   scale_scenarios_written: false
   interview_answers_written: false
@@ -378,6 +378,8 @@ freeze:
   reopen_structure_only_for:
   - verified_technical_error
   - proven_progression_break
-  body_status: partial_11_of_12
-  published_nodes: 11
-  remaining_nodes: 1
+  body_status: complete_12_of_12
+  published_nodes: 12
+  remaining_nodes: 0
+  progression_audit: passed_v0.8.4
+  technical_correctness_audit: passed_v0.8.4

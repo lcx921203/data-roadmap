@@ -175,12 +175,20 @@
 - [x] Separate checkpointing from end-to-end exactly-once guarantees
 - [x] Connect watermark to late-data and state-retention trade-offs
 
-### Next: V0.8.4 Spark Production Closure
-- [ ] 12 Failure / Observability / Backfill / Capacity
-- [ ] Knowledge progression audit
-- [ ] Technical correctness audit
+### V0.8.4 Spark Production Closure
+- [x] 12 Failure / Observability / Backfill / Capacity
+- [x] Job -> Stage -> Task first troubleshooting model
+- [x] Separate balanced shuffle pressure from data skew
+- [x] Separate transient retry from deterministic failure
+- [x] Keep speculation as straggler mitigation, not skew repair
+- [x] Add batch backfill pressure and saturation capacity model
+- [x] Add streaming backlog / state production diagnosis model
+- [x] Spark UI -> Event Log / History -> Metrics observability layers
+- [x] Knowledge progression audit
+- [x] Technical correctness audit
+- [x] Freeze Spark Learn V1 at 12 / 12
 
-### V0.8.5 Spark Scale & Interview Integration
+### Next: V0.8.5 Spark Scale & Interview Integration
 - [ ] Create only justified hypothetical Spark Scale scenarios
 - [ ] Map existing evidence-backed Spark Interview questions
 - [ ] Do not invent Spark-specific frequency
