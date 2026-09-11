@@ -1,17 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
-import { DirectoryIcon } from '../components/Icons'
+import { useEffect, useMemo } from 'react'
+import { InlineRelationLinks } from '../components/InlineRelationLinks'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
-import { ReadingDirectorySheet } from '../components/ReadingDirectorySheet'
-import { RelatedInterviewSection } from '../components/RelatedInterviewSection'
-import { RelatedScaleSection } from '../components/RelatedScaleSection'
+import { ReadingDirectoryController } from '../components/ReadingDirectoryController'
 import { TopBar } from '../components/TopBar'
 import {
-  getInterviewIdsForKnowledge,
   getKnowledgeById,
   getKnowledgeNeighbors,
-  getScalesForKnowledge,
 } from '../content/registry'
 import { splitH2Sections } from '../content/loaders'
+import { getSectionRelationTargets } from '../content/sectionRelations'
 import { useActiveReadingSection } from '../hooks/useActiveReadingSection'
 import {
   extractMarkdownSubheadings,
@@ -27,7 +24,6 @@ export function KnowledgeDetailPage({
   id,
 }: KnowledgeDetailPageProps) {
   const article = getKnowledgeById(id)
-  const [directoryOpen, setDirectoryOpen] = useState(false)
 
   useEffect(() => {
     if (article) recordKnowledgeVisit(article.meta.id)
@@ -88,8 +84,6 @@ export function KnowledgeDetailPage({
   }
 
   const neighbors = getKnowledgeNeighbors(id)
-  const relatedScales = getScalesForKnowledge(id)
-  const interviewIds = getInterviewIdsForKnowledge(id)
   const topicLabel =
     article.meta.topic === 'iceberg'
       ? 'Iceberg'
@@ -109,18 +103,6 @@ export function KnowledgeDetailPage({
       <TopBar
         title="Knowledge"
         backHref={`/learn/stage/${article.meta.stage_id}`}
-        action={
-          directoryItems.length > 0 ? (
-            <button
-              className="top-bar__directory-action"
-              type="button"
-              onClick={() => setDirectoryOpen(true)}
-            >
-              <DirectoryIcon />
-              <span>目录</span>
-            </button>
-          ) : null
-        }
       />
 
       <article className="page reading-page">
@@ -150,6 +132,11 @@ export function KnowledgeDetailPage({
             const sectionId = `section-${encodeURIComponent(
               section.title,
             )}`
+            const relationTargets = getSectionRelationTargets(
+              'knowledge',
+              article.meta.id,
+              section.title,
+            )
 
             return (
               <section
@@ -158,6 +145,12 @@ export function KnowledgeDetailPage({
                 id={sectionId}
               >
                 <h2>{section.title}</h2>
+
+                <InlineRelationLinks
+                  targets={relationTargets}
+                  placement="section"
+                />
+
                 <MarkdownBlocks
                   markdown={section.body}
                   headingPrefix={sectionId}
@@ -198,18 +191,11 @@ export function KnowledgeDetailPage({
             <span />
           )}
         </nav>
-
-        <RelatedScaleSection
-          ids={relatedScales.map((scenario) => scenario.id)}
-        />
-        <RelatedInterviewSection ids={interviewIds} />
       </article>
 
-      <ReadingDirectorySheet
-        open={directoryOpen}
+      <ReadingDirectoryController
         items={directoryItems}
         activeId={activeSectionId}
-        onClose={() => setDirectoryOpen(false)}
       />
     </>
   )

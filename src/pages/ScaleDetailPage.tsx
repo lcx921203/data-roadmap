@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react'
-import { DirectoryIcon } from '../components/Icons'
-import { ReadingDirectorySheet } from '../components/ReadingDirectorySheet'
-import { RelatedInterviewSection } from '../components/RelatedInterviewSection'
-import { RelatedKnowledgeSection } from '../components/RelatedKnowledgeSection'
+import { useMemo } from 'react'
+import { InlineRelationLinks } from '../components/InlineRelationLinks'
+import { ReadingDirectoryController } from '../components/ReadingDirectoryController'
 import { TopBar } from '../components/TopBar'
 import { appRegistry } from '../content/registry'
+import { getSectionRelationTargets } from '../content/sectionRelations'
 import { useActiveReadingSection } from '../hooks/useActiveReadingSection'
 import type {
   ScaleScenarioDetailItem,
@@ -19,10 +18,12 @@ function DetailSection({
   id,
   title,
   items,
+  sourceAssetId,
 }: {
   id: string
   title: string
   items?: ScaleScenarioDetailItem[]
+  sourceAssetId: string
 }) {
   if (!items?.length) return null
 
@@ -30,16 +31,30 @@ function DetailSection({
     <section className="scale-detail__section" id={id}>
       <h2>{title}</h2>
       <div className="scale-detail__list">
-        {items.map((item, index) => (
-          <article
-            className="scale-detail__item"
-            id={makeDetailItemId(id, index)}
-            key={item.title}
-          >
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </article>
-        ))}
+        {items.map((item, index) => {
+          const relationTargets = getSectionRelationTargets(
+            'scale',
+            sourceAssetId,
+            item.title,
+          )
+
+          return (
+            <article
+              className="scale-detail__item"
+              id={makeDetailItemId(id, index)}
+              key={item.title}
+            >
+              <h3>{item.title}</h3>
+
+              <InlineRelationLinks
+                targets={relationTargets}
+                placement="section"
+              />
+
+              <p>{item.body}</p>
+            </article>
+          )
+        })}
       </div>
     </section>
   )
@@ -100,7 +115,6 @@ export function ScaleDetailPage({ id }: { id: string }) {
   const scenario =
     appRegistry.scaleScenarios.find((item) => item.id === id) ??
     null
-  const [directoryOpen, setDirectoryOpen] = useState(false)
 
   const directoryItems = useMemo<ReadingDirectoryItem[]>(() => {
     if (!scenario) return []
@@ -189,22 +203,7 @@ export function ScaleDetailPage({ id }: { id: string }) {
 
   return (
     <>
-      <TopBar
-        title="Scale"
-        backHref="/scale"
-        action={
-          directoryItems.length > 0 ? (
-            <button
-              className="top-bar__directory-action"
-              type="button"
-              onClick={() => setDirectoryOpen(true)}
-            >
-              <DirectoryIcon />
-              <span>目录</span>
-            </button>
-          ) : null
-        }
-      />
+      <TopBar title="Scale" backHref="/scale" />
 
       <article className="page reading-page scale-detail">
         <p className="eyebrow">
@@ -248,47 +247,49 @@ export function ScaleDetailPage({ id }: { id: string }) {
           id="scale-section-constraints"
           title="约束"
           items={scenario.constraints}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-failures"
           title="瓶颈与故障"
           items={scenario.failure_bottlenecks}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-design"
           title="设计"
           items={scenario.design}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-tradeoffs"
           title="权衡"
           items={scenario.tradeoffs}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-observability"
           title="可观测性"
           items={scenario.observability}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-cost"
           title="成本"
           items={scenario.cost}
+          sourceAssetId={scenario.id}
         />
         <DetailSection
           id="scale-section-recovery"
           title="恢复"
           items={scenario.recovery}
+          sourceAssetId={scenario.id}
         />
-
-        <RelatedKnowledgeSection ids={scenario.knowledge} />
-        <RelatedInterviewSection ids={scenario.interviews} />
       </article>
 
-      <ReadingDirectorySheet
-        open={directoryOpen}
+      <ReadingDirectoryController
         items={directoryItems}
         activeId={activeSectionId}
-        onClose={() => setDirectoryOpen(false)}
       />
     </>
   )

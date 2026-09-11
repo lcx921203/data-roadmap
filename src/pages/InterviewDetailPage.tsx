@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react'
 import { EvidenceDisclosure } from '../components/EvidenceDisclosure'
 import { FollowUpDisclosure } from '../components/FollowUpDisclosure'
+import { InlineRelationLinks } from '../components/InlineRelationLinks'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
 import { MarkdownSections } from '../components/MarkdownSections'
 import { ReadingSegment } from '../components/ReadingSegment'
-import { RelatedKnowledgeSection } from '../components/RelatedKnowledgeSection'
-import { RelatedScaleSection } from '../components/RelatedScaleSection'
 import { ScaleFollowUpSection } from '../components/ScaleFollowUpSection'
 import { TopBar } from '../components/TopBar'
 import {
@@ -20,6 +19,7 @@ import {
   getQuestionEvidence,
   getScalesForInterview,
 } from '../content/registry'
+import type { RelationTarget } from '../content/sectionRelations'
 import type {
   InterviewAnswerFrontMatter,
   MarkdownSection,
@@ -104,17 +104,32 @@ export function InterviewDetailPage({
     [answer],
   )
 
-  const quick = sections.find((section) => section.title === '30 秒回答')
+  const quick = sections.find(
+    (section) => section.title === '30 秒回答',
+  )
   const scaleSection = sections.find(isScale)
   const followUpSection = sections.find(isFollowUp)
   const coreSections = selectCoreSections(
-    sections.filter((section) => section.title !== '30 秒回答'),
+    sections.filter(
+      (section) => section.title !== '30 秒回答',
+    ),
     mode,
   )
   const followUps = getCuratedFollowUps(id)
   const evidence = getQuestionEvidence(id)
   const relatedKnowledge = getKnowledgeForInterview(id)
   const relatedScales = getScalesForInterview(id)
+
+  const relationTargets: RelationTarget[] = [
+    ...relatedKnowledge.map((article) => ({
+      type: 'knowledge' as const,
+      id: article.meta.id,
+    })),
+    ...relatedScales.map((scenario) => ({
+      type: 'scale' as const,
+      id: scenario.id,
+    })),
+  ]
 
   if (!question) {
     return (
@@ -136,9 +151,19 @@ export function InterviewDetailPage({
       />
 
       <article className="page reading-page">
-        <h1 className="interview-question-title">{question.question}</h1>
+        <h1 className="interview-question-title">
+          {question.question}
+        </h1>
 
-        <EvidenceDisclosure question={question} items={evidence} />
+        <EvidenceDisclosure
+          question={question}
+          items={evidence}
+        />
+
+        <InlineRelationLinks
+          targets={relationTargets}
+          placement="header"
+        />
 
         {quick ? (
           <section className="quick-answer">
@@ -154,14 +179,19 @@ export function InterviewDetailPage({
 
         {answer && (
           <>
-            <ReadingSegment value={mode} onChange={setMode} />
+            <ReadingSegment
+              value={mode}
+              onChange={setMode}
+            />
 
             {coreSections.length > 0 && (
               <MarkdownSections sections={coreSections} />
             )}
 
             {mode === 'interview' && scaleSection && (
-              <ScaleFollowUpSection markdown={scaleSection.body} />
+              <ScaleFollowUpSection
+                markdown={scaleSection.body}
+              />
             )}
 
             {mode === 'interview' && followUpSection && (
@@ -178,13 +208,6 @@ export function InterviewDetailPage({
             )}
           </>
         )}
-
-        <RelatedKnowledgeSection
-          ids={relatedKnowledge.map((article) => article.meta.id)}
-        />
-        <RelatedScaleSection
-          ids={relatedScales.map((scenario) => scenario.id)}
-        />
       </article>
     </>
   )

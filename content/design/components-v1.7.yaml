@@ -1,5 +1,5 @@
-version: '1.7'
-frozen_at: 0.6.7.1
+version: '1.7.1'
+frozen_at: 0.6.7.1.1
 status: active
 viewport_baseline:
   width: 390
@@ -20,17 +20,19 @@ principles:
   descriptive_metadata_uses_middle_dot: true
   horizontal_quick_nav_for_long_reading: false
   reading_directory_for_long_reading: true
+  one_hand_reading_controls: true
+  contextual_relations_before_end_blocks: true
 
 components:
 - id: app-shell
-  status: frozen
+  status: active
   anatomy:
   - top_bar
   - content
   - bottom_navigation
 
 - id: bottom-navigation
-  status: frozen_v1_7
+  status: active
   tabs:
   - learn
   - interview
@@ -44,71 +46,72 @@ components:
   - quiet_two_pixel_active_indicator_allowed
   - content_has_extra_breathing_space
 
-- id: detail-top-bar
-  status: frozen_v1_7
-  anatomy:
-  - back
-  - context
-  - directory_action
+- id: reading-floating-control
+  status: active_v1_7_1
+  side: right
+  behavior:
+  - vertically_draggable
+  - remembers_vertical_position
+  - toggles_directory
   rules:
-  - directory_action_fixed_reachable
-  - no_floating_overlay_button
-  - touch_target_min_44
+  - edge_docked
+  - no_heavy_shadow
+  - touch_action_none
+  - remains_thumb_reachable
+  - does_not_depend_on_top_bar
 
-- id: reading-directory
-  status: frozen_v1_7
-  mobile_container: bottom_sheet
+- id: reading-side-drawer
+  status: active_v1_7_1
+  side: right
+  width_mobile: 86vw
+  close_methods:
+  - tap_scrim
+  - swipe_right
+  - floating_control_toggle
+  - bottom_close_action
+  - escape_key
   anatomy:
+  - title
   - reading_progress
   - current_section
   - section_tree
-  supports:
-  - h2
-  - h3
+  - bottom_close_action
   rules:
-  - replaces_horizontal_quick_navigation
+  - no_item_dividers
+  - hierarchy_by_indent_spacing_type
   - active_uses_signal_soft
-  - no_card_wall
-  - no_shadow
-  - aria_current
-  - progressbar_semantics
+  - h2_h3_supported
+  - focus_trap
+  - restore_focus
+
+- id: contextual-relation
+  status: active_v1_7_1
+  source_scope:
+  - knowledge_section
+  - scale_detail_item
+  - interview_header
+  targets:
+  - learn
+  - scale
+  - interview
+  rules:
+  - place_near_relevant_context
+  - compact_text_link_not_card
+  - relation_is_not_frequency_claim
+  - relation_is_not_project_fact
+  - no_forced_relation_for_graph_completeness
+  - explicit_section_mapping_is_single_source_of_truth
 
 - id: secondary-metadata-line
-  status: frozen_v1_7
+  status: active
   format: A · B · C
   rules:
   - descriptive_only
   - not_a_chip
   - same_semantics_same_visual_grammar
 
-- id: continue-learning
-  status: frozen
-  rules:
-  - whole_surface_clickable
-  - signal_soft_current_state
-  - no_separate_cta
-  - dynamic_position
-  - position_not_completion
-  - reduced_motion_static_fallback
-
-- id: question-row
-  status: frozen
-  rules:
-  - question_is_primary
-  - evidence_visible
-  - dynamic_counts
-
-- id: evidence-disclosure
-  status: frozen
-  mobile_container: bottom_sheet
-  grouping: company
-  rules:
-  - evidence_not_internal_debug_data
-  - source_url_not_frontstage
-  - reliability_not_frontstage
-
 - id: reading-segment
-  status: frozen_v1_7
+  status: active
   labels:
   - 面试回答
   - 深入理解
@@ -116,14 +119,14 @@ components:
   - local_reading_mode_not_top_level_navigation
 
 - id: code-block
-  status: frozen
+  status: active
   rules:
   - only_for_code_config_command_sql
   - horizontal_scroll
   - copy_action
 
 - id: technical-diagram
-  status: frozen
+  status: active
   usage_policy: exception_only_when_text_is_less_clear
   rules:
   - mobile_first_390
@@ -133,11 +136,3 @@ components:
   - color_not_only_semantic
   - simple_linear_relation_prefers_text
   - must_reduce_cognitive_load
-
-- id: cross-tab-extension
-  status: frozen_v1_7
-  priority: secondary
-  rules:
-  - same_tab_continuation_first
-  - relation_is_not_frequency_claim
-  - relation_is_not_project_fact

@@ -1,6 +1,6 @@
 # DataRoadmap Design System
 
-> Version: **1.7 / Three-Tab Reading Foundation**
+> Version: **1.7.1 / One-Hand Reading Interaction**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
@@ -22,6 +22,7 @@ Precise
 Readable
 Evidence-led
 Mobile-first
+One-hand friendly
 ```
 
 禁止：
@@ -35,8 +36,6 @@ Heavy Shadow
 Gamification Dashboard
 Decorative Motion
 ```
-
-DataRoadmap 不是作者项目展示站，也不是 Dashboard 产品。
 
 公共产品只保留：
 
@@ -128,14 +127,12 @@ Bottom Navigation 是独立的 App Navigation Surface（应用导航层）。
 
 - 使用 `Surface Raised`；
 - 顶部使用 `Hairline Strong`；
-- 正文与底栏之间保留额外 breathing space；
+- 正文与底栏之间保留 breathing space；
 - Active 只使用 Signal Blue；
 - 允许 2px 安静 Active Indicator；
 - 不使用大 Pill；
 - 不使用大 Shadow；
 - Safe Area 在导航层内部计算。
-
-禁止让 Bottom Navigation 看起来像正文最后一行。
 
 ---
 
@@ -143,50 +140,38 @@ Bottom Navigation 是独立的 App Navigation Surface（应用导航层）。
 
 ### List / Home
 
-TopBar 只承担：
+TopBar 承担：
 
 - Brand / Tab Context；
 - 必要的全局操作。
 
 ### Reading Detail
 
-Detail TopBar：
+Detail TopBar 只保留：
 
 ```text
 Back
 Context
-Directory
 ```
 
-目录入口必须在长文中固定可达。
-
-目录按钮使用：
-
-```text
-list icon + 目录
-```
-
-不使用浮动大按钮，不覆盖正文。
-
----
-
-## 7. Reading Directory
-
-长文章不再使用横向 Quick Navigation 作为主要目录。
+目录不再依赖 TopBar 右上角入口。
 
 原因：
 
-- 长标题难扫描；
-- 横向内容不可完整预见；
-- 无法表达章节层级；
-- 用户缺少整篇位置感。
+- 右上角是单手操作最难触达区域之一；
+- 长文目录属于阅读辅助工具，不应该挤占固定顶部导航；
+- 目录必须在文章滚动过程中持续可达。
 
-统一使用：
+---
+
+## 7. One-Hand Reading Directory
+
+长文章使用：
 
 ```text
-Directory Trigger
+Right-edge Floating Control
 ↓
-Bottom Sheet
+Right-side Reading Drawer
 ├─ Reading Progress
 ├─ Current Section
 └─ Full Section Tree
@@ -194,20 +179,69 @@ Bottom Sheet
    └─ H3
 ```
 
-### Current Section
+### Floating Control
+
+规则：
+
+- 默认吸附右侧中下区域；
+- 只允许上下拖动，不在正文中自由漂移；
+- 位置保存在本地；
+- 点击打开 / 收起目录；
+- 不使用 Heavy Shadow；
+- 不遮挡标题与主操作；
+- 最小触摸区域 >= 44px。
+
+### Side Drawer
+
+从右侧进入。
+
+移动端宽度约：
+
+```text
+86vw
+```
+
+必须保留左侧一小段 Scrim（遮罩区），让用户能感知“这是侧层，不是新页面”。
+
+关闭方式：
+
+```text
+点击左侧遮罩
+向右滑动
+再次点击悬浮目录
+底部“收起目录”
+Escape（键盘）
+```
+
+不把“关闭”只放在右上角。
+
+### Directory Hierarchy
+
+目录项之间默认**不加横线**。
+
+层级通过：
+
+```text
+H2 weight
+H3 indentation
+spacing
+active soft-blue background
+```
+
+表达。
 
 当前章节：
 
 - `Signal Soft` 背景；
 - `Signal Strong` 文字；
-- 不使用 Shadow；
-- 不使用大 Card。
+- 保留“当前”文字提示；
+- 不依赖颜色作为唯一状态。
 
 ### Progress
 
 Reading Progress 是位置感，不是 Completion Badge。
 
-当前 V1.7 使用章节位置估算进度。
+当前使用章节位置估算进度。
 
 ---
 
@@ -226,24 +260,23 @@ Article Header
 Quick Understanding / Main Line
 ↓
 Body
+  Contextual Relations where relevant
 ↓
 Primary Continuation
-↓
-Cross-Tab Extensions
 ```
 
 ### Learn Detail
 
-必须：
+优先：
 
 ```text
 正文
 → 上一节 / 下一节
-→ 相关 Scale
-→ 真实 Interview
 ```
 
-同 Tab 学习连续性优先于跨 Tab 延伸。
+跨 Tab 关联不再统一堆在文章最下面。
+
+如果某个 Scale / Interview 与具体小节直接相关，就放在该小节标题附近。
 
 ### Scale Detail
 
@@ -261,124 +294,39 @@ Cost
 Recovery
 ```
 
-目录解决移动端跳转，不删生产深度。
+与 Learn / Interview 的关系放在对应 Detail Item 附近，而不是只在文章底部出现。
+
+### Interview Detail
+
+Interview 与 Learn / Scale 的关联放在题目 Header / Evidence 之后，用户不需要读到底部才发现延伸内容。
 
 ---
 
-## 9. Secondary Metadata Grammar
+## 9. Contextual Relation Grammar
 
-描述性 Metadata 统一：
+Cross-tab Relation（跨 Tab 关联）是一种 Navigation Action（导航动作），不是描述性 Metadata。
+
+前台形式：
 
 ```text
-A · B · C
+Scale · 100 个 Writer 并发提交 →
+Interview · 高并发系统如何保证一致性与容错？ →
+Learn · 乐观提交、冲突与恢复 →
 ```
-
-适用：
-
-- `Iceberg · L5 · 深度掌握`
-- `数据规模 · 资源隔离 · 查询 SLO · 成本`
-- Company / Role / Round
 
 规则：
 
-- 非交互 Metadata 不做 Chip；
-- Chip 只用于 Filter / Choice / State；
-- 相同语义使用相同语法。
+- 放在最相关的 H2 / H3 / Detail Item 附近；
+- 使用紧凑文本 Link，不做大 Card；
+- Type Label 可以使用 Signal；
+- Target Title 使用 Soft Ink；
+- 一次只展示明确关系；
+- 宁可没有，也不为了“知识图谱完整”强行关联。
 
----
-
-## 10. Learn
-
-Learn 回答：
-
-> 我应该理解什么？
-
-Learn 是连续学习路径，不是知识卡片墙。
-
-首页重点：
-
-- 当前学习位置；
-- 学习路线；
-- Stage 顺序。
-
-Detail 重点：
-
-- 30 秒理解；
-- 知识递进；
-- 上一节 / 下一节；
-- 再进入 Scale / Interview。
-
----
-
-## 11. Interview
-
-Interview 回答：
-
-> 企业会怎么问？我应该怎么回答？
-
-Discovery：
+关系表示：
 
 ```text
-Search
-Technology Filter
-Advanced Filter
-Question List
-```
-
-Evidence：
-
-```text
-Frequency Band
-N 份面经 · M 家公司
-面经依据
-```
-
-频率只能来自 Evidence。
-
-Reading Segment 前台名称：
-
-```text
-面试回答 | 深入理解
-```
-
-不得再使用 `Interview | Learn` 造成顶级 Tab 混淆。
-
----
-
-## 12. Scale
-
-Scale 回答：
-
-> 规模、并发、可靠性、成本约束扩大后怎么设计？
-
-Scale Scenario 默认明确：
-
-```yaml
-hypothetical: true
-```
-
-它是生产训练，不是项目经历。
-
-Scale Detail 可以很长，但必须通过 Directory 提供结构感。
-
----
-
-## 13. Cross-Tab Extensions
-
-Cross-link 是 Secondary Extension（次级延伸）。
-
-视觉优先级：
-
-```text
-Primary Content
-> Same-Tab Continuation
-> Cross-Tab Extension
-```
-
-Cross-link 表示：
-
-```text
-useful together
+useful together in this context
 ```
 
 不表示：
@@ -387,6 +335,86 @@ useful together
 high interview frequency
 real project fact
 ```
+
+Section-level Relationship 的事实源：
+
+```text
+content/mappings/*-section-relations-*.yaml
+```
+
+UI 不硬编码题目或场景名称。
+
+---
+
+## 10. Secondary Metadata Grammar
+
+描述性 Metadata 统一：
+
+```text
+A · B · C
+```
+
+例如：
+
+```text
+Iceberg · L5 · 深度掌握
+数据规模 · 资源隔离 · 查询 SLO · 成本
+```
+
+非交互 Metadata 不做 Chip。
+
+---
+
+## 11. Learn
+
+Learn 回答：
+
+> 我应该理解什么？
+
+Learn 是连续学习路径，不是知识卡片墙。
+
+Detail 重点：
+
+- 30 秒理解；
+- 知识递进；
+- 章节级关系；
+- 上一节 / 下一节。
+
+---
+
+## 12. Interview
+
+Interview 回答：
+
+> 企业会怎么问？我应该怎么回答？
+
+Evidence 频率只能来自真实 Evidence。
+
+Reading Segment：
+
+```text
+面试回答 | 深入理解
+```
+
+关联 Learn / Scale 放在问题上方阅读区域，不放成大块 Footer。
+
+---
+
+## 13. Scale
+
+Scale 回答：
+
+> 规模、并发、可靠性、成本约束扩大后怎么设计？
+
+Scale Scenario 默认：
+
+```yaml
+hypothetical: true
+```
+
+它是生产训练，不是项目经历。
+
+章节 / Detail Item 可以直接挂对应 Learn / Interview Link。
 
 ---
 
@@ -402,22 +430,21 @@ Quick Answer 使用：
 
 ---
 
-## 15. Bottom Sheet
+## 15. Bottom Sheet vs Side Drawer
 
-统一 BottomSheet 支持：
+`BottomSheet` 继续用于：
 
-- `aria-modal`；
-- Focus Trap；
-- Escape Close；
-- Restore Focus；
-- Mobile max-height 82vh；
-- 顶部圆角约 14px。
-
-适用：
-
-- Evidence；
+- Interview Evidence；
 - Filters；
-- Reading Directory。
+- 其他短时操作。
+
+`Reading Directory` 不再使用 BottomSheet。
+
+长文章目录统一使用：
+
+```text
+Right-side Reading Drawer
+```
 
 ---
 
@@ -425,23 +452,13 @@ Quick Answer 使用：
 
 只有真实代码、SQL、配置、命令使用 CodeBlock。
 
-不得使用黑色代码块表达：
-
-- 架构职责；
-- 规模参数；
-- KPI；
-- P0/P1/P2；
-- 普通流程文本。
+不得使用黑色代码块表达普通流程与架构说明。
 
 ---
 
 ## 17. Technical Diagram
 
 Diagram 是 Secondary Learning Aid。
-
-先问：
-
-> 不画图，能否用一句短关系链更快讲完整？
 
 简单线性关系优先文本：
 
@@ -452,24 +469,7 @@ Snapshot
 → M Data Files
 ```
 
-只有以下关系明显难以用文字追踪时使用图：
-
-```text
-Non-linear Branch
-Concurrent Flow
-State Transition
-Retry / Rollback
-Many-to-Many Dependency
-Complex Read / Write Path
-```
-
-规则：
-
-- Mobile-first 390px；
-- 真实 DOM Text；
-- No heavy shadow；
-- 不依赖颜色表达关系；
-- 一张图太高时拆图，不缩小文字。
+只有非线性、并发、状态转换等确实需要时才使用图。
 
 ---
 
@@ -477,20 +477,9 @@ Complex Read / Write Path
 
 动效只表达状态，不做装饰。
 
-允许：
+目录 Drawer 只使用轻量进入 / 退出 Transition。
 
-```text
-Continue Learning
-→ low-frequency signal border motion
-```
-
-限制：
-
-- 单色 Signal；
-- no outer glow；
-- no shadow；
-- no neon；
-- Reduced Motion 关闭。
+Reduced Motion 必须关闭非必要 Transition。
 
 ---
 
@@ -499,30 +488,34 @@ Continue Learning
 - Touch Target >= 44px；
 - Focus Visible；
 - Reduced Motion；
-- BottomSheet Focus Trap；
-- Reading Directory 使用 `aria-current`；
-- Progress 使用 `role=progressbar`；
-- 不能只靠颜色表达状态。
+- Drawer Focus Trap；
+- Restore Focus；
+- `aria-current`；
+- Progress `role=progressbar`；
+- 不能只靠颜色表达状态；
+- Mobile Drawer 至少提供一种不依赖顶部按钮的关闭方式。
 
 ---
 
-## 20. V1.7 Freeze Rules
+## 20. V1.7.1 Freeze Rules
 
-V1.7 冻结：
+V1.7.1 冻结：
 
 ```text
 Three-Tab Navigation
-Reading Directory
+Right-edge Reading Control
+Right-side Reading Drawer
+Directory without row dividers
+Contextual Section Relations
 Bottom Navigation Separation
 Secondary Metadata Grammar
-Detail Reading Hierarchy
-Same-Tab-before-Cross-Tab Priority
 ```
 
-后续 UI Review 可以调整具体 spacing，但不能重新引入：
+后续 UI Review 不再重新引入：
 
 - Projects 前台 Tab；
-- 横向 Quick Navigation 作为长文主目录；
-- 描述性 Metadata Chip 化；
+- 横向 Quick Navigation 作为长文目录；
+- Top-right-only Reading Directory；
+- 大块 Footer Cross-link 列表作为主要关系入口；
 - Heavy Shadow；
 - Card Wall。

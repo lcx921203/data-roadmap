@@ -54,13 +54,21 @@
 #### V0.6.7.1 Reading & Navigation Foundation
 - [x] Replace horizontal Quick Navigation with Reading Directory
 - [x] Reading progress + current section + H2/H3 hierarchy
-- [x] Fixed directory action in reading TopBar
 - [x] Learn same-tab continuation before cross-tab extensions
-- [x] Convert descriptive Knowledge badges to metadata line
-- [x] Use same metadata grammar in Scale detail
-- [x] Separate Bottom Navigation surface from article content
-- [x] Sync public Design System to V1.7 three-tab semantics
-- [x] Deprecate Projects frontstage design rules
+- [x] Metadata grammar
+- [x] Bottom Navigation separation
+- [x] Three-tab Design System V1.7
+
+#### V0.6.7.1.1 One-Hand Reading Interaction
+- [x] Remove dependency on top-right directory action
+- [x] Add right-edge vertically draggable directory control
+- [x] Persist floating-control vertical position
+- [x] Replace bottom directory sheet with right-side drawer
+- [x] Add scrim / swipe / toggle / bottom close methods
+- [x] Remove per-item directory dividers
+- [x] Add contextual section-level relations
+- [x] Move Interview related links near question header
+- [x] Remove large end-of-article related blocks from Learn / Scale / Interview
 
 #### Next: V0.6.7.2 Three-Tab Page Polish
 - [ ] Learn home hierarchy

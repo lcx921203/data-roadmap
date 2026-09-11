@@ -17,6 +17,7 @@ import './styles/scale-detail-v1.css'
 import './styles/interview-integration-v1.css'
 import './styles/cross-navigation-v1.css'
 import './styles/reading-navigation-v1.7.css'
+import './styles/one-hand-reading-v1.7.1.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
