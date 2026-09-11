@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: trino
 learning_depth: L5
-status: runtime_reliability_partial
+status: learn_v1_complete_pending_scale_interview
 product_boundary:
   previous_vertical: iceberg
   handoff_from:
@@ -302,7 +302,7 @@ nodes:
   handoff_to: scale_and_interview_integration
   stage_order: 22
 freeze:
-  body_written: false
+  body_written: true
   ui_changes: false
   scale_scenarios_written: false
   interview_answers_written: false
@@ -310,6 +310,8 @@ freeze:
   reopen_structure_only_for:
   - verified_technical_error
   - proven_progression_break
-  body_status: partial_10_of_11
-  published_nodes: 10
-  remaining_nodes: 1
+  body_status: complete_11_of_11
+  published_nodes: 11
+  remaining_nodes: 0
+  progression_audit: passed_v0.7.4
+  technical_correctness_audit: passed_v0.7.4

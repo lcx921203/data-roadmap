@@ -99,12 +99,16 @@
 - [x] Separate Spill from FTE Exchange Spooling
 - [x] Freeze NONE / QUERY / TASK recovery mental model
 
-### Next: V0.7.4 Trino Production Closure
-- [ ] 11 Observability / Troubleshooting / Capacity
-- [ ] Knowledge progression audit
-- [ ] Technical correctness audit
+### V0.7.4 Trino Production Closure
+- [x] 11 Observability / Troubleshooting / Capacity
+- [x] Query-state-first troubleshooting model
+- [x] Query / Cluster / Long-term observability layers
+- [x] SLO -> workload -> profile -> concurrency -> saturation capacity model
+- [x] Knowledge progression audit
+- [x] Technical correctness audit
+- [x] Freeze Trino Learn V1 at 11 / 11
 
-### V0.7.5 Trino Scale & Interview Integration
+### Next: V0.7.5 Trino Scale & Interview Integration
 - [ ] Create only justified hypothetical Scale scenarios
 - [ ] Map existing evidence-backed Interview questions
 - [ ] Do not invent Trino-specific frequency
