@@ -9,11 +9,13 @@ import {
 import { readLearningPosition } from '../utils/learningProgress'
 
 export function LearnPage() {
-  const { taxonomy, product } = appRegistry
+  const { taxonomy } = appRegistry
 
   const position = useMemo(() => readLearningPosition(), [])
   const fallback =
-    getKnowledgeForStage('04')[0] ?? appRegistry.knowledgeArticles[0] ?? null
+    getKnowledgeForStage('04')[0] ??
+    appRegistry.knowledgeArticles[0] ??
+    null
   const remembered = position.lastKnowledgeId
     ? getKnowledgeById(position.lastKnowledgeId)
     : null
@@ -23,30 +25,45 @@ export function LearnPage() {
     ? getKnowledgeForStage(current.meta.stage_id)
     : []
   const currentIndex = current
-    ? stageArticles.findIndex((item) => item.meta.id === current.meta.id)
+    ? stageArticles.findIndex(
+        (item) => item.meta.id === current.meta.id,
+      )
     : -1
   const hasRememberedPosition = Boolean(remembered)
   const step = currentIndex >= 0 ? currentIndex + 1 : 0
   const total = stageArticles.length
   const progress =
-    hasRememberedPosition && total > 0 ? Math.round((step / total) * 100) : 0
+    hasRememberedPosition && total > 0
+      ? Math.round((step / total) * 100)
+      : 0
 
   return (
     <>
-      <TopBar />
-      <div className="page">
+      <TopBar title="Learn" />
+
+      <div className="page learn-home">
         <p className="eyebrow">Learn</p>
-        <h1 className="display-title">{product.subtitle}</h1>
+        <h1 className="display-title">学习路线</h1>
+        <p className="page-lead">
+          从数据工程到 AI，按生产系统能力逐层学习。
+        </p>
 
         {current && (
-          <section className="continue-section" aria-label="继续学习">
+          <section
+            className="continue-section"
+            aria-label="继续学习"
+          >
             <a
               className="continue-focus-card"
               href={`#/learn/${current.meta.id}`}
-              aria-label={`${hasRememberedPosition ? '继续' : '开始'}学习 ${current.meta.title}`}
+              aria-label={`${
+                hasRememberedPosition ? '继续' : '开始'
+              }学习 ${current.meta.title}`}
             >
               <span className="continue-focus-card__top">
-                <strong>{hasRememberedPosition ? '继续学习' : '开始学习'}</strong>
+                <strong>
+                  {hasRememberedPosition ? '继续学习' : '开始学习'}
+                </strong>
                 <span>
                   {hasRememberedPosition && total > 0
                     ? `${step} / ${total}`
@@ -85,14 +102,22 @@ export function LearnPage() {
           </section>
         )}
 
-        <div className="section-heading">
-          <h2>学习路线</h2>
+        <div className="section-heading learn-route-heading">
+          <div>
+            <h2>全部阶段</h2>
+            <p>按前后依赖组织，先建立基础，再进入平台与生产能力。</p>
+          </div>
           <span>{taxonomy.stages.length} 个阶段</span>
         </div>
 
         <section className="row-list" aria-label="学习路线">
           {taxonomy.stages.map((stage) => (
-            <StageRow key={stage.id} stage={stage} />
+            <StageRow
+              key={stage.id}
+              stage={stage}
+              active={current?.meta.stage_id === stage.id}
+              count={getKnowledgeForStage(stage.id).length}
+            />
           ))}
         </section>
       </div>

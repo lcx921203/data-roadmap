@@ -52,41 +52,36 @@
 ### V0.6.7 UI Review & Polish
 
 #### V0.6.7.1 Reading & Navigation Foundation
-- [x] Replace horizontal Quick Navigation with Reading Directory
-- [x] Reading progress + current section + H2/H3 hierarchy
-- [x] Learn same-tab continuation before cross-tab extensions
-- [x] Metadata grammar
-- [x] Bottom Navigation separation
-- [x] Three-tab Design System V1.7
+- [x] Reading Directory
+- [x] One-hand directory interaction
+- [x] Left-edge draggable directory control
+- [x] Right-side reading drawer
+- [x] Contextual section relations
+- [x] Bottom navigation separation
 
-#### V0.6.7.1.1 One-Hand Reading Interaction
-- [x] Remove dependency on top-right directory action
-- [x] Add right-edge vertically draggable directory control
-- [x] Persist floating-control vertical position
-- [x] Replace bottom directory sheet with right-side drawer
-- [x] Add scrim / swipe / toggle / bottom close methods
-- [x] Remove per-item directory dividers
-- [x] Add contextual section-level relations
-- [x] Move Interview related links near question header
-- [x] Remove large end-of-article related blocks from Learn / Scale / Interview
+#### V0.6.7.2 Three-Tab Page Polish
+- [x] Freeze continuity / causal / positioning / structure principles
+- [x] Learn Home task hierarchy
+- [x] Learn Stage ordered knowledge spine
+- [x] Current Stage / Knowledge position
+- [x] Interview sticky discovery context
+- [x] Scale domain grouping
+- [x] Scale sticky domain context
+- [x] Future-ready domain filter when multiple domains exist
+- [x] Remove repeated domain label from Scenario rows
+- [x] Sync Design System V1.8
 
-#### Next: V0.6.7.2 Three-Tab Page Polish
-- [ ] Learn home hierarchy
-- [ ] Learn stage/list hierarchy
-- [ ] Interview discovery hierarchy
-- [ ] Interview detail density
-- [ ] Scale list hierarchy
-- [ ] Scale detail spacing
-- [ ] Cross-link visual priority
-
-#### V0.6.7.3 UI Conformance & Freeze
+#### Next: V0.6.7.3 UI Conformance & Freeze
 - [ ] 390px full-path review
 - [ ] iOS safe-area review
+- [ ] Left-hand one-thumb reach review
+- [ ] Sticky header collision review
 - [ ] Touch target review
 - [ ] Typography / spacing token conformance
+- [ ] Cross-link priority review
 - [ ] Remove remaining legacy Projects frontstage source
 - [ ] Freeze Iceberg V1 UI
 
 ### After UI Freeze
 - [ ] Select next technology vertical slice
-- [ ] Reuse frozen Learn / Interview / Scale contract
+- [ ] Reuse frozen Learn / Interview / Scale architecture

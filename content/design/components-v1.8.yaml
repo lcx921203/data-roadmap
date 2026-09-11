@@ -1,0 +1,79 @@
+version: '1.8'
+status: active
+viewport_baseline:
+  width: 390
+  height: 844
+
+reading_principles:
+  continuity: true
+  causal_model: true
+  fast_positioning: true
+  structural_hierarchy: true
+  truthfulness: true
+  avoid_short_term_memory_dependency: true
+
+page_architecture:
+  learn:
+    hierarchy:
+      - current_position
+      - stage_route
+      - ordered_knowledge_spine
+      - previous_next
+    rules:
+      - stage_detail_is_not_flat_article_list
+      - current_stage_is_visible
+      - current_knowledge_node_is_visible
+      - ordering_expresses_prerequisite_progression
+
+  interview:
+    hierarchy:
+      - search
+      - technology_filter
+      - advanced_filter
+      - evidence_backed_results
+    rules:
+      - current_discovery_context_stays_visible_while_scrolling
+      - frequency_comes_from_evidence_only
+      - no_fake_technology_frequency
+
+  scale:
+    hierarchy:
+      - domain
+      - scenario
+      - constraints
+      - failure
+      - design
+      - tradeoffs
+      - observability
+      - cost
+      - recovery
+    domain_order:
+      - lakehouse
+      - streaming
+      - batch_spark
+      - semantic_serving
+      - governance
+      - agent
+    rules:
+      - no_flat_cross_domain_scenario_list
+      - domain_header_is_sticky
+      - domain_filter_appears_when_multiple_domains_exist
+      - no_horizontal_domain_tabs
+      - scenario_row_does_not_repeat_domain_label
+      - scenario_metadata_uses_middle_dot
+
+navigation:
+  reading_directory:
+    floating_edge: left
+    drag_axis: vertical
+    drawer_edge: right
+    close_methods:
+      - tap_backdrop
+      - swipe_right
+      - toggle_floating_control
+    footer_close_button: false
+
+visual_priority:
+  primary_content: 1
+  same_tab_continuation: 2
+  contextual_cross_tab_relation: 3

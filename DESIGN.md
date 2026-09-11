@@ -1,6 +1,6 @@
 # DataRoadmap Design System
 
-> Version: **1.7.1 / One-Hand Reading Interaction**
+> Version: **1.8 / Three-Tab Page Architecture**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
@@ -172,6 +172,10 @@ Context
 Right-edge Floating Control
 ↓
 Right-side Reading Drawer
+Scale Domain Grouping
+Sticky Domain Context
+Ordered Knowledge Spine
+Sticky Interview Result Context
 ├─ Reading Progress
 ├─ Current Section
 └─ Full Section Tree
@@ -444,6 +448,10 @@ Quick Answer 使用：
 
 ```text
 Right-side Reading Drawer
+Scale Domain Grouping
+Sticky Domain Context
+Ordered Knowledge Spine
+Sticky Interview Result Context
 ```
 
 ---
@@ -497,14 +505,96 @@ Reduced Motion 必须关闭非必要 Transition。
 
 ---
 
-## 20. V1.7.1 Freeze Rules
+## 20. Reading Architecture Principles
 
-V1.7.1 冻结：
+DataRoadmap 的页面设计必须同时保护五件事：
+
+```text
+Continuity
+连贯性
+
+Causal Model
+因果模型
+
+Fast Positioning
+快速定位
+
+Structure
+结构性
+
+Truthfulness
+准确性
+```
+
+### 不依赖用户短期记忆
+
+如果用户滚动数屏之后需要自己回忆：
+
+- 我现在属于哪个领域；
+- 前面讲到哪一层；
+- 这一节为什么出现在这里；
+- 下一步应该去哪；
+
+则说明页面结构失败。
+
+UI 必须显式提供当前位置、分组上下文与连续路径。
+
+### Learn
+
+Learn 使用：
+
+```text
+Stage
+→ Ordered Knowledge Spine
+→ Previous / Next
+```
+
+Stage Detail 不是普通文章列表，而是一条有前后依赖的知识主线。
+
+### Interview
+
+Interview 的核心是快速定位问题：
+
+```text
+Search
+→ Technology
+→ Filter
+→ Evidence-backed Result
+```
+
+长列表滚动时保留当前搜索 / 技术上下文与结果数量。
+
+### Scale
+
+Scale 是 Scenario Library（生产场景库）：
+
+```text
+Scale
+→ Domain
+→ Scenario
+→ Constraints / Failure / Design / Trade-off / Recovery
+```
+
+场景不再平铺。
+
+Domain Header 在长列表中保持 Sticky Context，让用户滚动很久仍知道自己处于哪个领域。
+
+当领域数量 > 1 时，提供领域筛选；不使用横向 Domain Tab。
+
+---
+
+## 21. V1.8 Freeze Rules
+
+V1.8 冻结：
 
 ```text
 Three-Tab Navigation
-Right-edge Reading Control
+Left-edge Reading Control
 Right-side Reading Drawer
+Scale Domain Grouping
+Sticky Domain Context
+Ordered Knowledge Spine
+Sticky Interview Result Context
 Directory without row dividers
 Contextual Section Relations
 Bottom Navigation Separation

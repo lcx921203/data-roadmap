@@ -1,0 +1,358 @@
+/* V1.8 Three-Tab Page Polish
+   Goal: preserve position, hierarchy and causal continuity on mobile. */
+
+/* ---------- Learn ---------- */
+
+.learn-home .display-title {
+  margin-bottom: 0;
+}
+
+.learn-home > .page-lead {
+  max-width: 560px;
+  margin-top: 10px;
+}
+
+.learn-route-heading,
+.stage-path-heading {
+  align-items: flex-end;
+}
+
+.learn-route-heading > div,
+.stage-path-heading > div {
+  min-width: 0;
+}
+
+.learn-route-heading h2,
+.stage-path-heading h2 {
+  margin: 0;
+}
+
+.learn-route-heading p,
+.stage-path-heading p {
+  max-width: 520px;
+  margin: 5px 0 0;
+  color: var(--color-ink-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.stage-row {
+  gap: 15px;
+  padding: 17px 8px 17px 4px;
+  border-radius: 10px;
+}
+
+.stage-row[data-active="true"] {
+  margin-right: -8px;
+  margin-left: -8px;
+  padding-right: 16px;
+  padding-left: 12px;
+  background: var(--color-signal-soft);
+}
+
+.stage-row__body {
+  min-width: 0;
+}
+
+.stage-row__title-line {
+  display: flex !important;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stage-row__title-line strong {
+  min-width: 0;
+}
+
+.stage-row__title-line small {
+  flex: none;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.stage-row[data-active="true"] .stage-row__title-line small {
+  color: var(--color-signal-strong);
+  font-weight: 720;
+}
+
+.stage-page__lead {
+  margin-top: 10px;
+}
+
+.knowledge-path {
+  margin-top: 10px;
+}
+
+.knowledge-path-row {
+  position: relative;
+  min-height: 118px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.knowledge-path-row__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.knowledge-path-row__rail > strong {
+  position: relative;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: 50%;
+  background: var(--color-canvas);
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.knowledge-path-row__rail > span {
+  position: absolute;
+  top: 32px;
+  bottom: -1px;
+  left: 50%;
+  width: 1px;
+  background: var(--color-hairline);
+  transform: translateX(-50%);
+}
+
+.knowledge-path-row[data-last="true"]
+  .knowledge-path-row__rail > span {
+  display: none;
+}
+
+.knowledge-path-row__body {
+  min-width: 0;
+  padding: 2px 0 25px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.knowledge-path-row[data-last="true"]
+  .knowledge-path-row__body {
+  border-bottom: 0;
+}
+
+.knowledge-path-row__meta,
+.knowledge-path-row__title,
+.knowledge-path-row__summary {
+  display: block;
+}
+
+.knowledge-path-row__meta {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.knowledge-path-row__title {
+  margin-top: 5px;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.knowledge-path-row__summary {
+  margin-top: 6px;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.knowledge-path-row[data-current="true"]
+  .knowledge-path-row__rail > strong {
+  border-color: var(--color-signal);
+  background: var(--color-signal-soft);
+  color: var(--color-signal-strong);
+}
+
+.knowledge-path-row[data-current="true"]
+  .knowledge-path-row__meta {
+  color: var(--color-signal-strong);
+}
+
+/* ---------- Interview ---------- */
+
+.interview-list-heading--sticky {
+  position: sticky;
+  top: var(--top-bar-height);
+  z-index: 12;
+  margin-right: calc(var(--page-padding) * -1);
+  margin-left: calc(var(--page-padding) * -1);
+  padding: 13px var(--page-padding) 11px;
+  border-bottom: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+}
+
+.interview-list-heading--sticky > div {
+  min-width: 0;
+}
+
+.interview-list-heading--sticky h2 {
+  max-width: min(58vw, 360px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.interview-list-heading--sticky + .question-list {
+  margin-top: 0;
+}
+
+/* ---------- Scale ---------- */
+
+.scale-library > .page-lead {
+  max-width: 620px;
+}
+
+.scale-library__toolbar {
+  min-height: 62px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.scale-library__toolbar > div {
+  min-width: 0;
+}
+
+.scale-library__toolbar strong,
+.scale-library__toolbar span {
+  display: block;
+}
+
+.scale-library__toolbar > div > strong {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.scale-library__toolbar > div > span {
+  margin-top: 3px;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.scale-domain-stack {
+  margin-top: 4px;
+}
+
+.scale-domain-group {
+  position: relative;
+}
+
+.scale-domain-group__header {
+  position: sticky;
+  top: var(--top-bar-height);
+  z-index: 10;
+  min-height: 60px;
+  margin-right: calc(var(--page-padding) * -1);
+  margin-left: calc(var(--page-padding) * -1);
+  padding: 11px var(--page-padding) 9px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--color-hairline);
+  background: var(--color-canvas);
+}
+
+.scale-domain-group__header > div {
+  min-width: 0;
+}
+
+.scale-domain-group__header h2,
+.scale-domain-group__header span,
+.scale-domain-group__header > strong {
+  display: block;
+}
+
+.scale-domain-group__header h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.scale-domain-group__header div > span {
+  margin-top: 2px;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.scale-domain-group__header > strong {
+  flex: none;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  font-weight: 620;
+}
+
+.scale-domain-group .scenario-list {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.scale-domain-group .scenario-row {
+  padding: 19px 0 20px;
+}
+
+.scale-domain-group .scenario-row h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.scale-domain-group .scenario-row > p:not(.scenario-row__tags) {
+  margin-top: 7px;
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-ink-soft);
+  font-size: 13px;
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.scale-domain-group .scenario-row__tags {
+  margin-top: 9px;
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.scale-domain-group + .scale-domain-group {
+  margin-top: 18px;
+}
+
+/* Sticky context should not compete with the reading drawer control. */
+@media (max-width: 719px) {
+  .scale-domain-group__header,
+  .interview-list-heading--sticky {
+    scroll-margin-top: var(--top-bar-height);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knowledge-path-row,
+  .stage-row {
+    scroll-behavior: auto;
+  }
+}

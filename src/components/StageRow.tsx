@@ -2,6 +2,8 @@ import type { TaxonomyStage } from '../types/content'
 
 interface StageRowProps {
   stage: TaxonomyStage
+  active?: boolean
+  count?: number
 }
 
 const stageHints: Record<string, string> = {
@@ -19,12 +21,32 @@ const stageHints: Record<string, string> = {
   '11': 'SLO · Capacity · Multi-tenancy · Incidents',
 }
 
-export function StageRow({ stage }: StageRowProps) {
+export function StageRow({
+  stage,
+  active = false,
+  count = 0,
+}: StageRowProps) {
+  const status = active
+    ? '当前阶段'
+    : count > 0
+      ? `${count} 节`
+      : '内容准备中'
+
   return (
-    <a className="stage-row" href={`#/learn/stage/${stage.id}`}>
+    <a
+      className="stage-row"
+      data-active={active}
+      href={`#/learn/stage/${stage.id}`}
+      aria-current={active ? 'step' : undefined}
+    >
       <span className="stage-row__number">{stage.id}</span>
+
       <span className="stage-row__body">
-        <strong>{stage.title_cn}</strong>
+        <span className="stage-row__title-line">
+          <strong>{stage.title_cn}</strong>
+          <small>{status}</small>
+        </span>
+
         <span>{stageHints[stage.id] ?? stage.title_en}</span>
       </span>
     </a>
