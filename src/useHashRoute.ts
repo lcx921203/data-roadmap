@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { HashRoute, RouteKey } from './types/content'
 
-const routes: RouteKey[] = ['learn', 'interview', 'scale', 'projects']
+const routes: RouteKey[] = ['learn', 'interview', 'scale']
 
 function readRoute(): HashRoute {
   const raw = window.location.hash.replace(/^#\/?/, '')

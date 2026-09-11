@@ -1,15 +1,12 @@
 # CONTENT_MODEL.md
 
-# DataRoadmap Content Model V1
+# DataRoadmap Content Model V1.1
 
-## 1. 四类独立用户内容资产
+## 1. 三类前台用户内容资产
 
 ```text
 Knowledge
 技术知识
-   │
-   ├──────── Project Case
-   │          真实项目案例
    │
    ├──────── Scale Scenario
    │          规模化场景
@@ -18,9 +15,17 @@ Knowledge
               真实面试题
 ```
 
-Production Pattern 属于 Knowledge 的正文核心，不单独伪装成项目经验。
+对应公共产品入口：
 
-`Interview Evidence` 是 Interview Bank 的后台证据层，不作为第五种前台内容资产。
+```text
+Learn
+Interview
+Scale
+```
+
+`Interview Evidence` 是 Interview 的后台证据层，不作为第四个前台内容资产。
+
+Project / Resume / Personal Case 资料属于 **Backstage Editorial Context（后台编辑上下文）**，不作为公共产品 Tab。
 
 ---
 
@@ -41,30 +46,24 @@ learning_depth: L5
 stack_role: core
 difficulty: intermediate
 
-project_relevance:
-  - north-america
-
-role_relevance:
-  data_engineer: high
-  data_architect: high
-  ai_data_engineer: medium
-
 prerequisites:
   - kb-iceberg-snapshot
 
 related:
   - kb-iceberg-manifest-file
 
-comparison:
-  - kb-hudi-metadata-overview
-  - kb-delta-transaction-log-overview
+interview_relevance: []
+scale_scenarios: []
 
-interview_frequency: unrated
 status: draft
 ---
 ```
 
-`interview_frequency` 必须由真实 Interview Evidence corpus 校准，不凭编辑感觉标记 high。
+规则：
+
+- Knowledge 是可复用知识，不依赖作者个人项目才能成立。
+- Production Pattern 属于 Knowledge 正文。
+- Interview frequency 必须由真实 Interview Evidence 校准。
 
 ---
 
@@ -79,7 +78,6 @@ source:
   url: ""
   source_type: first_hand_interview_experience
   publisher: ""
-  author_handle: ""
   published_at: null
   captured_at: ""
   reliability: B
@@ -129,7 +127,6 @@ difficulty: senior
 
 knowledge: []
 scenarios: []
-projects: []
 
 evidence:
   ids: []
@@ -154,14 +151,7 @@ status: draft
 ---
 ```
 
-正式 Interview Question 与单个 `source_url` 解耦，因为一道标准题可以由多条独立面试证据共同支持。
-
-只有真实 Evidence 通过来源审核、标准化和去重后，才能设置：
-
-```yaml
-verification:
-  publishable: true
-```
+正式 Interview Question 与单个来源解耦，一道标准题可以由多条独立面试证据共同支持。
 
 ---
 
@@ -179,26 +169,7 @@ first_seen_at
 last_seen_at
 ```
 
-基础证据权重：
-
-```text
-A = 1.00
-B = 0.75
-C = 0.35
-D = 0
-```
-
-频率等级：
-
-```text
-unrated
-emerging
-repeated
-high_frequency
-long_tail
-```
-
-具体阈值由真实 corpus 分布校准，不预设“出现 N 次就是高频”的固定结论。
+频率必须来自 Evidence corpus，不凭编辑感觉标记 high。
 
 ---
 
@@ -222,64 +193,75 @@ scale_dimensions:
   - reliability
 
 knowledge: []
-projects: []
 interviews: []
 
+hypothetical: true
 status: draft
 ---
 ```
 
+规则：
+
+- Scale Scenario 是生产场景训练。
+- 默认保持 `hypothetical: true`。
+- 没有运行证据时，不转换成真实项目经历。
+
 ---
 
-## 7. Project Case Schema
+## 7. Backstage Project Context
 
-```yaml
----
-id: pj-example-001
-type: project_case
+仓库中历史 `project-mapping.yaml`、`content/projects/` 或 `pj-*` 文件可以暂时保留，用于：
 
-project: north-america
-title: ""
+- 作者自己的事实核验；
+- 内容编辑参考；
+- 个人简历 / 面试准备。
 
-business_scale: small_medium
+但它们：
 
-knowledge: []
-scenarios: []
-
-status: draft
----
+```text
+不是前台内容资产
+不是顶级 Route
+不是公共 Cross-Tab Navigation 的目标
 ```
+
+`project_relevance` 等旧字段可以暂时作为 Backstage Metadata（后台元数据）存在，后续逐步清理；前台不得依赖这些字段。
 
 ---
 
 ## 8. ID Convention
+
+公共内容：
 
 ```text
 kb-*   Knowledge
 iq-*   Interview Question
 ev-*   Interview Evidence
 sc-*   Scale Scenario
-pj-*   Project Case
 ```
 
-ID 一旦发布尽量保持稳定，不使用显示标题作为关联键。
+历史 / 后台：
+
+```text
+pj-*   Backstage project context only
+```
+
+ID 一旦发布尽量保持稳定。
 
 ---
 
-## 9. Truthfulness Boundary
+## 9. Public Truthfulness Boundary
 
 ```text
-Project Case
-= 用户真实项目事实
-
-Production Pattern
-= 行业生产方案
+Knowledge
+= 可复用技术知识与 Production Pattern
 
 Scale Scenario
-= 假设规模化训练
+= 明确标注的生产规模训练
 
 Interview Question
-= 有真实面试 Evidence 的问题
+= 有真实 Interview Evidence 的问题
 ```
 
-四者互相引用，但不得混写成同一类事实。
+三者可以互相引用，但不得混写成同一种事实。
+
+个人项目事实不再承担公共产品内容类型的职责。

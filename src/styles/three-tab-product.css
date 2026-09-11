@@ -1,0 +1,5 @@
+/* V0.6.2.1 Three-Tab Product Reset */
+
+.bottom-nav {
+  grid-template-columns: repeat(3, 1fr);
+}

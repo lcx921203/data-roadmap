@@ -1,11 +1,6 @@
 import type { RouteKey } from '../types/content'
 import { navigate } from '../useHashRoute'
-import {
-  InterviewIcon,
-  LearnIcon,
-  ProjectsIcon,
-  ScaleIcon,
-} from './Icons'
+import { InterviewIcon, LearnIcon, ScaleIcon } from './Icons'
 
 interface BottomNavigationProps {
   active: RouteKey
@@ -15,7 +10,6 @@ const items = [
   { key: 'learn', label: 'Learn', Icon: LearnIcon },
   { key: 'interview', label: 'Interview', Icon: InterviewIcon },
   { key: 'scale', label: 'Scale', Icon: ScaleIcon },
-  { key: 'projects', label: 'Projects', Icon: ProjectsIcon },
 ] satisfies Array<{ key: RouteKey; label: string; Icon: typeof LearnIcon }>
 
 export function BottomNavigation({ active }: BottomNavigationProps) {

@@ -1,4 +1,4 @@
-export type RouteKey = 'learn' | 'interview' | 'scale' | 'projects'
+export type RouteKey = 'learn' | 'interview' | 'scale'
 export type ReadingMode = 'interview' | 'learn'
 
 export interface TaxonomyStage {
@@ -14,6 +14,10 @@ export interface TaxonomyFile {
   stages: TaxonomyStage[]
 }
 
+/**
+ * Project metadata is backstage editorial context.
+ * It is not a public top-level product route.
+ */
 export interface ProjectMappingEntry {
   display_name: string
   display_name_cn?: string

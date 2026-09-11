@@ -2,14 +2,13 @@
 
 ## V0.1 Foundation
 - [x] Product boundary
-- [x] Four content asset types
+- [x] Initial content asset model
 - [x] Templates
 - [x] Design reset
 
 ## V0.2 Content Taxonomy
 - [x] Top-level learning map
 - [x] L1-L5 depth model
-- [x] Project mapping
 - [x] Scale Lab families
 
 ## V0.3 Interview Evidence Model
@@ -19,9 +18,8 @@
 - [x] Close V0.3 model milestone
 
 ### Continuing content pipeline
-- [ ] Curate remaining 20 selected answers
+- [ ] Curate remaining selected answers
 - [ ] Continue independent evidence intake
-- [ ] Project Fact Check when claims are published
 
 ## V0.4 Design System
 - [x] Design Foundation
@@ -44,37 +42,32 @@
 ## V0.6 First Vertical Slice
 
 ### V0.6.0 Iceberg Knowledge Spine
-- [x] Iceberg L5 10-node chapter map
-- [x] Table Metadata / Snapshot
-- [x] Manifest List / Manifest
-- [x] Hidden Partitioning / Partition Evolution
-- [x] Schema Evolution / Field ID
-- [x] Write Distribution / Ordering
-- [x] Optimistic Commit / Conflict / Recovery
-- [x] Maintenance / Small Files
-- [x] Trino Read Path
-- [x] Production Troubleshooting
+- [x] Iceberg L5 11-node chapter map
+- [x] Knowledge structure and correctness audit
 - [x] Previous / Next learning sequence
 - [x] Quick Navigation
 - [x] Three hypothetical Scale Scenario seeds
-- [x] Project truthfulness boundary
 - [x] Interview evidence boundary
 
 ### V0.6.1 Four-Tab Content Contract
-- [x] Freeze Learn / Interview / Scale / Projects responsibilities
-- [x] Separate Learn Stage 11 from top-level Scale Lab
-- [x] Standardize canonical project IDs
-- [x] Define project metadata source of truth
-- [x] Freeze cross-tab truth boundaries
-- [x] Define reverse-link policy
+- [x] Historical contract completed
+- [x] Project IDs and truth boundaries clarified
+- [x] Superseded by V0.6.2.1 Three-Tab Product Reset
 
 ### V0.6.2 Project Case Fact Boundary
-- [x] North America fact checklist
-- [x] Actual / Boundary / Mapping structure
-- [x] Only verified project facts enter Actual
-- [x] Connect Iceberg Knowledge nodes
-- [x] Connect Scale scenarios without experience inflation
-- [x] Keep Demo / engineering evidence separate from production-runtime claims
+- [x] Historical North America fact-boundary asset created
+- [x] Kept as backstage editorial context
+- [x] Removed from public vertical-slice completion criteria
+
+### V0.6.2.1 Three-Tab Product Reset
+- [x] Public navigation = Learn / Interview / Scale
+- [x] Remove Projects from mobile navigation
+- [x] Remove Projects from desktop navigation
+- [x] Remove Projects public route
+- [x] Legacy #/projects falls back to Learn
+- [x] Public content model reduced to Knowledge / Interview / Scale
+- [x] Project assets reclassified as backstage context
+- [x] Iceberg vertical slice redefined around three public tabs
 
 ### Next: V0.6.3 Scale Lab Detail
 - [ ] Scenario loader
@@ -88,8 +81,13 @@
 - [ ] Do not synthesize fake Iceberg frequency
 - [ ] Curated answer / knowledge cross-navigation
 
-### V0.6.5 Cross-Tab Navigation
-- [ ] Knowledge → Interview / Scale / Project
-- [ ] Interview → Knowledge
-- [ ] Scale → Knowledge / Project / Interview
-- [ ] Project → Knowledge / Scale / Interview
+### V0.6.5 Three-Tab Cross Navigation
+- [ ] Knowledge → Interview / Scale
+- [ ] Interview → Knowledge / Scale
+- [ ] Scale → Knowledge / Interview
+
+### Later: UI Review
+- [ ] Review information hierarchy with complete Iceberg content
+- [ ] Review mobile reading density
+- [ ] Review navigation and cross-link interaction
+- [ ] Remove legacy Projects source files when safe

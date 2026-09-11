@@ -8,142 +8,144 @@
 
 DataRoadmap 是一个围绕现代数据工程、数据平台、数据架构和 AI Data Agent 构建的生产导向学习与面试产品。
 
-核心目标不是让用户“看完很多课程”或“刷完很多题”，而是形成下面的能力闭环：
+它面向所有使用者，而不是围绕作者个人项目经历组织产品。
+
+核心能力闭环：
 
 ```text
 Understand
 理解技术
    ↓
-Connect
-建立系统关联
-   ↓
 Build
 理解生产实现
    ↓
 Scale
-解决复杂规模问题
+处理规模、稳定性与系统设计
    ↓
 Explain
 应对真实面试
 ```
 
-## 2. 产品不是围绕单一项目构建
-
-三个真实项目是 `Project Cases（项目案例）`，不是知识边界。
-
-知识范围由三个因素共同决定：
+## 2. 三个顶级产品入口
 
 ```text
-项目相关度
-+
-真实面试频率
-+
-目标岗位价值
-        ↓
-Learning Depth
-学习深度
+Learn
+Interview
+Scale
 ```
+
+### Learn
+
+回答：
+
+> 我应该懂什么？生产系统为什么这样设计？
+
+内容包括：
+
+- 技术原理；
+- 内部机制；
+- Production Pattern（生产模式）；
+- 配置 / 代码；
+- 故障与性能；
+- 可复用的生产工程原则。
+
+### Interview
+
+回答：
+
+> 企业真实面试到底在问什么？我应该怎样解释？
+
+内容包括：
+
+- 真实 Interview Evidence（面试证据）；
+- Canonical Question（标准题）；
+- Curated Answer（预制题解）；
+- 真实频率校准；
+- 关联追问；
+- 与 Learn / Scale 的映射。
+
+### Scale
+
+回答：
+
+> 当数据量、吞吐、并发、SLO、稳定性、成本和故障约束扩大后，系统应该怎样设计？
+
+Scale 是完整的生产场景训练层，覆盖：
+
+- Capacity（容量）；
+- Throughput（吞吐）；
+- Concurrency（并发）；
+- Reliability（可靠性）；
+- Observability（可观测性）；
+- Cost（成本）；
+- Recovery（恢复）；
+- System Design（系统设计）。
+
+## 3. Projects 不再是前台产品能力
+
+个人项目、简历项目和作者自己的工程案例不适合作为公共产品的一级导航。
 
 因此：
 
-- 项目使用 Iceberg → Iceberg 深学。
-- Hudi / Delta Lake / Paimon → 不重复深学，重点横向比较与选型。
-- SQL / Spark / Flink / Kafka 等高频基础能力，即使某个项目没有突出展示，也必须深入。
-- SLO、容量规划、多租户、可观测等生产能力，即使小规模项目没有完整经历，也需要系统学习。
-
-## 3. 四类核心内容资产
-
-### Knowledge Base
-
-回答：
-
-> 我应该懂什么？真实生产系统通常怎么做？
-
-### Project Cases
-
-回答：
-
-> 我的三个项目实际上做过什么？这些知识在哪里落地？
-
-项目案例必须保持事实边界，不把生产方案包装成真实项目经历。
-
-### Scale Lab
-
-回答：
-
-> 当数据量、吞吐、并发、稳定性要求扩大后，系统会发生什么？应该如何设计、排障和演进？
-
-这是弥补中小规模项目复杂度不足的正式训练层，不属于“虚构项目经历”。
-
-### Interview Bank
-
-回答：
-
-> 企业真实面试到底在问什么？
-
-题目优先来自真实企业面经、候选人复盘和高可信公开面试资料。
-
-## 4. Learn 与 Interview
-
-Learn Mode 和 Interview Mode 使用同一套知识体系，但不是互相生成。
-
 ```text
-Knowledge Map
-      │
- ┌────┴────┐
- │         │
-Learn   Interview
- │         │
-知识理解   真实题目
-生产实现   预制题解
-规模训练   高频排序
+Projects
+≠ Public Tab
+≠ Public Product Loop
 ```
 
-Interview Bank 通过标签映射到 Knowledge Base。
+已有项目资料可以继续作为 Backstage Editorial Context（后台编辑上下文）帮助内容作者校验知识或准备个人面试，但：
 
-**禁止为了填满一个知识点而自动编造大量面试题。**
+- 不进入顶级导航；
+- 不决定公共学习范围；
+- 不作为普通用户必须理解的上下文；
+- 不把个人经历包装成通用产品内容。
+
+未来如果产品需要“用户自己的项目”，应作为独立的 Personal Workspace（个人工作区）能力设计，而不是恢复作者项目 Tab。
+
+## 4. Learn / Interview / Scale 使用同一知识图谱
+
+```text
+Knowledge
+   ↕
+Interview
+   ↕
+Scale
+```
+
+三者职责不同，但通过稳定 ID 互相连接。
+
+Learn 不由 Interview 自动生成。
+Interview 不为了填满知识点而编造问题。
+Scale 不把假设场景包装成真实经历。
 
 ## 5. Production First
 
-正文默认顺序：
+学习正文默认遵循：
 
 ```text
 技术原理
    ↓
 Production Pattern
-真实生产实现
    ↓
-Scale / Failure / Cost / Operations
+Failure / Performance
    ↓
-Project Case
-真实项目映射
+Scale / Cost / Operations
    ↓
 Real Interview
-真实面试验证
 ```
 
-Demo / 项目实现不是标准答案。
+Demo 或个人项目实现不能替代标准生产答案。
 
-## 6. 项目与大规模系统的边界
+## 6. Scale Truth Boundary
 
-真实项目只回答：
+Scale Scenario 默认是训练场景。
 
-- 真实业务背景
-- 实际架构
-- 实际解决的问题
-- 已实现能力
-- 当前边界
+如果没有真实运行证据：
 
-Scale Lab 独立回答：
-
-- 如果数据量 ×10 / ×100 会怎样
-- 如果吞吐突然上涨会怎样
-- 如果出现严重积压会怎样
-- 如果需要大范围 Backfill 会怎样
-- 如果并发 Writer / Query 增加会怎样
-- 如果需要多租户隔离会怎样
-- 如果要求更严格 SLO 会怎样
-- 如果故障、成本、可观测要求升级会怎样
+- 不声明真实生产规模；
+- 不声明真实 SLO；
+- 不声明真实事故；
+- 不把假设参数写成项目经历。
 
 ## 7. V1 不接 AI 实时回答
 
@@ -169,13 +171,13 @@ Reveal Answer
 
 所有标准题解提前制作和审核。
 
-未来 AI 可用于后台内容生产辅助，例如：
+未来 AI 可以用于后台内容生产辅助，例如：
 
-- 面经抽取
-- 相似题聚类
-- 标签建议
-- 去重
-- 来源整理
+- 面经抽取；
+- 相似题聚类；
+- 标签建议；
+- 去重；
+- 来源整理。
 
 但不作为 V1 用户端答案来源。
 
@@ -188,4 +190,5 @@ Reveal Answer
 - Mobile First
 - Quality over Quantity
 - Real Interview over Generated Questions
-- Project Evidence ≠ Production Claim
+- Evidence before Frequency
+- Public Product over Personal Portfolio
