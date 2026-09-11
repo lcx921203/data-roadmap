@@ -163,12 +163,19 @@
 - [x] Treat salting as a targeted hot-key technique, not a default answer
 - [x] Preserve memory internals for V0.8.3
 
-### Next: V0.8.3 Spark Memory & Structured Streaming
-- [ ] 09 Memory / Cache-Persist / Serialization / Spill / OOM
-- [ ] 10 Structured Streaming Execution Model
-- [ ] 11 State / Event Time / Watermark / Checkpoint / Exactly-once
+### V0.8.3 Spark Memory & Structured Streaming
+- [x] 09 Memory / Cache-Persist / Serialization / Spill / OOM
+- [x] 10 Structured Streaming Execution Model
+- [x] 11 State / Event Time / Watermark / Checkpoint / Exactly-once
+- [x] Connect skew / partition size to task working-set memory
+- [x] Separate execution memory from storage / cache memory
+- [x] Treat spill as a cost-bearing fallback, not free memory
+- [x] Keep micro-batch as the default Structured Streaming execution model
+- [x] Separate Real-Time Mode from Continuous Processing
+- [x] Separate checkpointing from end-to-end exactly-once guarantees
+- [x] Connect watermark to late-data and state-retention trade-offs
 
-### V0.8.4 Spark Production Closure
+### Next: V0.8.4 Spark Production Closure
 - [ ] 12 Failure / Observability / Backfill / Capacity
 - [ ] Knowledge progression audit
 - [ ] Technical correctness audit
