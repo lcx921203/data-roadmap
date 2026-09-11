@@ -1,0 +1,157 @@
+id: sc-spark-30tb-backfill-capacity-001
+type: scenario
+title: Backfill 30 TB with limited Spark resources without breaking daily workloads
+title_cn: 30 TB Backfill 与有限 Spark 资源
+domain: compute
+scenario_type:
+  - capacity
+  - backfill
+  - system_design
+  - troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - volume
+  - concurrency
+  - throughput
+  - memory
+  - cost
+  - reliability
+status: scale_detail_v1
+order: 7
+
+summary: 需要用共享 Spark 资源回填 30 TB 历史数据，同时保护每日 ETL 与在线 Structured Streaming，不允许回填把正常 SLA 拖垮。
+
+display_tags:
+  - Backfill
+  - Partition
+  - Capacity
+  - Workload Isolation
+
+quick_answer: >-
+  不要把 30 TB 直接变成一个超大 Application，也不要一次启动几十个日期分区。
+  先把回填切成可恢复单元，建立单单元资源画像，再逐级增加并发找到饱和点。
+  回填资源要和正常 ETL / Streaming 隔离，并保留 Executor Loss、Retry 和流量波动需要的 Headroom。
+
+parameters:
+  - label: 历史数据
+    value: 30 TB，覆盖 180 天
+  - label: 日常 ETL
+    value: 每天约 800 GB，要求 90 分钟内完成
+  - label: Streaming
+    value: 持续运行，要求不能因 Backfill 长时间积压
+  - label: 共享资源
+    value: 60 个 Executor 等价容量，不能全部占给回填
+  - label: 训练目标
+    value: 在 12 小时回填窗口内最大化吞吐，同时保护正常 SLA
+
+constraints:
+  - title: 回填不是“能跑完”就算成功
+    body: >-
+      生产回填必须同时满足历史完成窗口、日常 ETL SLA 和 Streaming 稳定性。
+      如果回填吞吐提高但导致正常链路积压，它仍然是失败的容量设计。
+  - title: 单 Application 太大扩大失败半径
+    body: >-
+      180 天历史一次性塞进一个超大 Application，会放大 Stage、Shuffle、重试和失败恢复成本，
+      也让部分失败后的补偿范围难以控制。
+  - title: 资源上限不是唯一瓶颈
+    body: >-
+      即使还有 Executor，Object Storage、Shuffle Network、Task Working Set 或 Driver Scheduling
+      都可能先到饱和点，因此不能把“可申请更多 Executor”当成容量结论。
+
+failure_bottlenecks:
+  - title: Partition 过少导致资源闲置
+    body: >-
+      单回填单元只有少量大 Partition 时，Task 数不足会让大量 Executor Core 空闲，
+      同时单 Task Working Set 变大，带来 Spill、GC 和 OOM 风险。
+  - title: Partition 过多制造调度与小文件压力
+    body: >-
+      过度切碎会产生海量 Task、Shuffle Metadata 和 Writer，
+      即使总数据量不变，也可能让 Driver 调度、文件数量和后续表维护成本快速上升。
+  - title: 回填并发把共享底层资源打满
+    body: >-
+      多个 Backfill Application 同时跑时，会叠加 Object Storage 读取、Shuffle Network、
+      Executor Memory 和写出压力，最终正常 ETL 与 Streaming 一起变慢。
+
+design:
+  - title: 先切成可恢复的历史单元
+    body: >-
+      按日期或业务范围把 180 天历史拆成可独立重跑的小单元，
+      让失败时只恢复局部范围，同时便于控制并发和观测单元级成本。
+  - title: 用真实 Profile 校准 Partition
+    body: >-
+      对代表性历史分区记录 Input、Task 数、Task Duration、Shuffle、Spill、GC 和输出文件，
+      再决定 Repartition / Coalesce，而不是先写死一个全局 Partition 数。
+  - title: 逐级放大回填并发
+    body: >-
+      从 1、2、4、8 个并发单元逐级压测，观察吞吐是否继续增长，以及日常 ETL、
+      Streaming Backlog、Object Storage 和 Shuffle Network 是否出现拐点。
+  - title: 对正常链路保留资源保护线
+    body: >-
+      通过独立 Queue / Namespace / Resource Pool 或 Cluster Manager Policy 控制 Backfill 可占资源，
+      当正常 SLA 接近保护线时优先限制新的回填单元进入。
+  - title: 需要时再做物理资源隔离
+    body: >-
+      如果 Backfill 和 Streaming 的资源模型长期冲突，逻辑调度无法稳定保护 SLA，
+      应评估独立 Spark Cluster / 独立资源池，而不是无限堆调度规则。
+
+tradeoffs:
+  - title: 更小的回填单元降低失败半径，但增加调度开销
+    body: >-
+      切得越细，恢复和限流越容易；但 Application / Job / Task 数也会上升。
+      粒度应该由恢复时间和调度成本共同校准。
+  - title: 更强的隔离保护生产，但可能降低回填完成速度
+    body: >-
+      给日常 Workload 预留 Headroom 会让历史回填无法长期跑满所有资源，
+      这是用更长的回填时间换更确定的生产 SLA。
+  - title: 加 Executor 只有在真正瓶颈可横向扩展时才有效
+    body: >-
+      如果瓶颈已经在 Storage、Network、Skew 或单 Task Working Set，
+      继续增加 Executor 可能只提高成本而不提高吞吐。
+
+observability:
+  - title: 建立单回填单元资源画像
+    body: >-
+      每个历史单元至少记录 Input、Stage Duration、Task Max / Median、Shuffle、Spill、GC、
+      Executor Time 和输出文件，避免只用 Application 总时长做容量判断。
+  - title: 同时观察正常 Workload
+    body: >-
+      回填压测期间持续观察日常 ETL 完成时间、Streaming Input / Processing Rate 和 Backlog，
+      只有它们仍然稳定时，新增回填并发才算可接受。
+  - title: 用饱和点而不是利用率峰值定容量
+    body: >-
+      当增加并发后吞吐不再增长、P95 / Spill / GC / Storage Latency 快速上升时，
+      就进入当前架构的饱和区。
+
+cost:
+  - title: 计算成本和数据湖写入成本会一起增长
+    body: >-
+      回填不仅消耗 Executor，还会增加对象存储读写、Shuffle、文件数量和后续 Compaction 成本。
+      成本模型不能只看 Spark Worker Hours。
+  - title: Headroom 是显式可靠性成本
+    body: >-
+      为 Executor Loss、Retry 和日常流量波动预留的资源看起来“空闲”，
+      但它本质上是在购买更低的生产风险。
+
+recovery:
+  - title: 失败后只重跑失败历史单元
+    body: >-
+      回填单元必须具备可重复执行和明确完成边界，避免单个 Task / Executor 故障后重跑全部 30 TB。
+  - title: 生产 SLA 越线时先停止放入新回填
+    body: >-
+      当正常 ETL 或 Streaming 接近保护线时，优先暂停新的 Backfill 单元，
+      等资源和 Backlog 恢复后再逐级放量。
+  - title: 不让确定性 OOM 进入无效重试循环
+    body: >-
+      如果同一 Partition 每次都因 Working Set 过大而失败，应调整 Partition / Plan / 数据分布，
+      而不是依赖 Task Retry 反复消耗资源。
+
+knowledge:
+  - kb-spark-partition-parallelism-001
+  - kb-spark-memory-cache-spill-001
+  - kb-spark-production-troubleshooting-001
+
+interviews:
+  - iq-spark-large-scale-limited-resource-001
+  - iq-large-dataset-tech-selection-001
+  - iq-spark-repartition-vs-coalesce-001

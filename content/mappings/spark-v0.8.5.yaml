@@ -1,0 +1,69 @@
+version: 0.8.5
+topic: spark
+
+interview:
+  evidence_policy: direct_evidence_only
+  mapped_existing_questions:
+    - iq-spark-data-skew-salting-001
+    - iq-spark-broadcast-join-001
+    - iq-spark-job-stage-task-001
+    - iq-spark-cache-persist-001
+    - iq-spark-large-scale-limited-resource-001
+    - iq-spark-repartition-vs-coalesce-001
+    - iq-etl-join-slowdown-001
+    - iq-large-dataset-tech-selection-001
+    - iq-data-platform-batch-realtime-001
+  spark_specific_frequency: preserve_existing_evidence_only
+
+cross_navigation:
+  interview_to_knowledge:
+    - interview: iq-spark-job-stage-task-001
+      knowledge:
+        - kb-spark-job-stage-task-shuffle-001
+
+    - interview: iq-spark-repartition-vs-coalesce-001
+      knowledge:
+        - kb-spark-partition-parallelism-001
+
+    - interview: iq-spark-broadcast-join-001
+      knowledge:
+        - kb-spark-join-aqe-001
+
+    - interview: iq-spark-data-skew-salting-001
+      knowledge:
+        - kb-spark-skew-shuffle-pressure-001
+
+    - interview: iq-spark-cache-persist-001
+      knowledge:
+        - kb-spark-memory-cache-spill-001
+
+    - interview: iq-etl-join-slowdown-001
+      knowledge:
+        - kb-spark-join-aqe-001
+        - kb-spark-skew-shuffle-pressure-001
+
+    - interview: iq-spark-large-scale-limited-resource-001
+      knowledge:
+        - kb-spark-memory-cache-spill-001
+        - kb-spark-production-troubleshooting-001
+
+    - interview: iq-large-dataset-tech-selection-001
+      knowledge:
+        - kb-spark-overview-001
+        - kb-spark-production-troubleshooting-001
+
+    - interview: iq-data-platform-batch-realtime-001
+      knowledge:
+        - kb-spark-structured-streaming-execution-001
+        - kb-spark-streaming-state-reliability-001
+
+  policy:
+    interview_to_knowledge: explicit_curated_mapping
+    knowledge_to_interview: derived_from_interview_to_knowledge
+    knowledge_to_scale: derived_from_scale_scenario_knowledge
+    scale_to_knowledge: scale_scenario_owns_knowledge_ids
+    interview_to_scale: derived_from_scale_scenario_interviews
+    scale_to_interview: scale_scenario_owns_interview_ids
+    reverse_links: derived_not_duplicated
+    mapping_precision: do_not_force_direct_links_for_graph_completeness
+    relation_is_not_frequency_claim: true

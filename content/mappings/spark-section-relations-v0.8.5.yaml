@@ -1,0 +1,134 @@
+version: '0.8.5'
+type: section_relation_registry
+topic: spark
+
+policy:
+  relation_scope: contextual_reading
+  source_anchor: visible_section_or_item_title
+  relation_is_not_frequency_claim: true
+  relation_is_not_project_fact: true
+  prefer_local_context_over_end_of_article_blocks: true
+  do_not_force_relationships_for_graph_completeness: true
+
+relations:
+  - source_type: knowledge
+    source_id: kb-spark-job-stage-task-shuffle-001
+    anchor: 一个例子：groupBy 为什么切 Stage
+    targets:
+      - type: interview
+        id: iq-spark-job-stage-task-001
+
+  - source_type: knowledge
+    source_id: kb-spark-partition-parallelism-001
+    anchor: Repartition 和 Coalesce 怎么选
+    targets:
+      - type: interview
+        id: iq-spark-repartition-vs-coalesce-001
+
+  - source_type: knowledge
+    source_id: kb-spark-join-aqe-001
+    anchor: 一个典型坏计划怎么形成
+    targets:
+      - type: scale
+        id: sc-spark-skew-join-001
+      - type: interview
+        id: iq-spark-broadcast-join-001
+      - type: interview
+        id: iq-etl-join-slowdown-001
+
+  - source_type: knowledge
+    source_id: kb-spark-skew-shuffle-pressure-001
+    anchor: 一个完整的 Skew 排障链
+    targets:
+      - type: scale
+        id: sc-spark-skew-join-001
+      - type: interview
+        id: iq-spark-data-skew-salting-001
+
+  - source_type: knowledge
+    source_id: kb-spark-memory-cache-spill-001
+    anchor: Memory 问题的正确排查顺序
+    targets:
+      - type: interview
+        id: iq-spark-cache-persist-001
+      - type: interview
+        id: iq-spark-large-scale-limited-resource-001
+
+  - source_type: knowledge
+    source_id: kb-spark-production-troubleshooting-001
+    anchor: Backfill 为什么很容易打爆在线资源
+    targets:
+      - type: scale
+        id: sc-spark-30tb-backfill-capacity-001
+      - type: interview
+        id: iq-spark-large-scale-limited-resource-001
+
+  - source_type: knowledge
+    source_id: kb-spark-structured-streaming-execution-001
+    anchor: Input Rate 和 Processing Rate 为什么要分开
+    targets:
+      - type: scale
+        id: sc-spark-streaming-state-backlog-001
+      - type: interview
+        id: iq-data-platform-batch-realtime-001
+
+  - source_type: knowledge
+    source_id: kb-spark-streaming-state-reliability-001
+    anchor: 为什么 State Growth 是生产风险
+    targets:
+      - type: scale
+        id: sc-spark-streaming-state-backlog-001
+
+  - source_type: scale
+    source_id: sc-spark-30tb-backfill-capacity-001
+    anchor: 先切成可恢复的历史单元
+    targets:
+      - type: knowledge
+        id: kb-spark-production-troubleshooting-001
+      - type: interview
+        id: iq-spark-large-scale-limited-resource-001
+
+  - source_type: scale
+    source_id: sc-spark-30tb-backfill-capacity-001
+    anchor: 用真实 Profile 校准 Partition
+    targets:
+      - type: knowledge
+        id: kb-spark-partition-parallelism-001
+      - type: interview
+        id: iq-spark-repartition-vs-coalesce-001
+
+  - source_type: scale
+    source_id: sc-spark-skew-join-001
+    anchor: 先用 Task Distribution 证明 Skew
+    targets:
+      - type: knowledge
+        id: kb-spark-skew-shuffle-pressure-001
+      - type: interview
+        id: iq-spark-data-skew-salting-001
+
+  - source_type: scale
+    source_id: sc-spark-skew-join-001
+    anchor: 检查 Adaptive Plan 和 Statistics
+    targets:
+      - type: knowledge
+        id: kb-spark-join-aqe-001
+      - type: interview
+        id: iq-spark-broadcast-join-001
+      - type: interview
+        id: iq-etl-join-slowdown-001
+
+  - source_type: scale
+    source_id: sc-spark-streaming-state-backlog-001
+    anchor: 先把输入、处理和积压三条曲线分开
+    targets:
+      - type: knowledge
+        id: kb-spark-structured-streaming-execution-001
+      - type: interview
+        id: iq-data-platform-batch-realtime-001
+
+  - source_type: scale
+    source_id: sc-spark-streaming-state-backlog-001
+    anchor: 用真实 Late Data 分布校准 Watermark
+    targets:
+      - type: knowledge
+        id: kb-spark-streaming-state-reliability-001

@@ -1,0 +1,166 @@
+id: sc-spark-streaming-state-backlog-001
+type: scenario
+title: Recover a stateful Structured Streaming query whose state and backlog keep growing
+title_cn: Structured Streaming State 持续增长并形成 Backlog
+domain: compute
+scenario_type:
+  - streaming
+  - reliability
+  - capacity
+  - troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - throughput
+  - latency
+  - state
+  - recovery
+  - correctness
+  - cost
+status: scale_detail_v1
+order: 9
+
+summary: Kafka 输入持续上升，同时迟到数据分布变宽，Stateful Structured Streaming 的 State Rows / Bytes 与 Batch Duration 持续增长，最终 Processing Rate 低于 Input Rate。
+
+display_tags:
+  - Structured Streaming
+  - Watermark
+  - State
+  - Backlog
+
+quick_answer: >-
+  先证明系统是在“持续欠债”：Processing Rate 长期低于 Input Rate。
+  再拆 State Growth、Watermark / Late Data、Shuffle / Skew、Checkpoint / Sink 四层。
+  目标不是让 Query 重新 Running，而是让稳定 Processing Rate 再次高于 Input Rate，
+  并保证恢复过程中 Progress、State 和 Sink 语义一致。
+
+parameters:
+  - label: Source
+    value: Kafka，峰值约 220k events/s
+  - label: 正常处理能力
+    value: 约 260k events/s
+  - label: 异常期处理能力
+    value: 降到约 140k events/s
+  - label: Stateful Logic
+    value: Event-time 聚合 + Dedup
+  - label: 迟到分布
+    value: P99 从约 3 分钟扩大到约 35 分钟
+  - label: 目标
+    value: 恢复到 Processing Rate > Input Rate，并在可接受时间内追平 Backlog
+
+constraints:
+  - title: Query Running 不代表系统恢复
+    body: >-
+      Streaming Query 即使重新进入 Running，只要 Processing Rate 仍低于 Input Rate，
+      Backlog 和端到端延迟就会继续增长。
+  - title: Watermark 是业务完整性与 State 成本的权衡
+    body: >-
+      Watermark 太短会丢失更多迟到更新，太长会让 State 保留更久并增加 Checkpoint / Recovery 成本。
+      不能只为降低 State 随意缩短。
+  - title: Checkpoint 不是 Exactly-once 的唯一条件
+    body: >-
+      恢复正确性还依赖可重放 Source、State 恢复和 Sink 的幂等 / 事务语义，
+      不能把“有 Checkpoint”当作端到端不重不丢的充分证明。
+
+failure_bottlenecks:
+  - title: Processing Rate 低于 Input Rate 形成持续积压
+    body: >-
+      每秒新增的未处理数据持续大于消化量，Backlog 越积越多，
+      端到端延迟从分钟逐步放大到小时。
+  - title: 迟到分布扩大导致 State Retention 增长
+    body: >-
+      为接纳更晚事件而延长 Event-time 保留窗口，会让更多 Key / Window 状态长期存在，
+      State Rows、Bytes、Checkpoint I/O 与恢复时间一起增加。
+  - title: State 增长反过来拖慢每个 Micro-batch
+    body: >-
+      State Lookup / Update、Checkpoint 和 GC 成本变高后，Batch Duration 增加，
+      Processing Rate 继续下降，形成状态增长与积压互相强化的正反馈。
+  - title: Sink / Checkpoint 也可能成为尾部瓶颈
+    body: >-
+      如果核心计算已经完成，但 Sink Commit 或 Checkpoint Storage 变慢，
+      Micro-batch 仍无法及时 Commit 并推进下一轮 Progress。
+
+design:
+  - title: 先把输入、处理和积压三条曲线分开
+    body: >-
+      同时观察 Input Rate、Processing Rate 和 Backlog / Offset Lag，
+      确认问题是入口突增、处理能力下降，还是两者同时发生。
+  - title: 用真实 Late Data 分布校准 Watermark
+    body: >-
+      依据 P95 / P99 迟到时间和业务允许的数据完整性损失设置 Watermark，
+      不用固定“10 分钟”模板替代真实业务分布。
+  - title: 给 State 设置明确生命周期
+    body: >-
+      对 Event-time State 使用 Watermark；对适合 TTL / Timer 的任意 Stateful Logic 使用对应生命周期机制，
+      避免 Key 永久增长。
+  - title: 把 Shuffle / Skew 当作独立运行时问题检查
+    body: >-
+      Stateful Query 仍然运行在 Spark Stage / Task 上，
+      Hot Key 可能让少数 State Partition 特别大，不能把所有 State 问题都归因于 Watermark。
+  - title: 恢复时先保护一致 Progress 边界
+    body: >-
+      使用持久 Checkpoint 恢复 Source Progress 与 State，并验证 Sink 对重复 Batch / Retry 的安全语义，
+      避免为了快速追平积压而绕过恢复边界。
+
+tradeoffs:
+  - title: 更长 Watermark 提高迟到完整性，但增加 State 成本
+    body: >-
+      它会保留更多历史状态并延长 Recovery Window，因此需要和业务完整性要求一起决定。
+  - title: 更短 Trigger 不一定降低延迟
+    body: >-
+      当 Batch 固定开销、State 更新或 Sink Commit 已经很重时，过短 Trigger 可能提高调度占比，
+      让系统更难追平输入。
+  - title: 扩容可以提高处理能力，但不能修复无界 State
+    body: >-
+      更多 Executor 可以增加吞吐，但如果 State 生命周期设计错误，
+      状态仍会持续增长，成本和恢复时间只会被推迟而不是消失。
+
+observability:
+  - title: Input Rate 与 Processing Rate 是第一层稳定性指标
+    body: >-
+      只有 Processing Rate 能长期高于 Input Rate，系统才有机会追平积压。
+      单看当前 Batch Duration 无法判断系统是否正在欠债。
+  - title: 同时看 State Rows / Bytes 和 Watermark
+    body: >-
+      State 持续增长时，对照 Watermark 推进速度、Late Data 分布和 Key Cardinality，
+      判断是业务确实需要保留，还是状态清理条件没有生效。
+  - title: 监控 Checkpoint 和 Sink Commit
+    body: >-
+      记录 Checkpoint 延迟、失败、Sink 写入 / Commit 时间，
+      避免把尾部 I/O 瓶颈误判成 Spark Compute 不足。
+  - title: 追踪恢复后的 Catch-up Rate
+    body: >-
+      Query 恢复后比较 Processing Rate 与 Input Rate 的差值，
+      估算 Backlog 需要多久清空，而不是只报告“任务已恢复”。
+
+cost:
+  - title: State 会把流处理成本从 CPU 扩展到长期存储与恢复
+    body: >-
+      更大的 State 意味着更多 Memory / Disk、Checkpoint Storage、I/O 和更长 Recovery Time，
+      因此 Streaming Cost 不能只用 events/s 衡量。
+  - title: 为追平 Backlog 的临时扩容也是显式成本
+    body: >-
+      事故恢复时可能需要暂时提高 Executor 或处理并发，
+      但应有退出条件，避免恢复后长期保留峰值资源。
+
+recovery:
+  - title: 从持久 Checkpoint 恢复 Progress 和 State
+    body: >-
+      重启后必须回到已提交的 Source Progress 与对应 State 版本，
+      让需要重放的数据在同一一致边界重新处理。
+  - title: Sink 必须安全处理重放
+    body: >-
+      对 foreachBatch 或外部数据库写入，需要用 batch_id、业务唯一键、事务或幂等协议处理 Retry，
+      避免恢复过程中产生重复业务结果。
+  - title: 恢复后先追平积压，再恢复常态资源
+    body: >-
+      当 Processing Rate 稳定高于 Input Rate 且 Backlog 持续下降后，
+      再逐步回收临时资源并确认 State Growth 回到健康趋势。
+
+knowledge:
+  - kb-spark-structured-streaming-execution-001
+  - kb-spark-streaming-state-reliability-001
+  - kb-spark-production-troubleshooting-001
+
+interviews:
+  - iq-data-platform-batch-realtime-001

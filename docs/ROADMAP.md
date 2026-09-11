@@ -188,13 +188,20 @@
 - [x] Technical correctness audit
 - [x] Freeze Spark Learn V1 at 12 / 12
 
-### Next: V0.8.5 Spark Scale & Interview Integration
-- [ ] Create only justified hypothetical Spark Scale scenarios
-- [ ] Map existing evidence-backed Spark Interview questions
-- [ ] Do not invent Spark-specific frequency
-- [ ] Add contextual cross-tab relations
+### V0.8.5 Spark Scale & Interview Integration
+- [x] Create 3 hypothetical Spark Scale scenarios
+- [x] Add Compute Engines as the second Scale domain
+- [x] Add Backfill & Capacity training scenario
+- [x] Add Skew / Join runtime-pressure training scenario
+- [x] Add Structured Streaming state / backlog reliability scenario
+- [x] Map existing evidence-backed Spark Interview questions
+- [x] Add direct Interview -> Spark Knowledge mappings
+- [x] Add contextual Learn / Scale / Interview section relations
+- [x] Preserve every Interview question's existing evidence strength
+- [x] Do not invent Spark-specific frequency
+- [x] Keep scenarios hypothetical and separate from project facts
 
-### V0.8.6 Spark Vertical Slice Freeze
+### Next: V0.8.6 Spark Vertical Slice Freeze
 - [ ] Three-tab closure audit
 - [ ] Mobile reading audit
 - [ ] Freeze Spark V1

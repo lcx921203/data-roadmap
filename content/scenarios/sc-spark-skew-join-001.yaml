@@ -1,0 +1,150 @@
+id: sc-spark-skew-join-001
+type: scenario
+title: Fix a Spark join whose hot key leaves the stage stuck at 99 percent
+title_cn: Hot Key 把 Spark Join 拖成 99% 长尾
+domain: compute
+scenario_type:
+  - troubleshooting
+  - performance
+  - capacity
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - volume
+  - skew
+  - memory
+  - network
+  - latency
+status: scale_detail_v1
+order: 8
+
+summary: 8 TB Fact Table 与维表 Join 后 Stage 长时间停在 99%，绝大多数 Task 已完成，少数 Hot Key Task 的 Shuffle Read 和执行时间高出数十倍。
+
+display_tags:
+  - AQE
+  - Skew
+  - Broadcast Join
+  - Salting
+
+quick_answer: >-
+  先用 Task 分布证明是真正 Skew，而不是笼统说“Shuffle 很大”。
+  再检查 Statistics、Join Strategy、AQE Adaptive Plan 和 Hot Key 来源。
+  AQE 能拆分时优先让引擎处理；只有确认单 Key 本身无法自然拆分时，才设计 Salting，
+  并用 Hot Key Size / Target Task Working Set 决定 salt 粒度。
+
+parameters:
+  - label: Fact Table
+    value: 约 8 TB
+  - label: Join Key
+    value: customer_id
+  - label: Hot Key
+    value: customer_id=0 占约 32%，代表未知用户
+  - label: Stage 现象
+    value: 99% Task 在 40 秒内结束，最后少数 Task 超过 12 分钟
+  - label: 目标
+    value: 把长尾压到正常 Task 的可控倍数，同时避免无谓复制数据
+
+constraints:
+  - title: 大 Shuffle 不等于数据倾斜
+    body: >-
+      如果所有 Task 都读取数 GB 数据，这是整体 Shuffle / Capacity 问题；
+      只有少数 Partition 远大于中位数时，才应该进入 Hot Key / Skew 诊断。
+  - title: Salting 会改变数据形态
+    body: >-
+      Salting 需要在 Join 或 Aggregate 前后增加拆分、复制或二次聚合，
+      会增加代码复杂度和数据量，因此不能作为所有慢 Join 的默认模板。
+  - title: Broadcast 取决于真实参与 Join 的大小
+    body: >-
+      是否 Broadcast 应看 Filter 后真实数据量和 Executor Memory，而不是简单按“维表”标签判断。
+
+failure_bottlenecks:
+  - title: 默认值 Key 聚集成巨大 Shuffle Partition
+    body: >-
+      customer_id=0 集中了三成数据，即使总 Partition 数很多，
+      这个 Key 仍会 Hash 到少数目标 Partition，形成巨大 Task Working Set。
+  - title: Statistics 不准让 Join Strategy 进一步放大问题
+    body: >-
+      如果 Planner 对维表或 Filter 后数据量估算错误，可能错过合适的 Broadcast，
+      或选择不适合当前内存和 Shuffle 成本的计划。
+  - title: OOM 与 Spill 只是长尾的后果
+    body: >-
+      巨大 Partition 会先形成异常 Shuffle Read，再产生 Spill、GC 和 OOM。
+      如果只提高 Executor Memory，没有修复分布，长尾仍然存在。
+
+design:
+  - title: 先用 Task Distribution 证明 Skew
+    body: >-
+      比较同 Stage 的 Task Duration、Shuffle Read、Records、Spill 与 Max / Median。
+      只有少数 Task 在 Input 和 Duration 上同时极端异常时，才进入 Skew 治理。
+  - title: 检查 Adaptive Plan 和 Statistics
+    body: >-
+      对照初始 Physical Plan 与 AQE 后的 Adaptive Plan，
+      确认 Join Strategy、Post-shuffle Partition 和 Skew Split 是否符合真实运行数据。
+  - title: 优先让 AQE 处理可识别的 Join Skew
+    body: >-
+      当 AQE 能识别并拆分 Skewed Partition 时，先验证引擎级方案能否把巨大 Task 拆开，
+      避免过早引入业务级 Salting。
+  - title: Hot Key 业务语义必须先处理
+    body: >-
+      如果 customer_id=0 只是脏默认值，应优先分离或修正业务语义；
+      不要用复杂 Salting 永久掩盖上游数据质量问题。
+  - title: 必要时按目标 Working Set 设计 Salting
+    body: >-
+      对无法消除的真实 Hot Key，根据 Hot Key 总数据量和期望单 Task 数据量估算拆分份数，
+      并控制另一侧数据复制与二次聚合成本。
+
+tradeoffs:
+  - title: AQE 自动化程度高，但只覆盖它能识别和安全调整的路径
+    body: >-
+      AQE 可以基于运行时统计拆分部分 Skew Join，但并不意味着所有业务 Hot Key、
+      UDF 或任意 Stateful Logic 都能被自动修复。
+  - title: Salting 降低单 Task 压力，但增加数据复制和逻辑复杂度
+    body: >-
+      Salt 越多，Hot Key 越均匀；但 Join 另一侧复制量、二次聚合和 Debug 成本也会增加。
+  - title: Broadcast 可避免大表 Shuffle，但会消耗每个 Executor 的内存
+    body: >-
+      只有 Filter 后确实足够小的一侧适合 Broadcast；错误 Broadcast 可能把局部问题变成全 Executor Memory 压力。
+
+observability:
+  - title: 看 Max / Median，而不是只看 Average
+    body: >-
+      记录 Task Duration、Shuffle Read、Input Records、Spill 的 Max、Median 和分位数，
+      直接识别少数 Partition 是否主导 Stage 完成时间。
+  - title: 对比 Initial Plan 和 Adaptive Plan
+    body: >-
+      确认 AQE 是否发生 Join Conversion、Post-shuffle Coalesce 或 Skew Split，
+      以及这些调整是否真的降低了长尾。
+  - title: 追踪 Hot Key 占比
+    body: >-
+      对核心 Join Key 建立分布监控，避免某个默认值或超级大客户从 5% 悄悄增长到 30% 后才在任务失败时发现。
+
+cost:
+  - title: 长尾让整个 Cluster 为少数 Task 空等
+    body: >-
+      当绝大多数 Executor 已空闲、Stage 仍等待少数巨大 Task 时，
+      Cluster Hours 会被拖尾放大，资源利用率和完成时间同时恶化。
+  - title: Salting 用额外算力换分布均衡
+    body: >-
+      数据复制、更多 Partition 和二次 Aggregate 都会增加计算成本，
+      因此目标是消除极端长尾，而不是无限追求完全均匀。
+
+recovery:
+  - title: OOM 后不要原样重跑同一个 Hot Partition
+    body: >-
+      确定性 Working Set 过大不会因为换一个 Executor 就自动消失。
+      应先修复 Key 分布、Partition 或 Join Strategy，再恢复任务。
+  - title: 临时降低并发只能止血
+    body: >-
+      降低并发可以给异常 Task 更多 Memory / I/O Headroom，但不能改变 Hot Key 本身。
+      根因治理仍然要回到数据分布与 Physical Plan。
+
+knowledge:
+  - kb-spark-join-aqe-001
+  - kb-spark-skew-shuffle-pressure-001
+  - kb-spark-memory-cache-spill-001
+  - kb-spark-production-troubleshooting-001
+
+interviews:
+  - iq-spark-data-skew-salting-001
+  - iq-spark-broadcast-join-001
+  - iq-etl-join-slowdown-001

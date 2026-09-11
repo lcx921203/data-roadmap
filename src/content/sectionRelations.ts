@@ -28,6 +28,9 @@ const sectionRelationRegistries = [
   loadYaml<SectionRelationRegistry>(
     'content/mappings/trino-section-relations-v0.7.5.yaml',
   ),
+  loadYaml<SectionRelationRegistry>(
+    'content/mappings/spark-section-relations-v0.8.5.yaml',
+  ),
 ]
 
 const sectionRelations = sectionRelationRegistries.flatMap(

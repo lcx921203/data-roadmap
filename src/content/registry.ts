@@ -63,6 +63,9 @@ const crossNavigationRegistries = [
   loadYaml<CrossNavigationFile>(
     'content/mappings/trino-v0.7.6.yaml',
   ),
+  loadYaml<CrossNavigationFile>(
+    'content/mappings/spark-v0.8.5.yaml',
+  ),
 ]
 
 const interviewKnowledgeMappings = crossNavigationRegistries.flatMap(

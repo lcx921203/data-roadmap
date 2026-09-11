@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '02'
 topic: spark
 learning_depth: L5
-status: learn_v1_complete_pending_scale_interview
+status: scale_interview_integrated
 technical_baseline:
   current_release_at_freeze: 4.2.0
   validation_date: '2026-09-11'
@@ -72,6 +72,7 @@ interview_seed_ids:
 - iq-etl-join-slowdown-001
 - iq-spark-large-scale-limited-resource-001
 - iq-large-dataset-tech-selection-001
+- iq-data-platform-batch-realtime-001
 interview_policy:
   mapping_means_relevance_not_spark_frequency: true
   do_not_create_fake_spark_specific_frequency: true
@@ -371,7 +372,7 @@ nodes:
 freeze:
   body_written: true
   ui_changes: false
-  scale_scenarios_written: false
+  scale_scenarios_written: true
   interview_answers_written: false
   structure_frozen: true
   node_count: 12
@@ -383,3 +384,8 @@ freeze:
   remaining_nodes: 0
   progression_audit: passed_v0.8.4
   technical_correctness_audit: passed_v0.8.4
+  scale_scenario_ids:
+  - sc-spark-30tb-backfill-capacity-001
+  - sc-spark-skew-join-001
+  - sc-spark-streaming-state-backlog-001
+  interview_integration: evidence_backed_cross_navigation_v0.8.5

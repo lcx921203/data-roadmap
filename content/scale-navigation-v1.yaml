@@ -1,4 +1,4 @@
-version: '1.1'
+version: '1.2'
 domains:
   - id: lakehouse
     title_cn: 湖仓
@@ -46,3 +46,29 @@ domains:
         order: 60
         scenarios:
           - sc-trino-fte-batch-recovery-001
+
+  - id: compute
+    title_cn: 计算引擎
+    title_en: Compute Engines
+    order: 20
+    themes:
+      - id: spark-backfill-capacity
+        title_cn: 大规模回填与容量
+        title_en: Backfill & Capacity
+        order: 10
+        scenarios:
+          - sc-spark-30tb-backfill-capacity-001
+
+      - id: spark-skew-runtime-pressure
+        title_cn: Shuffle、倾斜与运行时压力
+        title_en: Shuffle, Skew & Runtime Pressure
+        order: 20
+        scenarios:
+          - sc-spark-skew-join-001
+
+      - id: spark-streaming-state-reliability
+        title_cn: 流状态与可靠性
+        title_en: Streaming State & Reliability
+        order: 30
+        scenarios:
+          - sc-spark-streaming-state-backlog-001
