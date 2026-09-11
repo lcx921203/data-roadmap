@@ -338,13 +338,24 @@
 - [x] Keep all MetricFlow article bodies unwritten
 - [x] Keep UI unchanged
 
-### Next: V1.0.1 MetricFlow Semantic Foundation
-- [ ] 01 Semantic Layer & MetricFlow Mental Model
-- [ ] 02 dbt Model -> Semantic Model & Current Spec
-- [ ] 03 Entities / Semantic Grain / Join Keys
-- [ ] 04 Dimensions / Time Dimensions / Aggregation Time
+### V1.0.1 MetricFlow Semantic Foundation
+- [x] 01 Semantic Layer & MetricFlow Mental Model
+- [x] 02 dbt Model -> Semantic Model & Current Spec
+- [x] 03 Entities / Semantic Grain / Join Keys
+- [x] 04 Dimensions / Time Dimensions / Aggregation Time
+- [x] Separate dbt DAG from MetricFlow Semantic Graph
+- [x] Use current v1.12+ embedded Semantic Model specification
+- [x] Treat Entity type as semantic join metadata, not database constraint
+- [x] Connect Semantic Grain -> Entity correctness -> Join correctness
+- [x] Separate Categorical vs Time Dimension semantics
+- [x] Freeze agg_time_dimension as default Metric Time responsibility
+- [x] Keep Time Spine out of the foundation layer
+- [x] Keep Simple Metric body for V1.0.2
+- [x] Enhance Continue Learning border-flow visibility
+- [x] Make Dark-mode flow stronger than Light without outer glow / shadow
+- [x] Preserve Reduced Motion behavior
 
-### V1.0.2 MetricFlow Metrics & Semantic Graph
+### Next: V1.0.2 MetricFlow Metrics & Semantic Graph
 - [ ] 05 Simple Metrics / Aggregation / Additivity
 - [ ] 06 Semantic Graph / Join Logic / Fan-out Safety
 - [ ] 07 Ratio / Derived Metrics
