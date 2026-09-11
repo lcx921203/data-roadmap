@@ -78,21 +78,10 @@ export function InterviewPage() {
     ? `${visible.length} / ${interviewBank.questions.length} 道`
     : `${interviewBank.questions.length} 道`
 
-  const activeTagLabel = activeTag
-    ? interviewDiscovery.quick_tags.find(
-        (tag) => tag.id === activeTag,
-      )?.label
-    : null
-
-  const contextTitle = query.trim()
-    ? `搜索：${query.trim()}`
-    : activeTagLabel ?? '全部题目'
-
   return (
     <>
       <TopBar title="Interview" />
-
-      <div className="page page--list interview-page">
+      <div className="page page--list">
         <h1>面试题</h1>
         <p className="page-lead">
           搜索问题、场景或关键词，也可以直接选择技术。
@@ -108,7 +97,6 @@ export function InterviewPage() {
             aria-label="搜索面试题"
           />
         </label>
-
         <p className="search-example">
           例如：数据倾斜、指标不一致、历史回填
         </p>
@@ -143,12 +131,15 @@ export function InterviewPage() {
           ))}
         </div>
 
-        <div
-          className="interview-list-heading interview-list-heading--sticky"
-          aria-live="polite"
-        >
+        <div className="interview-list-heading">
           <div>
-            <h2 title={contextTitle}>{contextTitle}</h2>
+            <h2>
+              {activeTag
+                ? interviewDiscovery.quick_tags.find(
+                    (tag) => tag.id === activeTag,
+                  )?.label ?? '题目'
+                : '题目'}
+            </h2>
             <span>{countLabel}</span>
           </div>
 
@@ -172,10 +163,7 @@ export function InterviewPage() {
         </div>
 
         {visible.length > 0 ? (
-          <section
-            className="question-list"
-            aria-label="面试题列表"
-          >
+          <section className="question-list" aria-label="面试题列表">
             {visible.map((question) => (
               <QuestionRow key={question.id} item={question} />
             ))}
@@ -221,11 +209,8 @@ export function InterviewPage() {
               onClick={() => setAnswer('all')}
             >
               <span>不限</span>
-              <span aria-hidden="true">
-                {answer === 'all' ? '✓' : ''}
-              </span>
+              <span aria-hidden="true">{answer === 'all' ? '✓' : ''}</span>
             </button>
-
             <button
               type="button"
               data-selected={answer === 'curated'}
@@ -250,7 +235,6 @@ export function InterviewPage() {
           >
             清除筛选
           </button>
-
           <button
             type="button"
             className="primary-action"

@@ -2,106 +2,131 @@ import { useMemo, useState } from 'react'
 import { BottomSheet } from '../components/BottomSheet'
 import { FilterIcon } from '../components/FilterIcon'
 import { TopBar } from '../components/TopBar'
+import { loadYaml } from '../content/loaders'
 import { appRegistry } from '../content/registry'
 import type { ScaleScenario } from '../types/content'
 
-interface DomainMeta {
-  label: string
-  labelEn: string
-  order: number
+interface ScaleThemeNavigation {
+  id: string
+  title_cn: string
+  title_en?: string
+  order?: number
+  scenarios: string[]
 }
 
-const domainMeta: Record<string, DomainMeta> = {
-  lakehouse: {
-    label: '湖仓',
-    labelEn: 'Lakehouse',
-    order: 10,
-  },
-  streaming: {
-    label: '流式计算',
-    labelEn: 'Streaming',
-    order: 20,
-  },
-  batch: {
-    label: '批处理与 Spark',
-    labelEn: 'Batch / Spark',
-    order: 30,
-  },
-  spark: {
-    label: '批处理与 Spark',
-    labelEn: 'Batch / Spark',
-    order: 30,
-  },
-  semantic: {
-    label: '语义与服务',
-    labelEn: 'Semantic / Serving',
-    order: 40,
-  },
-  serving: {
-    label: '语义与服务',
-    labelEn: 'Semantic / Serving',
-    order: 40,
-  },
-  governance: {
-    label: '数据治理',
-    labelEn: 'Governance',
-    order: 50,
-  },
-  agent: {
-    label: 'Data Agent',
-    labelEn: 'Agent',
-    order: 60,
-  },
+interface ScaleDomainNavigation {
+  id: string
+  title_cn: string
+  title_en?: string
+  order?: number
+  themes: ScaleThemeNavigation[]
 }
 
-function resolveDomain(domain?: string) {
-  const key = domain?.toLowerCase() || 'other'
-  return {
-    key,
-    ...(domainMeta[key] ?? {
-      label: domain ?? '其他场景',
-      labelEn: domain ?? 'Other',
-      order: 999,
-    }),
-  }
+interface ScaleNavigationFile {
+  version: string
+  domains: ScaleDomainNavigation[]
 }
 
-interface ScenarioGroup {
-  key: string
-  label: string
-  labelEn: string
+interface ThemeGroup {
+  id: string
+  title: string
+  titleEn?: string
   order: number
   scenarios: ScaleScenario[]
 }
 
-function groupScenarios(
+interface DomainGroup {
+  id: string
+  title: string
+  titleEn?: string
+  order: number
+  themes: ThemeGroup[]
+  scenarioCount: number
+}
+
+const navigation = loadYaml<ScaleNavigationFile>(
+  'content/scale-navigation-v1.yaml',
+)
+
+function buildGroups(
   scenarios: ScaleScenario[],
-): ScenarioGroup[] {
-  const grouped = new Map<string, ScenarioGroup>()
+): DomainGroup[] {
+  const scenarioById = new Map(
+    scenarios.map((scenario) => [scenario.id, scenario]),
+  )
+  const mappedIds = new Set<string>()
 
-  for (const scenario of scenarios) {
-    const domain = resolveDomain(scenario.domain)
-    const existing = grouped.get(domain.key)
+  const groups = navigation.domains
+    .map((domain) => {
+      const themes = domain.themes
+        .map((theme) => {
+          const resolved = theme.scenarios.flatMap((id) => {
+            const scenario = scenarioById.get(id)
+            if (!scenario) return []
 
-    if (existing) {
-      existing.scenarios.push(scenario)
-    } else {
-      grouped.set(domain.key, {
-        ...domain,
-        scenarios: [scenario],
-      })
-    }
+            mappedIds.add(id)
+            return [scenario]
+          })
+
+          return {
+            id: theme.id,
+            title: theme.title_cn,
+            titleEn: theme.title_en,
+            order: theme.order ?? 999,
+            scenarios: resolved.sort(
+              (left, right) =>
+                (left.order ?? 999) - (right.order ?? 999),
+            ),
+          }
+        })
+        .filter((theme) => theme.scenarios.length > 0)
+        .sort((left, right) => left.order - right.order)
+
+      return {
+        id: domain.id,
+        title: domain.title_cn,
+        titleEn: domain.title_en,
+        order: domain.order ?? 999,
+        themes,
+        scenarioCount: themes.reduce(
+          (total, theme) => total + theme.scenarios.length,
+          0,
+        ),
+      }
+    })
+    .filter((domain) => domain.scenarioCount > 0)
+    .sort((left, right) => left.order - right.order)
+
+  const unmapped = scenarios.filter(
+    (scenario) => !mappedIds.has(scenario.id),
+  )
+
+  if (unmapped.length > 0) {
+    groups.push({
+      id: 'uncategorized',
+      title: '其他场景',
+      titleEn: 'Other',
+      order: 999,
+      scenarioCount: unmapped.length,
+      themes: [
+        {
+          id: 'uncategorized',
+          title: '待归类',
+          titleEn: 'Uncategorized',
+          order: 999,
+          scenarios: unmapped,
+        },
+      ],
+    })
   }
 
-  return Array.from(grouped.values()).sort(
-    (left, right) => left.order - right.order,
-  )
+  return groups
 }
 
 export function ScalePage() {
   const { scaleScenarios } = appRegistry
   const groups = useMemo(
-    () => groupScenarios(scaleScenarios),
+    () => buildGroups(scaleScenarios),
     [scaleScenarios],
   )
   const [domainFilter, setDomainFilter] =
@@ -109,36 +134,39 @@ export function ScalePage() {
   const [filterOpen, setFilterOpen] = useState(false)
 
   const visibleGroups = domainFilter
-    ? groups.filter((group) => group.key === domainFilter)
+    ? groups.filter((group) => group.id === domainFilter)
     : groups
 
-  const activeGroup = domainFilter
-    ? groups.find((group) => group.key === domainFilter)
+  const selectedDomain = domainFilter
+    ? groups.find((group) => group.id === domainFilter)
     : null
 
   return (
     <>
       <TopBar title="Scale" />
 
-      <div className="page scale-library">
+      <div
+        className="page scale-library"
+        data-multi-domain={groups.length > 1}
+      >
         <h1>生产场景</h1>
         <p className="page-lead">
-          按领域组织真实生产约束，沿着“瓶颈 → 设计 → 权衡 → 恢复”训练系统思维。
+          按领域和训练主题快速定位，再进入具体生产场景。
         </p>
 
-        <div className="scale-library__toolbar">
-          <div>
-            <strong>
-              {activeGroup?.label ?? '全部场景'}
-            </strong>
-            <span>
-              {domainFilter
-                ? `${activeGroup?.scenarios.length ?? 0} 个场景`
-                : `${scaleScenarios.length} 个场景 · ${groups.length} 个领域`}
-            </span>
-          </div>
+        {groups.length > 1 && (
+          <div className="scale-domain-filter">
+            <div>
+              <strong>
+                {selectedDomain?.title ?? '全部领域'}
+              </strong>
+              <span>
+                {selectedDomain
+                  ? `${selectedDomain.scenarioCount} 个场景`
+                  : `${groups.length} 个领域 · ${scaleScenarios.length} 个场景`}
+              </span>
+            </div>
 
-          {groups.length > 1 && (
             <button
               type="button"
               className="filter-control"
@@ -149,51 +177,75 @@ export function ScalePage() {
               <span>领域</span>
               {domainFilter && <strong>1</strong>}
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="scale-domain-stack">
-          {visibleGroups.map((group) => (
+          {visibleGroups.map((domain) => (
             <section
               className="scale-domain-group"
-              id={`scale-domain-${group.key}`}
-              key={group.key}
-              aria-labelledby={`scale-domain-title-${group.key}`}
+              key={domain.id}
+              aria-labelledby={`scale-domain-${domain.id}`}
             >
               <header className="scale-domain-group__header">
-                <div>
-                  <h2 id={`scale-domain-title-${group.key}`}>
-                    {group.label}
-                  </h2>
-                  <span>{group.labelEn}</span>
-                </div>
-                <strong>{group.scenarios.length} 个场景</strong>
+                <h2 id={`scale-domain-${domain.id}`}>
+                  {domain.title}
+                </h2>
+                <p>
+                  {domain.titleEn
+                    ? `${domain.titleEn} · `
+                    : ''}
+                  {domain.themes.length} 个训练主题 ·{' '}
+                  {domain.scenarioCount} 个场景
+                </p>
               </header>
 
-              <div className="scenario-list">
-                {group.scenarios.map((scenario) => (
-                  <a
-                    className="scenario-row scenario-row--link"
-                    href={`#/scale/${scenario.id}`}
-                    key={scenario.id}
+              <div className="scale-theme-list">
+                {domain.themes.map((theme) => (
+                  <section
+                    className="scale-theme-group"
+                    key={theme.id}
+                    aria-labelledby={`scale-theme-${domain.id}-${theme.id}`}
                   >
-                    <h3>
-                      {scenario.title_cn ?? scenario.title}
-                    </h3>
-
-                    {scenario.summary && (
-                      <p>{scenario.summary}</p>
-                    )}
-
-                    {scenario.display_tags?.length ? (
-                      <p
-                        className="scenario-row__tags"
-                        aria-label="训练重点"
+                    <header className="scale-theme-group__header">
+                      <h3
+                        id={`scale-theme-${domain.id}-${theme.id}`}
                       >
-                        {scenario.display_tags.join(' · ')}
-                      </p>
-                    ) : null}
-                  </a>
+                        {theme.title}
+                      </h3>
+                      {theme.titleEn && (
+                        <span>{theme.titleEn}</span>
+                      )}
+                    </header>
+
+                    <div className="scenario-list">
+                      {theme.scenarios.map((scenario) => (
+                        <a
+                          className="scenario-row scenario-row--link"
+                          href={`#/scale/${scenario.id}`}
+                          key={scenario.id}
+                        >
+                          <h4>
+                            {scenario.title_cn ??
+                              scenario.title}
+                          </h4>
+
+                          {scenario.summary && (
+                            <p>{scenario.summary}</p>
+                          )}
+
+                          {scenario.display_tags?.length ? (
+                            <p
+                              className="scenario-row__tags"
+                              aria-label="训练重点"
+                            >
+                              {scenario.display_tags.join(' · ')}
+                            </p>
+                          ) : null}
+                        </a>
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             </section>
@@ -220,20 +272,23 @@ export function ScalePage() {
               <span>{scaleScenarios.length}</span>
             </button>
 
-            {groups.map((group) => (
+            {groups.map((domain) => (
               <button
                 type="button"
-                key={group.key}
-                data-selected={domainFilter === group.key}
+                key={domain.id}
+                data-selected={domainFilter === domain.id}
                 onClick={() => {
-                  setDomainFilter(group.key)
+                  setDomainFilter(domain.id)
                   setFilterOpen(false)
                 }}
               >
                 <span>
-                  {group.label} · {group.labelEn}
+                  {domain.title}
+                  {domain.titleEn
+                    ? ` · ${domain.titleEn}`
+                    : ''}
                 </span>
-                <span>{group.scenarios.length}</span>
+                <span>{domain.scenarioCount}</span>
               </button>
             ))}
           </div>

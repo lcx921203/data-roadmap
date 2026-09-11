@@ -60,16 +60,23 @@
 - [x] Bottom navigation separation
 
 #### V0.6.7.2 Three-Tab Page Polish
-- [x] Freeze continuity / causal / positioning / structure principles
-- [x] Learn Home task hierarchy
-- [x] Learn Stage ordered knowledge spine
-- [x] Current Stage / Knowledge position
-- [x] Interview sticky discovery context
-- [x] Scale domain grouping
-- [x] Scale sticky domain context
-- [x] Future-ready domain filter when multiple domains exist
-- [x] Remove repeated domain label from Scenario rows
-- [x] Sync Design System V1.8
+- [x] Initial three-tab page review
+- [x] Identified Scale flat-list scalability problem
+- [x] Superseded Learn / Stage / Interview over-structuring in V0.6.7.2.1
+
+#### V0.6.7.2.1 Scale Hierarchy Correction
+- [x] Restore Learn Home to V0.6.7.1.2 presentation
+- [x] Restore Stage Detail to V0.6.7.1.2 presentation
+- [x] Restore Interview discovery to V0.6.7.1.2 presentation
+- [x] Keep one-hand Reading Directory and contextual relations
+- [x] Define Scale navigation as Domain -> Training Theme -> Scenario
+- [x] Add Scale navigation taxonomy as content
+- [x] Lakehouse: Capacity & Backfill
+- [x] Lakehouse: Continuous Write & Table Health
+- [x] Lakehouse: Commit Concurrency & Recovery
+- [x] Domain filter only when multiple domains actually exist
+- [x] Sticky Domain context only when multiple domains actually exist
+- [x] Correct Design System to V1.8.1
 
 #### Next: V0.6.7.3 UI Conformance & Freeze
 - [ ] 390px full-path review

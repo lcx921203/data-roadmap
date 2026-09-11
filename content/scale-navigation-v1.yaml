@@ -1,0 +1,27 @@
+version: '1.0'
+domains:
+  - id: lakehouse
+    title_cn: 湖仓
+    title_en: Lakehouse
+    order: 10
+    themes:
+      - id: capacity-backfill
+        title_cn: 容量与回填
+        title_en: Capacity & Backfill
+        order: 10
+        scenarios:
+          - sc-iceberg-10b-backfill-001
+
+      - id: continuous-write-health
+        title_cn: 持续写入与表健康
+        title_en: Continuous Write & Table Health
+        order: 20
+        scenarios:
+          - sc-iceberg-streaming-small-files-001
+
+      - id: commit-concurrency-recovery
+        title_cn: 并发提交与恢复
+        title_en: Commit Concurrency & Recovery
+        order: 30
+        scenarios:
+          - sc-iceberg-concurrent-commit-001

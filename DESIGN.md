@@ -1,6 +1,6 @@
 # DataRoadmap Design System
 
-> Version: **1.8 / Three-Tab Page Architecture**
+> Version: **1.8.1 / Reading Continuity Scope Correction**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
@@ -505,9 +505,9 @@ Reduced Motion 必须关闭非必要 Transition。
 
 ---
 
-## 20. Reading Architecture Principles
+## 20. Reading Continuity Principles
 
-DataRoadmap 的页面设计必须同时保护五件事：
+DataRoadmap 仍然保护：
 
 ```text
 Continuity
@@ -526,79 +526,96 @@ Truthfulness
 准确性
 ```
 
-### 不依赖用户短期记忆
+但这些原则**不等于把所有页面都视觉化成流程或进度轨道**。
 
-如果用户滚动数屏之后需要自己回忆：
+### 连贯性是“需要时提供定位”
 
-- 我现在属于哪个领域；
-- 前面讲到哪一层；
-- 这一节为什么出现在这里；
-- 下一步应该去哪；
+用户真正容易断片的地方才增加定位工具：
 
-则说明页面结构失败。
+- 长文章：悬浮目录 + 当前小节高亮；
+- Learn：Continue Learning + Stage 顺序 + 上一节 / 下一节；
+- Interview：搜索、技术与筛选；
+- Scale：领域与训练主题分层。
 
-UI 必须显式提供当前位置、分组上下文与连续路径。
+如果原有页面已经能清楚表达结构，不额外增加序号、轨道、Sticky Header 或状态标签。
 
 ### Learn
 
-Learn 使用：
+Learn Home 与 Stage List 保持原来的安静列表结构。
+
+知识的前后依赖主要由内容本身和：
 
 ```text
-Stage
-→ Ordered Knowledge Spine
-→ Previous / Next
+Continue Learning
+Previous / Next
+Reading Directory
 ```
 
-Stage Detail 不是普通文章列表，而是一条有前后依赖的知识主线。
+表达。
+
+Stage 页面不使用人为的“01 → 02 → 03”视觉轨道来证明知识有顺序。
 
 ### Interview
 
-Interview 的核心是快速定位问题：
+Interview 保持原来的 Search / Technology / Filter 体验。
 
-```text
-Search
-→ Technology
-→ Filter
-→ Evidence-backed Result
-```
-
-长列表滚动时保留当前搜索 / 技术上下文与结果数量。
+除非未来真实题量证明必要，不额外增加 Sticky Result Context。
 
 ### Scale
 
-Scale 是 Scenario Library（生产场景库）：
+Scale 才需要新的结构层，因为场景会跨多个技术领域持续增长。
+
+冻结层级：
 
 ```text
 Scale
-→ Domain
-→ Scenario
-→ Constraints / Failure / Design / Trade-off / Recovery
+→ Domain（领域）
+→ Training Theme（训练主题）
+→ Scenario（具体场景）
 ```
 
-场景不再平铺。
+当前 Lakehouse：
 
-Domain Header 在长列表中保持 Sticky Context，让用户滚动很久仍知道自己处于哪个领域。
+```text
+湖仓
+├─ 容量与回填
+│  └─ 100 亿行历史回填
+├─ 持续写入与表健康
+│  └─ 10 秒级提交后的文件膨胀
+└─ 并发提交与恢复
+   └─ 100 个 Writer 并发提交
+```
 
-当领域数量 > 1 时，提供领域筛选；不使用横向 Domain Tab。
+只有真实出现多个 Domain 时：
+
+- 才显示领域筛选；
+- 才允许 Domain Header 使用 Sticky Context。
+
+不提前为未来复杂度增加当前用户负担。
 
 ---
 
-## 21. V1.8 Freeze Rules
+## 21. V1.8.1 Freeze Rules
 
-V1.8 冻结：
+V1.8.1 冻结：
 
 ```text
 Three-Tab Navigation
 Left-edge Reading Control
 Right-side Reading Drawer
-Scale Domain Grouping
-Sticky Domain Context
-Ordered Knowledge Spine
-Sticky Interview Result Context
+Directory Current Section Highlight
 Directory without row dividers
 Contextual Section Relations
 Bottom Navigation Separation
-Secondary Metadata Grammar
+Scale Domain → Theme → Scenario hierarchy
+```
+
+明确不冻结：
+
+```text
+Ordered Knowledge Spine UI
+Sticky Interview Result Context
+Single-domain Sticky Scale Header
 ```
 
 后续 UI Review 不再重新引入：
@@ -608,4 +625,6 @@ Secondary Metadata Grammar
 - Top-right-only Reading Directory；
 - 大块 Footer Cross-link 列表作为主要关系入口；
 - Heavy Shadow；
-- Card Wall。
+- Card Wall；
+- 为了表达“连贯性”而重复制造视觉进度结构。
+

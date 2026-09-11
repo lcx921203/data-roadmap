@@ -1,0 +1,45 @@
+version: '1.8.1'
+status: active
+scope: scale_hierarchy_correction
+
+reading_continuity:
+  principle: add_positioning_aids_only_where_users_can_realistically_lose_context
+  avoid_over_encoding: true
+  long_reading:
+    directory: true
+    current_section_highlight: true
+  learn:
+    preserve_existing_home_and_stage_presentation: true
+    continuity_via:
+      - continue_learning
+      - stage_order
+      - previous_next
+      - reading_directory
+  interview:
+    preserve_existing_discovery_presentation: true
+    continuity_via:
+      - search
+      - technology_filter
+      - advanced_filter
+
+scale:
+  hierarchy:
+    - domain
+    - training_theme
+    - scenario
+  navigation_source: content/scale-navigation-v1.yaml
+  domain_filter:
+    show_only_when_domain_count_greater_than: 1
+  sticky_domain_context:
+    enable_only_when_domain_count_greater_than: 1
+  current_domains:
+    - lakehouse
+  lakehouse_themes:
+    - capacity_backfill
+    - continuous_write_table_health
+    - commit_concurrency_recovery
+
+explicitly_not_frozen:
+  - ordered_knowledge_spine_ui
+  - sticky_interview_result_context
+  - single_domain_sticky_scale_header
