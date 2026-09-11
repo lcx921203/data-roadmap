@@ -1,5 +1,5 @@
-version: '1.4'
-frozen_at: 0.6.0.8
+version: '1.5'
+frozen_at: 0.6.0.9
 status: frozen
 viewport_baseline:
   width: 390
@@ -18,6 +18,9 @@ principles:
   descriptive_metadata_uses_middle_dot: true
   technical_diagrams_mobile_first: true
   diagram_text_is_real_dom_text: true
+  diagram_relation_is_semantic: true
+  embedded_diagram_avoids_nested_card: true
+  diagram_palette_stable_within_domain: true
 components:
 - id: app-shell
   status: frozen
@@ -134,6 +137,11 @@ components:
   - figcaption_required
   - color_not_only_semantic
   - diagram_directive_from_markdown
+  - header_title_only_no_type_badge
+  - mobile_density_compact
+  - embedded_in_surface_flattens_outer_frame
+  - caption_preferred_over_extra_callout
+  - split_if_single_concept_becomes_too_tall
 - id: diagram-node
   status: frozen
   rules:
@@ -142,15 +150,33 @@ components:
   - ten_pixel_radius
   - short_subtitle_optional
   - semantic_palette_diagram_only
+  - mobile_primary_height_52_to_56
+  - mobile_compact_height_48_to_52
+  - semantic_color_stable_within_domain
 - id: diagram-arrow
   status: frozen
   rules:
   - thin_hairline
   - label_optional
   - direction_must_be_unambiguous
+  - directional_relation_requires_arrowhead
+  - mobile_gap_30_to_34
 - id: diagram-branch
   status: frozen
   rules:
   - mobile_max_two_visible_columns
   - one_to_many_must_be_visually_explicit
   - ellipsis_allowed_for_repetition
+  - directional_fork_requires_arrowheads
+  - fork_means_one_to_many
+- id: diagram-relation-grammar
+  status: frozen
+  relations:
+    solid_arrow: reference_call_flow_sequence
+    forked_arrow: one_to_many_reference_or_split
+    dashed_arrow: retry_rollback_optional
+    bracket_no_arrow: grouping_containment_only
+  rules:
+  - line_style_must_express_meaning
+  - directional_relationship_has_arrowhead
+  - color_not_required_to_understand_relation

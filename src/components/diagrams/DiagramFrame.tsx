@@ -17,7 +17,6 @@ export function DiagramFrame({
     <figure className={`technical-diagram ${className}`.trim()}>
       <div className="technical-diagram__header">
         <strong>{title}</strong>
-        <span>结构图</span>
       </div>
 
       <div className="technical-diagram__canvas">
@@ -59,6 +58,36 @@ export function DiagramArrow({ label }: { label?: string }) {
     <div className="diagram-arrow" aria-hidden={label ? undefined : true}>
       {label && <span>{label}</span>}
       <i />
+    </div>
+  )
+}
+
+interface DiagramBranchProps {
+  label?: string
+  children: ReactNode
+  className?: string
+}
+
+export function DiagramBranch({
+  label,
+  children,
+  className = '',
+}: DiagramBranchProps) {
+  return (
+    <div className={`diagram-branch ${className}`.trim()}>
+      <div className="diagram-branch__connector" aria-hidden="true">
+        {label && <span className="diagram-branch__label">{label}</span>}
+        <i className="diagram-branch__trunk" />
+        <i className="diagram-branch__bar" />
+        <i className="diagram-branch__leg diagram-branch__leg--left" />
+        <i className="diagram-branch__leg diagram-branch__leg--right" />
+        <i className="diagram-branch__tip diagram-branch__tip--left" />
+        <i className="diagram-branch__tip diagram-branch__tip--right" />
+      </div>
+
+      <div className="diagram-branch__children">
+        {children}
+      </div>
     </div>
   )
 }

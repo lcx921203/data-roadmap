@@ -83,7 +83,7 @@ DESIGN.md
 content/design/components-v1.yaml
 ```
 
-当前：Design System V1.4。
+当前：Design System V1.5。
 
 核心：
 
@@ -136,3 +136,16 @@ Markdown Directive：
 - 一对多关系必须从连接结构上可见；
 - Diagram 只表达结构，正文继续解释为什么；
 - SQL / Config / Command 仍使用 CodeBlock。
+
+
+## Diagram Mobile Refinement rules
+
+- Diagram Header 不显示“结构图 / 流程图 / 技术图”等重复 Badge；
+- 方向关系必须有箭头；
+- 分叉箭头表示一对多，不能用无方向 T 型线代替；
+- 虚线箭头保留给 Retry / Rollback / Optional；
+- Quick Answer 内 Diagram 必须弱化/取消独立外框，避免 Card inside Card；
+- 关键关系优先写进 figcaption，不额外堆 Callout Card；
+- Mobile 主节点约 52–56px，Arrow Gap 约 30–34px；
+- 单概念图过长时优先拆图，不能靠无限缩小字体解决；
+- 同一技术域相同语义节点跨图保持同一颜色。

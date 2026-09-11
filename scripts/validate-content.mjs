@@ -119,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.4') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1.4')
+if (components?.status !== 'frozen' || components?.version !== '1.5') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.5')
 }
 
 const ids = new Set()
@@ -497,11 +497,57 @@ if (
 
 console.log('Technical Diagram System V0.6.0.8 validation passed.')
 
+
+const diagramFrameSource = readText(
+  'src/components/diagrams/DiagramFrame.tsx',
+)
+if (diagramFrameSource.includes('<span>结构图</span>')) {
+  throw new Error('Diagram header must not repeat a type badge')
+}
+if (!diagramFrameSource.includes('DiagramBranch')) {
+  throw new Error('Directional DiagramBranch primitive is required')
+}
+
+const metadataDiagramSource = readText(
+  'src/components/diagrams/IcebergMetadataTree.tsx',
+)
+const manifestDiagramSource = readText(
+  'src/components/diagrams/IcebergManifestTree.tsx',
+)
+
+for (const [name, source] of [
+  ['metadata', metadataDiagramSource],
+  ['manifest', manifestDiagramSource],
+]) {
+  if (!source.includes('<DiagramBranch')) {
+    throw new Error(`${name} diagram must use directional DiagramBranch`)
+  }
+  if (source.includes('diagram-note')) {
+    throw new Error(`${name} diagram must prefer figcaption over extra callout card`)
+  }
+}
+
+const diagramCssV11 = readText('src/styles/diagram-system-v1.css')
+if (
+  !diagramCssV11.includes('.diagram-branch__tip--left') ||
+  !diagramCssV11.includes('.diagram-branch__tip--right')
+) {
+  throw new Error('One-to-many branch must expose directional arrow tips')
+}
+if (
+  !diagramCssV11.includes('.quick-answer .technical-diagram') ||
+  !diagramCssV11.includes('border: 0')
+) {
+  throw new Error('Embedded Quick Answer diagram must flatten its outer frame')
+}
+
+console.log('Technical Diagram System V1.1 mobile refinement passed.')
+
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
     `${interviewBank.questions.length} interview questions, ` +
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1.4 frozen.`,
+    `Design System V1.5 frozen.`,
 )

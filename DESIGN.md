@@ -1,10 +1,10 @@
 # DataRoadmap Design System
 
-> Version: **1.4 / Technical Diagram System at V0.6.0.8**
+> Version: **1.5 / Diagram Mobile Refinement at V0.6.0.9**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
-V1.4 延续 V1.3 的 Mobile-first 视觉语言，新增并冻结 Technical Diagram System（技术图表系统），用于准确表达层级、流向、分支和系统关系。
+V1.5 在 V1.4 Technical Diagram System 上完成首轮 iPhone Safari 实测精修：降低移动端纵向密度、明确一对多方向、减少嵌套卡片感，并冻结 Diagram Relation Grammar（图表关系语法）。
 
 ```text
 Content is the interface.
@@ -480,6 +480,109 @@ Renderer 将 `diagram-*` fence 交给 TechnicalDiagram，而不是 CodeBlock。
 纯文本结构不再为了“像图”而塞进黑色 CodeBlock。
 
 
+
+### Mobile Density V1.1
+
+首轮 390px 实测后，单概念技术图应优先控制纵向密度：
+
+- 主节点高度约 52–56px；
+- Compact Node 约 48–52px；
+- 单段 Arrow Gap 约 30–34px；
+- Canvas Mobile Padding 约 12–14px；
+- 一张单概念图如果持续超过一个移动端内容视口，优先拆成两张图，而不是继续缩小文字；
+- 不为压缩高度把节点文字降到不可读。
+
+### Embedded Diagram
+
+当 Diagram 已经位于 Quick Answer / 30 秒理解等有 Surface 的容器中：
+
+- 不再增加完整外框；
+- 不制造 Card inside Card；
+- Header / Canvas / Caption 使用同一父 Surface；
+- 仅用 Hairline 分隔必要区域。
+
+Standalone Diagram 仍可保留轻量 1px 外框。
+
+### Header
+
+Diagram Header 只保留真正有内容价值的标题。
+
+删除：
+
+```text
+结构图
+流程图
+技术图
+```
+
+等重复类型 Badge。标题本身已经表达内容，不额外解释“这是一张图”。
+
+### Relation Grammar
+
+连接线必须表达关系，而不只是装饰：
+
+```text
+实线单箭头
+= 引用 / 调用 / 数据流 / 顺序
+
+实线分叉箭头
+= 一对多引用 / 分流
+
+虚线箭头
+= Retry / Rollback / Optional Path
+
+无箭头括线 / Group
+= 纯分组 / 包含
+```
+
+Directional Relationship 必须有 Arrow Head。
+
+例如：
+
+```text
+Manifest List
+↙             ↘
+Manifest A     Manifest B
+```
+
+表示“Manifest List 引用多个 Manifest”，不能只画一个没有方向的 T 型括线。
+
+### Caption over Callout
+
+图后的关键关系说明优先进入 `figcaption`。
+
+避免：
+
+```text
+Diagram
+↓
+关键关系 Card
+↓
+正文
+```
+
+形成重复 Surface。
+
+只有需要特别警告、失败语义或用户操作时，才在 Diagram Canvas 之外增加额外 Callout。
+
+### Semantic Color Stability
+
+同一技术域内，同一种语义节点跨图保持同一颜色。
+
+Iceberg V1：
+
+```text
+Catalog / External       Blue
+Table Metadata           Green
+Snapshot / State         Amber
+Manifest List / Index    Violet
+Manifest / Change        Rose
+Data / Storage Object    Cyan
+```
+
+不要为了“每个节点颜色不同”继续无限扩充 Palette。
+
+
 ## 20. Dynamic Numbers
 
 动态计算：
@@ -536,3 +639,7 @@ Production Pattern / Scale / Curated Extension 不得自动变成真实项目经
 
 - Technical Diagram System；
 - Diagram Semantic Palette。
+
+- Diagram Mobile Density；
+- Diagram Relation Grammar；
+- Embedded Diagram flattening。
