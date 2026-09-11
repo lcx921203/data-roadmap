@@ -88,12 +88,18 @@
 - [x] Explain Connector-specific pushdown boundary
 - [x] Freeze Statistics -> CBO -> Join -> Dynamic Filtering causal chain
 
-### Next: V0.7.3 Trino Runtime Pressure & Reliability
-- [ ] 08 Memory / Exchange / Large Query Pressure
-- [ ] 09 Concurrency / Queue / Resource Groups
-- [ ] 10 Fault-Tolerant Execution & Recovery
+### V0.7.3 Trino Runtime Pressure & Reliability
+- [x] 08 Memory / Exchange / Large Query Pressure
+- [x] 09 Concurrency / Queue / Resource Groups
+- [x] 10 Fault-Tolerant Execution & Recovery
+- [x] Connect Join Plan decisions to runtime Memory / Network pressure
+- [x] Separate Capacity pressure from Data Skew
+- [x] Treat Spill as legacy memory-pressure mechanism
+- [x] Separate Resource Group scheduling from Query memory limits
+- [x] Separate Spill from FTE Exchange Spooling
+- [x] Freeze NONE / QUERY / TASK recovery mental model
 
-### V0.7.4 Trino Production Closure
+### Next: V0.7.4 Trino Production Closure
 - [ ] 11 Observability / Troubleshooting / Capacity
 - [ ] Knowledge progression audit
 - [ ] Technical correctness audit
