@@ -1,0 +1,70 @@
+/* V1.0.1.2 — Dark Surface Restraint
+   Blue remains the signal/accent color.
+   Large dark-mode reading surfaces return to graphite with only a quiet blue tint. */
+
+:root[data-theme='dark'] .continue-focus-card {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(
+        in srgb,
+        var(--color-signal-soft) 22%,
+        var(--color-surface-raised)
+      ) 0%,
+      color-mix(
+        in srgb,
+        var(--color-signal-soft) 14%,
+        var(--color-surface-raised)
+      ) 100%
+    );
+}
+
+/* Keep the blue where it carries state: current action, progress and flow. */
+:root[data-theme='dark'] .continue-focus-card__top > strong {
+  color: var(--color-signal-strong);
+}
+
+:root[data-theme='dark'] .continue-focus-card__meta,
+:root[data-theme='dark'] .continue-focus-card__top > span,
+:root[data-theme='dark'] .continue-focus-card__summary {
+  color: var(--color-ink-soft);
+}
+
+:root[data-theme='dark'] .continue-focus-card__progress {
+  background:
+    color-mix(
+      in srgb,
+      var(--color-signal) 10%,
+      var(--color-surface-strong)
+    );
+}
+
+/* Quick Answer should read as a reading surface, not a dashboard panel. */
+:root[data-theme='dark'] .quick-answer {
+  background:
+    color-mix(
+      in srgb,
+      var(--color-signal-soft) 16%,
+      var(--color-surface-raised)
+    );
+  border-color:
+    color-mix(
+      in srgb,
+      var(--color-signal) 20%,
+      var(--color-hairline-strong)
+    );
+}
+
+:root[data-theme='dark'] .quick-answer__label {
+  color: var(--color-signal-strong);
+}
+
+:root[data-theme='dark'] .quick-answer p {
+  color: var(--color-ink-soft);
+}
+
+/* Code remains its own deeper technical surface inside Quick Answer. */
+:root[data-theme='dark'] .quick-answer .code-block,
+:root[data-theme='dark'] .quick-answer pre {
+  background: var(--color-code-canvas);
+}

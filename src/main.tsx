@@ -24,6 +24,7 @@ import './styles/three-tab-page-polish-v1.8.css'
 import './styles/ui-freeze-v1.9.css'
 import './styles/theme-v1.css'
 import './styles/continue-learning-flow-v1.css'
+import './styles/dark-surface-restraint-v1.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
