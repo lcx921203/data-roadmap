@@ -1,0 +1,25 @@
+/* V1.0.2.2 — Green Color Cleanup
+   Remove the last visible legacy blue literals from reading emphasis surfaces.
+   The green palette itself is unchanged. */
+
+.quick-answer {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--color-signal) 30%,
+      var(--color-hairline)
+    );
+}
+
+.quick-answer p {
+  color: var(--color-ink-soft);
+}
+
+:root[data-theme='dark'] .quick-answer {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--color-signal) 20%,
+      var(--color-hairline-strong)
+    );
+}
