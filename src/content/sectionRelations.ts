@@ -21,8 +21,17 @@ interface SectionRelationRegistry {
   relations: SectionRelationRecord[]
 }
 
-const icebergSectionRelations = loadYaml<SectionRelationRegistry>(
-  'content/mappings/iceberg-section-relations-v0.6.7.1.yaml',
+const sectionRelationRegistries = [
+  loadYaml<SectionRelationRegistry>(
+    'content/mappings/iceberg-section-relations-v0.6.7.1.yaml',
+  ),
+  loadYaml<SectionRelationRegistry>(
+    'content/mappings/trino-section-relations-v0.7.5.yaml',
+  ),
+]
+
+const sectionRelations = sectionRelationRegistries.flatMap(
+  (registry) => registry.relations,
 )
 
 export function getSectionRelationTargets(
@@ -30,10 +39,12 @@ export function getSectionRelationTargets(
   sourceId: string,
   anchor: string,
 ): RelationTarget[] {
-  return icebergSectionRelations.relations.find(
-    (relation) =>
-      relation.source_type === sourceType &&
-      relation.source_id === sourceId &&
-      relation.anchor === anchor,
-  )?.targets ?? []
+  return (
+    sectionRelations.find(
+      (relation) =>
+        relation.source_type === sourceType &&
+        relation.source_id === sourceId &&
+        relation.anchor === anchor,
+    )?.targets ?? []
+  )
 }

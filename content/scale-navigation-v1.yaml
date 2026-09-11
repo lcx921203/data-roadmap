@@ -1,4 +1,4 @@
-version: '1.0'
+version: '1.1'
 domains:
   - id: lakehouse
     title_cn: 湖仓
@@ -25,3 +25,24 @@ domains:
         order: 30
         scenarios:
           - sc-iceberg-concurrent-commit-001
+
+      - id: interactive-workload-isolation
+        title_cn: 交互查询与负载隔离
+        title_en: Interactive Query & Workload Isolation
+        order: 40
+        scenarios:
+          - sc-trino-interactive-concurrency-001
+
+      - id: large-query-runtime-pressure
+        title_cn: 大查询与运行时压力
+        title_en: Large Query & Runtime Pressure
+        order: 50
+        scenarios:
+          - sc-trino-heavy-join-pressure-001
+
+      - id: fault-tolerant-batch-recovery
+        title_cn: 容错执行与恢复
+        title_en: Fault-Tolerant Execution & Recovery
+        order: 60
+        scenarios:
+          - sc-trino-fte-batch-recovery-001

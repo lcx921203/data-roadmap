@@ -1,0 +1,141 @@
+id: sc-trino-heavy-join-pressure-001
+type: scenario
+title: Diagnose a heavy Trino join when stale statistics trigger the wrong distribution
+title_cn: 20 TB Fact Join 打爆 Worker 内存
+domain: lakehouse
+scenario_type:
+  - troubleshooting
+  - performance
+  - capacity
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - volume
+  - memory
+  - network
+  - latency
+  - reliability
+status: scale_detail_v1
+order: 5
+
+summary: 20 TB Fact Table 与过滤后的维表 Join，过期 Statistics 把 Build Side 严重低估，计划选择错误后出现 Memory、Exchange 与长尾 Task 压力。
+
+display_tags:
+  - CBO
+  - Join
+  - Memory
+  - Exchange
+
+quick_answer: >-
+  先证明慢点来自 Plan，而不是先调大 Memory。比较 Estimate 与 Actual，
+  确认 Build / Probe、Join Distribution、Dynamic Filter 和 Task Input 分布。
+  如果 Statistics 导致错误计划，先修估算和数据过滤；临时 Session Hint 只能作为止血，不应替代根因修复。
+
+parameters:
+  - label: Fact Table
+    value: 约 20 TB，按日期分区
+  - label: Build Side 实际大小
+    value: Filter 后约 8 GB
+  - label: Planner 估算
+    value: 旧 Statistics 误估为约 300 MB
+  - label: Cluster
+    value: 40 个 Worker
+  - label: 目标
+    value: 查询 15 分钟内完成且不触发 Worker OOM
+
+constraints:
+  - title: 不能用“最终只返回几万行”判断查询便宜
+    body: >-
+      Query 的成本由实际 Scan、Intermediate Rows、Exchange 和 Operator State 决定。
+      小 Result Set 完全可能来自非常昂贵的前置计算。
+  - title: Build Side 放大具有集群级后果
+    body: >-
+      如果错误选择 Broadcast，大 Build Side 会被复制到多个 Worker，
+      Memory 与 Network 成本会随参与节点放大，而不是只影响某一个 Task。
+  - title: SQL 里的索引思维不能直接套到 Trino
+    body: >-
+      Trino 自己不是传统行存数据库索引引擎。排查应先看 Connector Pushdown、File Pruning、
+      Statistics、Join Distribution 和底层数据源能力，而不是默认“缺索引”。
+
+failure_bottlenecks:
+  - title: 过期 Statistics 诱导错误 Broadcast
+    body: >-
+      Optimizer 低估 Build Side 后可能选择看似便宜的 Broadcast，
+      实际运行时每个 Worker 都需要建立远大于预期的 Hash Table，迅速推高 Query Memory。
+  - title: Dynamic Filtering 没能有效缩小 Probe Scan
+    body: >-
+      Build Side 过大或选择性差时，Runtime Filter 本身价值下降，
+      Probe Side 仍然读取大量 Split，Join 前的数据量没有被有效压缩。
+  - title: Exchange 与 Skew 把少数 Task 变成长尾
+    body: >-
+      即使整体输入可控，Hot Key 也可能让单个 Hash Partition 获得数倍数据，
+      形成 Worker Memory 热点和 Stage Straggler。
+
+design:
+  - title: 执行计划先于内存参数
+    body: >-
+      先用 EXPLAIN / EXPLAIN ANALYZE 对比 Estimated 与 Actual，
+      明确 Join Order、Build / Probe、Distribution、Dynamic Filter 和 Exchange，再决定是否需要资源调整。
+  - title: 先修复估算，再谈加内存
+    body: >-
+      通过 Connector 支持的方式刷新或获得代表性的 Statistics，
+      同时检查 Filter 是否尽早生效。只有真实 Working Set 合理但资源仍不足时，才把扩容作为主要方案。
+  - title: 对大 Build Side 使用更可控的数据分布
+    body: >-
+      当 Broadcast 不合适时，应让 Plan 使用能够把 Build 数据分摊到 Cluster 的 Distribution，
+      并验证重新分布后的 Network 成本是否可接受。
+  - title: 单独检查 Skew
+    body: >-
+      比较 Task Input、Duration 和 Peak Memory 的分布。
+      如果只是少数 Task 极端异常，应按 Hot Key / Distribution 问题处理，而不是用全局扩容掩盖倾斜。
+
+tradeoffs:
+  - title: Partitioned Join 降低单节点 Build Memory，但增加 Exchange
+    body: >-
+      把 Build Side 分散到多个 Worker 能缓解单节点内存压力，
+      代价是 Join 两侧需要更重的 Network Repartition。
+  - title: 强制 Session 级 Join 策略可以止血，但会绕开 CBO 自适应
+    body: >-
+      在事故处理中可以用受控方式验证替代计划，但长期固定策略可能在数据规模改变后再次失效。
+      根因仍应回到 Statistics 和 Workload 特征。
+
+observability:
+  - title: 比较 Estimate 和 Actual
+    body: >-
+      观察 EXPLAIN / EXPLAIN ANALYZE 的行数与大小估算，识别 Planner 对 Build Side 和中间结果是否严重低估。
+  - title: 看 Exchange 与 Task 分布，而不是只看总 CPU
+    body: >-
+      关注 Stage Input、Network Exchange、Task Max / Avg、Blocked Time 和 Peak Memory，
+      判断问题是整体容量不足还是局部 Skew。
+  - title: 观察 Scan Reduction
+    body: >-
+      比较候选数据、实际物理输入和 Dynamic Filter 效果。
+      如果 Join 前仍然扫描大量无关数据，应回到 Pushdown / Pruning / Filter Selectivity。
+
+cost:
+  - title: 错误 Broadcast 会同时增加 Memory 和 Network 成本
+    body: >-
+      同一份 Build Data 被发送到多个 Worker 后，资源成本会倍增，
+      这类问题通常比单纯提高 query.max-memory 更值得优先修复。
+  - title: 更完整的 Statistics 也有维护成本
+    body: >-
+      统计信息的采集、刷新和存储不是免费的，应针对会真正影响 Optimizer 决策的核心表和列建立治理策略。
+
+recovery:
+  - title: OOM 后不要原样自动重跑
+    body: >-
+      如果失败原因是确定性的坏 Plan，原样 Retry 只会再次打满内存。
+      先修 Plan / Statistics / Distribution，再恢复 Query。
+  - title: 降级时先保护其他 Workload
+    body: >-
+      事故期间可以降低重型 Query 并发或隔离到 Batch Resource Group，
+      避免单个错误计划把 Interactive Query 一起拖入 Queue。
+
+knowledge:
+  - kb-trino-cbo-join-dynamic-filtering-001
+  - kb-trino-memory-exchange-pressure-001
+  - kb-trino-production-troubleshooting-001
+
+interviews:
+  - iq-sql-performance-plan-index-001
+  - iq-etl-join-slowdown-001

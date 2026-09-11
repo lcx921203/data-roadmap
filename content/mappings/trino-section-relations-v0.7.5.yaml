@@ -1,0 +1,101 @@
+version: '0.7.5'
+type: section_relation_registry
+topic: trino
+
+policy:
+  relation_scope: contextual_reading
+  source_anchor: visible_section_or_item_title
+  relation_is_not_frequency_claim: true
+  relation_is_not_project_fact: true
+  prefer_local_context_over_end_of_article_blocks: true
+  do_not_force_relationships_for_graph_completeness: true
+
+relations:
+  - source_type: knowledge
+    source_id: kb-trino-overview-001
+    anchor: Trino 的优势来自哪里
+    targets:
+      - type: interview
+        id: iq-olap-engine-selection-001
+
+  - source_type: knowledge
+    source_id: kb-trino-memory-exchange-pressure-001
+    anchor: 一个大 Query 变慢的完整因果链
+    targets:
+      - type: scale
+        id: sc-trino-heavy-join-pressure-001
+
+  - source_type: knowledge
+    source_id: kb-trino-concurrency-resource-groups-001
+    anchor: 为什么 BI 和 Pipeline 不应该简单混在一起
+    targets:
+      - type: scale
+        id: sc-trino-interactive-concurrency-001
+      - type: interview
+        id: iq-system-concurrency-fault-tolerance-001
+
+  - source_type: knowledge
+    source_id: kb-trino-fault-tolerant-execution-001
+    anchor: 为什么 Query 越长越需要考虑 Fault Tolerance
+    targets:
+      - type: scale
+        id: sc-trino-fte-batch-recovery-001
+
+  - source_type: knowledge
+    source_id: kb-trino-production-troubleshooting-001
+    anchor: 一个完整的慢查询排障顺序
+    targets:
+      - type: interview
+        id: iq-sql-performance-plan-index-001
+      - type: interview
+        id: iq-etl-join-slowdown-001
+
+  - source_type: scale
+    source_id: sc-trino-interactive-concurrency-001
+    anchor: 用 Resource Group 先做准入隔离
+    targets:
+      - type: knowledge
+        id: kb-trino-concurrency-resource-groups-001
+      - type: interview
+        id: iq-system-concurrency-fault-tolerance-001
+
+  - source_type: scale
+    source_id: sc-trino-interactive-concurrency-001
+    anchor: 不是所有低延迟 Serving 都应该压给 Trino
+    targets:
+      - type: interview
+        id: iq-olap-engine-selection-001
+
+  - source_type: scale
+    source_id: sc-trino-heavy-join-pressure-001
+    anchor: 过期 Statistics 诱导错误 Broadcast
+    targets:
+      - type: knowledge
+        id: kb-trino-cbo-join-dynamic-filtering-001
+
+  - source_type: scale
+    source_id: sc-trino-heavy-join-pressure-001
+    anchor: 执行计划先于内存参数
+    targets:
+      - type: knowledge
+        id: kb-trino-production-troubleshooting-001
+      - type: interview
+        id: iq-sql-performance-plan-index-001
+      - type: interview
+        id: iq-etl-join-slowdown-001
+
+  - source_type: scale
+    source_id: sc-trino-fte-batch-recovery-001
+    anchor: TASK Retry 必须和 Exchange Manager 一起设计
+    targets:
+      - type: knowledge
+        id: kb-trino-fault-tolerant-execution-001
+
+  - source_type: scale
+    source_id: sc-trino-fte-batch-recovery-001
+    anchor: 区分 Worker Loss 与 Deterministic Failure
+    targets:
+      - type: knowledge
+        id: kb-trino-production-troubleshooting-001
+      - type: interview
+        id: iq-system-concurrency-fault-tolerance-001

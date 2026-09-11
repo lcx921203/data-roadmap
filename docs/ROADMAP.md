@@ -108,13 +108,16 @@
 - [x] Technical correctness audit
 - [x] Freeze Trino Learn V1 at 11 / 11
 
-### Next: V0.7.5 Trino Scale & Interview Integration
-- [ ] Create only justified hypothetical Scale scenarios
-- [ ] Map existing evidence-backed Interview questions
-- [ ] Do not invent Trino-specific frequency
-- [ ] Add contextual cross-tab relations
+### V0.7.5 Trino Scale & Interview Integration
+- [x] Create 3 hypothetical Trino Scale scenarios
+- [x] Add Scale Domain -> Theme -> Scenario navigation entries
+- [x] Connect existing evidence-backed Interview questions through scenario ownership
+- [x] Add contextual Learn / Scale / Interview section relations
+- [x] Preserve every Interview question's existing evidence strength
+- [x] Do not claim Trino-specific frequency
+- [x] Keep Interview answers pending where no curated answer exists
 
-### V0.7.6 Trino Vertical Slice Freeze
+### Next: V0.7.6 Trino Vertical Slice Freeze
 - [ ] Three-tab closure audit
 - [ ] Mobile reading audit
 - [ ] Freeze Trino V1

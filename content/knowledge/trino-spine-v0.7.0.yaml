@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: trino
 learning_depth: L5
-status: learn_v1_complete_pending_scale_interview
+status: scale_interview_integrated
 product_boundary:
   previous_vertical: iceberg
   handoff_from:
@@ -38,6 +38,8 @@ content_principles:
 interview_seed_ids:
 - iq-olap-engine-selection-001
 - iq-sql-performance-plan-index-001
+- iq-etl-join-slowdown-001
+- iq-system-concurrency-fault-tolerance-001
 interview_policy:
   mapping_means_relevance_not_trino_frequency: true
   do_not_create_fake_trino_specific_frequency: true
@@ -304,7 +306,7 @@ nodes:
 freeze:
   body_written: true
   ui_changes: false
-  scale_scenarios_written: false
+  scale_scenarios_written: true
   interview_answers_written: false
   structure_frozen: true
   reopen_structure_only_for:
@@ -315,3 +317,8 @@ freeze:
   remaining_nodes: 0
   progression_audit: passed_v0.7.4
   technical_correctness_audit: passed_v0.7.4
+  scale_scenario_ids:
+  - sc-trino-interactive-concurrency-001
+  - sc-trino-heavy-join-pressure-001
+  - sc-trino-fte-batch-recovery-001
+  interview_integration: evidence_backed_relations_v0.7.5
