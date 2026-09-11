@@ -375,11 +375,26 @@
 - [x] Teach Conversion as pre-aggregation Entity-Time matching, not ordinary Ratio
 - [x] Keep UI / Dark Theme frozen after V1.0.1.2
 
-### Next: V1.0.3 MetricFlow Query & Consumption
-- [ ] 10 Metric Query Generation / Commands / Validation
-- [ ] 11 Saved Queries / Exports / Cache / Consumption
+### V1.0.3 MetricFlow Query & Consumption
+- [x] 10 Metric Query Generation / Commands / Validation
+- [x] 11 Saved Queries / Exports / Cache / Consumption
+- [x] Freeze Metric -> Group By -> Filter -> Semantic Graph -> Generated SQL query path
+- [x] Separate dbt sl from local mf command entry points
+- [x] Treat exact command / flag availability as environment- and version-sensitive
+- [x] Freeze Parsing -> Semantic -> Data Platform validation mental model
+- [x] Separate semantic validation from business reconciliation
+- [x] Use Generated SQL / Dataflow Plan as a primary debugging surface
+- [x] Freeze common-dimension intersection for multi-metric queries
+- [x] Treat Saved Query as a reusable semantic-query resource, not stored SQL
+- [x] Separate Saved Query from Export
+- [x] Separate Result Cache from Declarative Cache
+- [x] Keep declarative cache behavior explicitly dbt Platform / version-sensitive
+- [x] Freeze BI / App / Agent as consumers of the governed semantic query surface
+- [x] Keep Agent Planner / Router / Executor in Stage 10
+- [x] Keep physical Serving architecture in Stage 09
+- [x] Keep green Light / Dark palette frozen
 
-### V1.0.4 MetricFlow Production Closure
+### Next: V1.0.4 MetricFlow Production Closure
 - [ ] 12 Production Quality / Reconciliation / Semantic Operations
 - [ ] Knowledge progression audit
 - [ ] Technical correctness audit
