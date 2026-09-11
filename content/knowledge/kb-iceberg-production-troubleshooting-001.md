@@ -3,234 +3,237 @@ id: kb-iceberg-production-troubleshooting-001
 type: knowledge
 title: Iceberg Production Troubleshooting
 title_cn: Iceberg 生产排障与容量思维
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 11
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_write_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: 把 Iceberg 故障按 Write、Commit、Metadata、Planning、Scan、Maintenance 六层定位，并把容量指标与
-  Query SLO、Backfill 和成本连起来。
+summary: "把线上问题按 Write、Commit、Metadata、Planning、Scan、Maintenance 六层定位，再用 SLI/SLO 与容量指标判断根因和治理优先级。"
 prerequisites:
-- kb-iceberg-maintenance-small-files-001
+  - kb-iceberg-maintenance-small-files-001
 related:
-- kb-iceberg-overview-001
+  - kb-iceberg-overview-001
 scale_scenarios:
-- sc-iceberg-10b-backfill-001
-- sc-iceberg-streaming-small-files-001
-- sc-iceberg-concurrent-commit-001
+  - sc-iceberg-10b-backfill-001
+  - sc-iceberg-streaming-small-files-001
+  - sc-iceberg-concurrent-commit-001
 interview_relevance:
-- iq-lake-vs-warehouse-001
-- iq-large-dataset-tech-selection-001
+  - iq-lake-vs-warehouse-001
+  - iq-large-dataset-tech-selection-001
 ---
+
 # Iceberg Production Troubleshooting
 
 ## 30 秒理解
 
-线上 Iceberg 问题不要统一归类成“湖仓慢”。
+线上 Iceberg 出问题时，不要先说“湖仓慢”。
 
-先把链路切成六层：
+先把问题放进六层之一：
 
-```text
-Write
-↓
-Commit
-↓
-Metadata
-↓
-Planning
-↓
-Scan
-↓
-Maintenance
-```
+**Write → Commit → Metadata → Planning → Scan → Maintenance**
 
-每一层的现象、指标和修复手段都不同。
+然后只看这一层最相关的指标。
 
-## 1. Write
+排障的目标不是背参数，而是先判断：
 
-看：
+**问题发生在哪一层，上一层是什么原因，下一层受了什么影响。**
 
-```text
-input rows/bytes
-task count
-partition count
-files created
-avg/p50/p95 file size
-writer memory
-distribution mode
-```
+## 1. Write：文件是怎么被写坏的
 
-典型问题：微批太小、Partition 过细、Task 过碎、Fanout 同时打开太多文件。
+先看：
 
-## 2. Commit
+- Input Rows / Bytes；
+- Task Count；
+- Active Partition Count；
+- Files Created；
+- Avg / P50 / P95 File Size；
+- Distribution Mode；
+- Writer Memory / Open File Count。
 
-看：
+典型现象：
 
-```text
-commit latency
-conflict rate
-retry count
-retry time
-catalog latency
-snapshot creation rate
-```
+- 微批过小；
+- Partition 过细；
+- Spark Task 太碎；
+- Fanout 同时触碰过多 Partition；
+- Target File Size 和 Task Size 不匹配。
 
-典型问题：热表高并发提交、Catalog Pointer 争用、Retry Storm。
+如果根因在这里，单纯做 Compaction 只能暂时缓解结果。
 
-## 3. Metadata
+## 2. Commit：为什么提交慢或冲突多
 
-看：
+先看：
 
-```text
-snapshot count
-manifest count
-manifest entries
-metadata json count
-metadata bytes
-```
+- Commit Latency；
+- Conflict Rate；
+- Retry Count；
+- Retry Total Time；
+- Catalog Latency；
+- Concurrent Writers；
+- Snapshot Creation Rate。
 
-典型问题：高频提交长期不维护、Manifest 碎片、历史 Snapshot 过多。
+典型问题是热表高并发 Writer 把瓶颈从 Storage 推到了 Catalog / Metadata Commit。
 
-## 4. Planning
+如果 Conflict Rate 长期升高，不能只继续加 Retry 次数。
 
-看：
+还要考虑：
 
-```text
-planning latency
-manifests scanned
-files planned
-files pruned
-partition selectivity
-```
+- 微批窗口；
+- Writer 聚合；
+- 调度隔离；
+- Branch / WAP；
+- 是否需要拆分写入热点。
 
-典型问题：Predicate 无法有效推导、Metadata Layout 差、文件/Manifest 太多。
+## 3. Metadata：为什么“数据不大，规划却越来越重”
 
-## 5. Scan
+先看：
 
-看：
+- Snapshot Count；
+- Manifest Count；
+- Manifest Entries；
+- Metadata JSON 数量和大小；
+- File Count Growth。
 
-```text
-bytes scanned
-splits
-scan throughput
-object storage latency
-Parquet row groups skipped
-worker memory/spill
-```
+典型根因：
 
-典型问题：文件过小/过大、列裁剪差、Join/Shuffle、网络或对象存储延迟。
+- 高频 Commit；
+- 小 Data File 长期增长；
+- Manifest 碎片；
+- Snapshot 历史长期不清理。
 
-## 6. Maintenance
+Metadata 问题经常先于“总存储容量不足”暴露。
 
-看：
+## 4. Planning：为什么 Query 还没开始扫数据就慢
 
-```text
-rewrite backlog
-snapshot age
-orphan retention
-maintenance duration
-maintenance IO
-online query impact
-```
+先看：
 
-典型问题：Compaction 和在线查询互相打架，或者 Maintenance 长期欠账。
+- Planning Latency；
+- Manifests Scanned；
+- Files Planned；
+- Files Pruned；
+- Partition Selectivity；
+- Predicate Pushdown 是否成立。
 
-## SLO 思维
+如果 Planning 慢，增加 Worker 通常帮助有限。
 
-不要只定义：
+因为瓶颈发生在“决定读哪些文件”的阶段，而不是 Worker 扫描阶段。
 
-```text
-Query P95 < 5s
-```
+优先回到：
 
-还要有内部 SLI：
+**Partition → Manifest Layout → File Metrics → Predicate**
 
-```text
-Planning P95
-Commit P95
-Conflict rate
-Small-file ratio
-Manifest count growth
-Freshness
-Maintenance backlog
-```
+这条链检查。
 
-这样 Query SLO 变坏之前就能看到趋势。
+## 5. Scan：为什么已经选好文件，执行还是慢
 
-## Capacity Planning
+先看：
 
-容量不是只算“每天多少 TB”。
+- Bytes Scanned；
+- Split Count；
+- Scan Throughput；
+- Object Storage Latency；
+- Row Groups Skipped；
+- Worker Memory / Spill；
+- Join / Shuffle。
 
-至少拆：
+典型问题包括：
 
-```text
-Daily ingest
-Peak ingest throughput
-Commit frequency
-Active partitions
-Concurrent writers
-Files/day
-Snapshots/day
-Manifests/day
-Query concurrency
-Scan bytes/query
-Retention window
-```
+- File Size 不健康；
+- Column Projection 差；
+- Query 本身 Join / Shuffle 很重；
+- Object Storage 延迟；
+- Worker 资源不足。
 
-真正让 Metadata 先爆掉的，可能是“每天 50 万个小文件”，而不是“总共 500 TB”。
+这时才更适合讨论 Worker、Memory、Spill 和计算资源。
 
-## 失败恢复
+## 6. Maintenance：为什么问题不断复发
 
-处理事故时先确认：
+先看：
 
-```text
-Current snapshot 是谁
-↓
-坏数据是否已 commit
-↓
-之后是否还有合法 snapshot
-↓
-可以 rollback 还是应该 forward fix
-↓
-孤儿文件是否需要后续 cleanup
-```
+- Rewrite Backlog；
+- Snapshot Age；
+- Manifest Count Growth；
+- Small-file Ratio；
+- Orphan Retention；
+- Maintenance Duration / IO；
+- 在线 Query 受影响程度。
 
-尤其不能在不知道 Snapshot 引用关系时直接手工删对象存储目录。
+Maintenance 长期欠账时，经常会出现：
 
+**Write 能成功 → Query 也能跑 → 但 Planning / File Count / Metadata 持续恶化**
 
+所以 Maintenance SLO 也是生产稳定性的一部分。
 
-## 相关生产场景
+## SLI / SLO 怎么设计
 
-可以继续用三个假设生产场景训练：
+只看最终 Query P95 不够。
 
-- 百亿级历史 Backfill；
-- 流式低延迟写入造成的小文件与 Manifest 膨胀；
-- 多 Writer 并发提交争用。
+应该同时维护内部 SLI，例如：
 
-这些属于生产场景训练，不写成真实项目经历。
+- Planning P95；
+- Commit P95；
+- Conflict Rate；
+- Small-file Ratio；
+- Manifest Count Growth；
+- Freshness；
+- Maintenance Backlog。
 
-## 总结
+这样在用户 Query SLO 真正恶化之前，就能看到系统内部趋势。
 
-Iceberg L5 的最终心智模型：
+## Capacity Planning 不只是每天多少 TB
 
-```text
-Correctness
-= Snapshot + Atomic Commit + Validation
+至少还要估算：
 
-Performance
-= Partition + Metrics + File Layout + Metadata Layout
+- Daily / Peak Ingest；
+- Commit Frequency；
+- Active Partitions；
+- Concurrent Writers；
+- Files / Day；
+- Snapshots / Day；
+- Manifests / Day；
+- Query Concurrency；
+- Scan Bytes / Query；
+- Retention Window。
 
-Reliability
-= Retry + Recovery + Maintenance
+一张 500 TB 的表不一定比一张数据量小、但每天制造几十万个小文件的表更难维护。
 
-Production
-= SLO + Capacity + Observability + Cost
-```
+Iceberg 的容量规划必须同时算：
 
+**Data Volume + Object Count + Metadata Growth + Commit Rate + Query Planning Cost**
 
+## 事故恢复怎么选 Rollback 还是 Forward Fix
+
+事故发生后先确认：
+
+1. Current Snapshot 是谁；
+2. 坏数据是否已经成功 Commit；
+3. 坏 Snapshot 以后有没有合法 Snapshot；
+4. 回退旧 Snapshot 会不会丢合法变化；
+5. 是否应该在最新状态上做 Forward Fix；
+6. 是否留下 Orphan File 需要后续清理。
+
+原则仍然是：
+
+**先以 Metadata 引用关系确认事实，再做恢复动作。**
+
+不要先去对象存储目录手工删文件。
+
+## 最终心智模型
+
+学完 Iceberg L5，可以把它收成四句话：
+
+**Correctness = Snapshot + Validation + Atomic Commit**
+
+**Performance = Partition + File Metrics + File Layout + Metadata Layout**
+
+**Reliability = Retry + Recovery + Maintenance**
+
+**Production = SLO + Capacity + Observability + Cost**
+
+这四层不是新的知识点，而是前面 10 节内容在生产环境里的最终归纳。

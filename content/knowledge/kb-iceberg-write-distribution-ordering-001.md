@@ -3,203 +3,181 @@ id: kb-iceberg-write-distribution-ordering-001
 type: knowledge
 title: Write Distribution & Write Ordering
 title_cn: 写入分布与写入排序
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 8
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_write_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: Distribution 决定数据先怎样分发到 Writer Task；Ordering 决定 Task 内或全局数据顺序。二者共同影响文件数、局部性、压缩与查询裁剪。
+summary: "Distribution 决定 Row 进入哪个 Writer Task，Ordering 决定 Row 怎样聚集与排序；它们先决定 Data File 布局，再间接影响 Manifest 数量、查询裁剪和后续 Maintenance。"
 prerequisites:
-- kb-iceberg-trino-read-path-001
+  - kb-iceberg-trino-read-path-001
 related:
-- kb-iceberg-commit-concurrency-001
-- kb-iceberg-maintenance-small-files-001
+  - kb-iceberg-commit-concurrency-001
+  - kb-iceberg-maintenance-small-files-001
 ---
+
 # Write Distribution & Write Ordering
 
 ## 30 秒理解
 
-这两个概念必须拆开：
+读取链路学完以后，写入链路从这里开始。
 
-```text
-Distribution
-= 哪些 Row 进入哪个 Writer Task
+先把两个概念分开：
 
-Ordering
-= 进入 Writer 后 Row 按什么顺序排列
-```
+**Distribution（写入分布）决定哪些 Row 进入哪个 Writer Task。**
 
-Distribution 主要影响 Writer 并发、Partition 聚集、文件数量；Ordering 主要影响数据局部性、文件级统计、压缩和后续 Query Pruning。
+**Ordering（写入排序）决定这些 Row 在 Task / 全局范围内按什么顺序聚集。**
+
+它们先影响 Data File 的数量、大小和局部性，再继续影响 Manifest、查询裁剪和 Maintenance。
+
+## 写入先经过什么
+
+以 Spark + Iceberg 为例，逻辑上可以拆成：
+
+**Input Rows → Distribution / Ordering → Writer Tasks → Data Files → Manifest → Commit**
+
+这一节只讲前半段：怎样让 Row 以合理方式进入 Writer，并形成健康的 Data File。
+
+“这些文件什么时候真正进入表状态”放到下一节 Commit。
 
 ## Distribution Mode
 
-Spark + Iceberg 常见概念：
+Spark 写 Iceberg 常见三种 Distribution Mode：
 
-```text
-none
-hash
-range
-```
+- **none**：Iceberg 不主动请求 Shuffle；
+- **hash**：按 Partition Key 做 Hash Exchange；
+- **range**：按 Partition / Sort Key 做 Range Exchange。
+
+Spark + Iceberg 从 Iceberg 1.2.0 起，`hash` 是常见默认写入分布策略。
 
 ### none
 
-Iceberg 不主动要求 Spark 重新分布。调用方需要自己保证数据适合 Writer，否则一个 Task 同时触碰大量 Partition 时容易产生大量打开文件或小文件。
+`none` 不自动帮你把同一 Partition 的数据聚到合适的 Writer。
+
+如果上游数据本来就没有良好聚集，一个 Task 可能同时触碰很多 Partition，容易造成：
+
+- 同时打开很多文件；
+- 每个文件得到的数据很少；
+- 小文件数量增加。
+
+Fanout Writer 可以缓解“必须预排序”的限制，但代价是一个 Task 可能长期保持更多 File Handle。
 
 ### hash
 
-按 Partition Key 做 Hash Exchange，使同一分区的数据更集中到对应 Task。它通常是通用写入的首选基线。
+`hash` 根据 Partition Value 把 Row 分发到 Writer Task。
+
+它的目标不是让数据“全局有序”，而是让同一 Partition 的数据更集中，降低 Writer 同时跨大量 Partition 写文件的压力。
+
+因此它通常是通用 Partitioned Table 的基线策略。
 
 ### range
 
-先根据 Partition / Sort Key 做 Range Distribution。代价比 Hash 更高，但可以获得更强的全局聚集/排序效果；当表配置 Sort Order，或者主要查询能从数据局部性获益时更有价值。
+`range` 先对 Partition / Sort Key 做采样，再按 Range 重新分发。
 
-## Write Ordering
+它比 `hash` 更贵，但可以获得更强的数据聚集与全局排序效果。
 
-Iceberg 表可以定义 Sort Order。
+如果表定义了 Sort Order，并且主要查询能够从排序后的 File Metrics 和局部性中获益，Range Distribution 会更有价值。
 
-概念示例：
+## Write Ordering 解决什么
+
+Iceberg 表可以定义 Write Order。
+
+Spark SQL 示例：
 
 ```sql
 ALTER TABLE prod.db.orders
 WRITE ORDERED BY order_date, customer_id;
 ```
 
-也可以表达“按 Partition 分布，再在 Task 内局部排序”的思路：
+也可以只在每个 Task 内局部排序：
 
-```text
-DISTRIBUTED BY PARTITION
-+
-LOCALLY ORDERED BY ...
+```sql
+ALTER TABLE prod.db.orders
+WRITE DISTRIBUTED BY PARTITION
+LOCALLY ORDERED BY order_date, customer_id;
 ```
 
-重要：**Write Order 不等于 Query Result Order**。SELECT 如果没有 `ORDER BY`，不能因为底层文件有 Sort Order 就承诺返回顺序。
+这里最重要的边界是：
 
-## 文件大小为什么不只看 target-file-size
+**Write Order 影响物理写入布局，不保证 SELECT 的返回顺序。**
 
-一个 Data File 不能跨 Iceberg Partition Boundary，而且单个 Spark Task 不可能写出比自己输入更大的文件。
+查询没有显式 `ORDER BY` 时，不能因为底层文件有 Sort Order 就承诺结果顺序。
 
-因此：
+## 为什么 Ordering 会影响查询
 
-```text
-write.target-file-size-bytes = 512MB
-```
+假设查询经常按 `order_date` 和 `customer_id` 过滤。
 
-不代表最终所有文件都会接近 512MB。
+如果相近值在文件里更集中，文件级 Lower / Upper Bounds 往往更有选择性。
 
-实际大小还受：
+于是读取时：
 
-```text
-Spark Task size
-Compression ratio
-Rows per partition
-AQE coalescing
-Distribution
-Fanout writer
-```
+**更好的 Ordering → 更紧凑的 File Metrics → 更强的 File Pruning**
 
-影响。
+所以 Ordering 的价值不是“让文件看起来整齐”，而是帮助后面的 Read Path 少扫文件。
 
-## 新 Data File 如何进入 Manifest
+## 文件大小为什么不只由 512 MB 决定
 
-Writer Task 先生成新的 Data File，随后这些新增文件需要被记录进新的 Manifest。
+Iceberg 当前默认 `write.target-file-size-bytes` 是 512 MB。
 
-这里最容易出现一个误解：
+但它是 Target（目标），不是“每个文件必然 512 MB”。
 
-**旧 Manifest 没达到 8 MB，也不会在下一次 Commit 被重新打开继续追加。**
+实际文件大小还受：
 
-Manifest 一旦写出就是 Immutable（不可变）的。
+- Spark Task 输入大小；
+- Partition 边界；
+- 压缩比；
+- AQE 合并 / 拆分 Task；
+- Distribution；
+- Fanout Writer；
+- 单个 Partition 实际数据量。
 
-新一次写入会生成新的 Manifest；提交阶段可以：
+一个 Data File 不能跨 Iceberg Partition Boundary；同时 Spark Task 如果只有很少输入，也不可能凭空写出 512 MB 文件。
 
-- 继续复用旧 Manifest；
-- 把新 Manifest 加进新的 Manifest List；
-- 根据 Commit 类型和 Manifest Merge 配置，把若干小 Manifest 重写成新的合并 Manifest。
+所以调文件尺寸时，不能只改 Iceberg Target，而要同时看 Spark Task Size。
 
-所以“一次 Commit 等于一个 Manifest”也不成立。一次 Commit 最终引用多少个新 Manifest，取决于写入规模、并发 Writer、操作类型以及是否发生 Metadata Merge。
+## Data File 生成以后发生什么
 
-`8 MB` 是 Manifest Merge 的目标尺寸，不是 Writer 的“写满切文件阈值”。完整治理放到 Maintenance 章节。
+Writer Task 写出新的 Data File 后，这些文件需要进入 Manifest。
 
-## Production 调优顺序
+Manifest 已经学过两个重要性质：
 
-不要一遇到小文件就先 Compaction。
+- 写出后不可变；
+- 新 Snapshot 可以复用旧 Manifest。
 
-先问：
+因此新写入并不是“找到一个旧 Manifest，没写满就继续追加”。
 
-```text
-1. 输入微批是不是太小
-2. Partition 是否过细
-3. Distribution 是否合适
-4. Task 是否被切得太碎
-5. Writer 是否同时写太多 Partition
-6. 最后才看 Rewrite Data Files
-```
+更接近：
 
-Maintenance 只能治结果，Writer Layout 才能治根因。
+**New Data Files → New Manifest(s) → New Manifest List / Snapshot → Commit**
 
-## Writer 源码学习路径
+至于 Commit 时是否触发 Manifest Merge，放到 Maintenance 统一讲。
 
-不建议一开始钻所有实现类。先按职责找：
+## 小文件问题应该先从哪里治
 
-```text
-Spark Write Planning
-→ Distribution / Ordering requirement
-→ Task Writer
-→ Partitioned / Clustered / Fanout writer
-→ Data File creation
-→ Commit message
-```
+遇到大量小文件，优先按因果顺序检查：
 
-你真正要理解的是：
+1. 微批是不是太小；
+2. Partition 是否过细；
+3. Distribution 是否合适；
+4. Spark Task 是否太碎；
+5. 一个 Task 是否同时写太多 Partition；
+6. Target File Size 是否和 Task Size 匹配；
+7. 最后才考虑 Rewrite Data Files。
 
-```text
-Planner 决定数据怎么到 Task
-Writer 决定 Task 怎么滚动文件
-Commit 决定这些文件什么时候进入表状态
-```
+因为：
 
-而不是背某个版本里所有 Java 类名。
-
-## 故障与性能
-
-典型信号：
-
-```text
-同一微批产生异常多文件
-→ 看 Distribution / Partition / Task Size
-
-文件数正常但查询裁剪差
-→ 看 Sort Order / Metrics / Query Predicate
-
-Writer 内存高、打开文件多
-→ 看 Fanout / 同 Task 多 Partition
-```
-
-## Scale Lab
-
-高吞吐 Streaming 下，把“低延迟”从 5 分钟降到 10 秒，会让每个 Commit 的数据量变小。
-
-如果 Writer Layout 不变：
-
-```text
-Lower latency
-→ more commits
-→ more tiny files
-→ more manifests
-→ higher planning cost
-```
-
-所以低延迟目标必须和文件治理一起设计。
-
-## 项目案例
-
-Write Ordering / Distribution 是当前学习与面试重点，但具体项目是否配置过 `hash/range`、Sort Order、目标文件尺寸，目前不作为真实项目事实发布。
+**Writer Layout 治根因，Compaction 治结果。**
 
 ## 关联知识
 
-下一节进入最关键的并发 Commit：两个 Writer 同时提交时，为什么不会静默覆盖彼此。
+现在 Data File 已经产生。
+
+下一节回答最关键的问题：
+
+**两个 Writer 都准备好了新文件时，谁能把自己的新 Snapshot 变成 Current？发生冲突为什么不会互相覆盖？**

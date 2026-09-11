@@ -3,168 +3,182 @@ id: kb-iceberg-commit-concurrency-001
 type: knowledge
 title: Optimistic Commit, Conflict & Recovery
 title_cn: 乐观提交、冲突与恢复
-stage_id: '04'
+stage_id: "04"
 domain: lakehouse
 topic: iceberg
 order: 9
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_spine
+content_status: v0.6.1_write_model
 project_relevance:
-- north-america
+  - north-america
 project_fact_status: needs_fact_check
-summary: Iceberg 以 Metadata Pointer 的原子替换实现乐观并发；冲突后是否能安全重试，取决于操作类型和 Validation 条件。
+summary: "Writer 先准备不可变文件，再基于一个 Base Metadata 做 Validation，最后由 Catalog 原子切换 Current Metadata Pointer；冲突后能否 Retry 取决于操作语义。"
 prerequisites:
-- kb-iceberg-write-distribution-ordering-001
+  - kb-iceberg-write-distribution-ordering-001
 related:
-- kb-iceberg-maintenance-small-files-001
+  - kb-iceberg-maintenance-small-files-001
 scale_scenarios:
-- sc-iceberg-concurrent-commit-001
+  - sc-iceberg-concurrent-commit-001
 ---
+
 # Optimistic Commit, Conflict & Recovery
 
 ## 30 秒理解
 
-Iceberg 不是给表加一个长期全局锁，而是使用 **Optimistic Concurrency（乐观并发）**：
+Iceberg 不靠长期全局锁保护整张表。
 
-```text
-Writer A reads base metadata V10
-Writer B reads base metadata V10
+Writer 先基于一个已读取的 Base Metadata 准备新文件和新元数据，然后：
 
-A prepares V11
-B prepares V11'
+**Validate 当前表状态 → 尝试原子更新 Current Metadata Pointer**
 
-A atomic swap: V10 → V11   ✅
-B atomic swap: V10 → V11'  ❌ base is stale
-```
+如果别的 Writer 已经先提交，当前 Writer 不能静默覆盖它。
 
-B 不能把 A 静默覆盖。它必须 Refresh 最新状态，再根据自己的操作语义做 Validation（验证）和 Retry（重试）。
+它必须 Refresh，再判断自己的操作还能不能安全 Retry。
 
-## Atomic Commit 到底原子在哪里
+## Commit 前已经发生了什么
 
-原子点通常是 Catalog 中“当前 Table Metadata Location”的切换。
+到进入 Commit 阶段时，Writer 往往已经写出了：
 
-Data File、Manifest、Metadata JSON 都可以先写到对象存储；只有 Pointer 成功切到新 Metadata，新的 Snapshot 才成为对 Reader 可见的 Current State。
+- Data / Delete File；
+- 新 Manifest；
+- 新 Manifest List；
+- 新 Snapshot；
+- 新 Table Metadata。
 
-所以 Iceberg 的 Commit 更像：
+这些对象本身都是“候选新状态”。
 
-```text
-Prepare immutable files
-        ↓
-Validate base/current
-        ↓
-Atomic pointer swap
-```
+真正决定它们是否成为当前表状态的是最后的 Catalog Commit。
 
-## Append 为什么通常更容易重试
+所以：
 
-两个 Writer 都是 Append 时，只要新刷新后的表状态仍满足 Append 的条件，后提交者通常可以把自己的新文件重新挂到最新 Snapshot 上，而不需要重写 Data File。
+**文件写成功 ≠ 表提交成功。**
 
-但 Overwrite / Rewrite / Merge 等操作更敏感，因为它们可能依赖“我要替换的那些旧文件仍然存在”。
+## Atomic Commit 原子在哪里
 
-## Conflict Detection
+Iceberg 的高层语义是：
 
-关键不是“发生冲突就 Retry”，而是：
+**Current Table Metadata 从旧版本原子切换到新版本。**
 
-```text
-发生冲突
-↓
-判断是否仍然语义安全
-↓
-安全 → rebase / retry
-不安全 → fail fast / recompute / operator intervention
-```
+具体原子能力由 Catalog 提供，例如 Compare-and-Swap、事务条件更新或等价的版本校验机制。
 
-例如某个 Rewrite 计划要替换 File A，但别的 Writer 已先把 File A 替换掉，这时盲目重试会破坏正确性。
+成功以后，新 Metadata 中的 Current Snapshot 才成为新的可见状态。
 
-## Forward Fix
+失败时，旧 Current State 仍然成立。
 
-生产上不要把 Rollback 当成唯一恢复动作。
+## 两个 Writer 同时提交会怎样
 
-如果坏数据已经进入一个成功 Snapshot，而后续又有合法数据提交：
+假设 A 和 B 都从同一个 Base Metadata 开始。
 
-```text
-S10 good
-S11 bad
-S12 good
-```
+A 先成功更新 Current Metadata。
 
-直接 Rollback 到 S10 可能把 S12 的合法变化一起丢掉。
+B 再提交时发现 Base 已经过期。
 
-Forward Fix（向前修复）的思路是：
+这里不是简单一句“冲突就重试”，而是分两步：
 
-```text
-识别 S11 引入的坏影响
-↓
-在当前最新状态 S12 上生成修复提交 S13
-```
+**Refresh 最新状态 → Validation 判断自己的操作是否仍然语义安全**
 
-这样保留 S12 的合法变化。
+只有 Validation 通过，才可以把自己的变更重新应用到更新后的 Base 上。
 
-## Retry Backoff
+## 为什么 Append 通常更容易 Retry
 
-高并发 Commit 下要限制“所有 Writer 立刻同时重试”的惊群。
+两个独立 Append 往往只是各自新增文件。
 
-原则：
+如果 A 先提交，B Refresh 后发现 A 只是增加了另一批文件，那么 B 的新增文件通常仍然可以安全挂到最新表状态上。
 
-```text
-bounded retry
-+ exponential backoff
-+ jitter
-+ total timeout
-+ conflict metrics
-```
+所以 Append 经常可以 Rebase / Retry，而不需要重写已经生成的 Data File。
 
-Retry 是可靠性机制，但如果冲突率长期很高，继续加重试次数只会把 Catalog 和 Metadata 压得更重。
+但 Overwrite、Rewrite、DELETE、MERGE 等操作可能依赖“某些旧文件仍然存在”或“某个 Predicate 范围没有被别人改过”。
 
-## Partial Failure
+这类操作必须做更严格的 Conflict Validation。
 
-区分三类：
+## Conflict Detection 的核心
 
-```text
-Data File write failed before commit
-→ no table visibility
+真正要判断的是：
 
-Files written, commit failed
-→ possible orphan files
+**从 Base Snapshot 到 Current Snapshot 之间，是否发生了会破坏当前操作语义的变化。**
 
-Commit success, client timed out
-→ ambiguous client outcome
-```
+例如一个 Rewrite 计划要替换 File A。
 
-第三类最危险：Client 不应简单把“没收到成功响应”当成“提交一定没发生”。需要 Refresh 表状态或使用幂等业务标识确认结果。
+如果别的 Writer 已经先把 File A 替换了，再盲目提交原 Rewrite 结果就可能覆盖合法变化。
 
-## Production Observability
+因此：
 
-至少记录：
+- 可以证明仍然安全 → Retry；
+- 无法证明安全 → Fail / Recompute；
+- 不应该靠无限重试掩盖语义冲突。
 
-```text
-commit latency
-commit success/failure
-conflict count
-retry count
-retry total time
-files added/removed
-snapshot id
-writer/job id
-```
+## Commit Retry 和业务重跑不是一回事
 
-## Scale Lab
+Iceberg Commit Retry 主要处理 Metadata Commit 竞争。
 
-100 个 Writer 同时往同一张热表提交时，瓶颈可能从 Storage 吞吐转移到：
+它不等于“整个 Spark / Flink 业务任务随便从头再跑一次”。
 
-```text
-Catalog pointer contention
-Metadata refresh
-Conflict validation
-Manifest merge
-Retry storm
-```
+如果业务重跑会再次产生相同业务数据，还必须另外考虑上游幂等键、CDC Offset、Batch ID 等业务语义。
 
-解决方案可能包括更合理的微批窗口、Writer 聚合、Branch/WAP、任务隔离或表拆分，而不是简单扩大 Spark Executor。
+所以：
 
+**Metadata Commit Retry ≠ End-to-end Idempotency（端到端幂等）**
+
+## Partial Failure 怎么判断
+
+写入失败要先判断发生在哪一层。
+
+**Data File 写入阶段就失败**
+
+没有成功 Commit，新文件不会进入 Current Table State。
+
+**文件已经写完，但 Catalog Commit 永久失败**
+
+这些文件可能成为 Orphan File（孤儿文件）。
+
+**Catalog Commit 已成功，但 Client 超时没收到响应**
+
+结果可能是 Ambiguous Outcome（结果不确定）。
+
+这时不能直接假设“提交没发生”再写一次，而应该先 Refresh 表状态，确认本次 Snapshot / Commit 是否已经生效。
+
+## Forward Fix 为什么比盲目 Rollback 更安全
+
+假设：
+
+**S10 正常 → S11 坏数据 → S12 又有合法数据**
+
+如果直接 Rollback 到 S10，会把 S12 的合法变化也一起丢掉。
+
+Forward Fix（向前修复）是在当前最新状态上：
+
+**识别坏影响 → 生成修复数据 / 删除 → 提交新的 S13**
+
+它不是所有事故的唯一答案，但当坏 Snapshot 后面还有合法提交时，通常比“回到旧版本”更符合数据保全原则。
+
+## 高并发为什么会出现 Retry Storm
+
+Writer 越多，不代表吞吐一定线性增加。
+
+当大量 Writer 同时提交同一张热表时，瓶颈可能转移到：
+
+- Catalog Pointer Contention；
+- Metadata Refresh；
+- Conflict Validation；
+- Commit Retry；
+- Manifest Merge。
+
+如果所有 Writer 失败后立刻同时重试，就会形成 Retry Storm（重试风暴）。
+
+因此生产上需要：
+
+- 有界重试；
+- Exponential Backoff（指数退避）；
+- Jitter（随机抖动）；
+- Total Timeout；
+- Conflict / Retry 指标。
 
 ## 关联知识
 
-下一节看 Maintenance：为什么小文件、Snapshot、Manifest、Orphan File 需要不同的治理动作。
+成功 Commit 会不断产生 Snapshot、Manifest 和文件历史。
+
+下一节进入 Maintenance：
+
+**哪些增长是正常历史，哪些已经变成小文件、Manifest 碎片、Snapshot 膨胀和 Orphan，需要怎样分别治理？**
