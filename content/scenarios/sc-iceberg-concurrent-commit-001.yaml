@@ -1,31 +1,167 @@
 id: sc-iceberg-concurrent-commit-001
 type: scenario
 title: 100 concurrent writers contending on one hot Iceberg table
+title_cn: 100 个 Writer 并发提交
 domain: lakehouse
 scenario_type:
-- concurrency
-- reliability
-- troubleshooting
+  - concurrency
+  - reliability
+  - troubleshooting
 difficulty: senior
 hypothetical: true
 scale_dimensions:
-- concurrency
-- reliability
-- availability
-- operations
-knowledge:
-- kb-iceberg-commit-concurrency-001
-- kb-iceberg-production-troubleshooting-001
-projects:
-- north-america
-interviews:
-- iq-system-concurrency-fault-tolerance-001
-status: v0.6.0_seed
+  - concurrency
+  - reliability
+  - availability
+  - operations
+status: scale_detail_v1
 order: 3
-title_cn: 100 个 Writer 并发提交
+
 summary: 热点 Iceberg 表发生提交争用时，如何控制冲突、重试、Catalog 压力与恢复。
 display_tags:
-- 并发
-- Commit
-- 重试
-- 可靠性
+  - 并发
+  - Commit
+  - 重试
+  - 可靠性
+
+quick_answer: >-
+  Iceberg 的 Optimistic Concurrency（乐观并发）负责保护提交正确性，但它不会消除争用。
+  100 个 Writer 同时打到一张热表时，真正的系统设计重点是降低有效提交并发、
+  区分可安全重试与语义冲突，并阻止重试把 Catalog 进一步打爆。
+
+parameters:
+  - label: Writer 数量
+    value: 100 个并发 Writer
+  - label: 热点
+    value: 同一张 Iceberg 热表
+  - label: 主要风险
+    value: Commit Conflict、Retry Storm、Catalog 压力、未知提交状态
+  - label: 训练重点
+    value: 正确性、吞吐、背压、隔离、恢复
+
+constraints:
+  - title: 不能牺牲表提交正确性换吞吐
+    body: >-
+      并发提交必须继续经过 Iceberg 的 Validation 与原子 Metadata 更新。
+      不能通过绕过冲突校验来“提高吞吐”。
+  - title: Writer 吞吐和 Commit 吞吐不是一回事
+    body: >-
+      100 个 Writer 可以并行准备数据文件，但最终 Metadata Commit 仍然会争用表的当前状态。
+      因此扩 Writer 数并不保证 Commit 吞吐线性提升。
+  - title: 网络超时可能造成 Unknown Commit State
+    body: >-
+      客户端没有收到成功响应，不代表 Commit 一定失败。
+      如果在不知道提交结果时直接重做业务操作，可能产生重复写入或错误补偿。
+
+failure_bottlenecks:
+  - title: Base Snapshot 快速过期
+    body: >-
+      多个 Writer 基于相近的 Base Snapshot 准备 Commit。
+      某个 Writer 先成功后，其他 Writer 需要刷新 Metadata 并重新验证自己的操作是否仍然成立。
+  - title: Retry Storm
+    body: >-
+      如果所有 Writer 冲突后立刻同时重试，它们会在下一轮再次互相竞争，
+      形成同步重试风暴，把 Catalog、Metadata I/O 和客户端线程一起推高。
+  - title: Row-level Operation 冲突更复杂
+    body: >-
+      Append 通常比 Update / Delete / Merge 更容易安全重试。
+      行级变更需要检查并发 Snapshot 是否破坏原操作假设，不能把所有 CommitFailed 都当成同一种错误。
+  - title: Catalog 成为共享热点
+    body: >-
+      Writer 可以分布在很多计算节点，但表的 Metadata 提交与刷新仍会集中访问 Catalog。
+      Catalog 延迟一旦上升，会进一步延长 Commit 生命周期并放大并发重叠。
+
+design:
+  - title: 降低“有效 Commit 并发”，不是简单减少计算并发
+    body: >-
+      上游仍可并行计算和生成文件，但应通过 Micro-batch 合并、分区所有权、
+      Commit Queue 或其他协调方式减少同一时刻真正提交到热表的 Writer 数量。
+  - title: 对重试做指数退避与 Jitter
+    body: >-
+      Commit 冲突后先刷新最新 Metadata，再按退避策略重试，并加入随机抖动避免所有 Writer 同步醒来。
+      Iceberg 自身提供 Commit Retry 配置，但应用侧仍要控制整体并发和重试预算。
+  - title: 区分 Retryable Conflict 与 Semantic Conflict
+    body: >-
+      对可重新验证的 Append / Metadata 竞争，可以刷新后继续尝试；
+      对 Update / Delete / Merge 等已经违反原操作假设的冲突，应重建操作或进入业务补偿，
+      而不是机械重复同一提交。
+  - title: 为操作建立幂等身份
+    body: >-
+      Writer 需要有稳定的 Batch / Operation ID，并在状态存储中记录处理范围。
+      当 Commit 响应丢失时，先检查当前 Snapshot 与业务标识，再决定是否重新提交。
+  - title: 热点长期存在时重构写入拓扑
+    body: >-
+      如果一张表长期需要承受大量独立 Writer，可评估按业务域汇聚写入、
+      让上游分区拥有者负责聚合，或在语义允许时拆分热点。
+      单纯继续提高 Commit Retry 次数只会延后瓶颈。
+
+tradeoffs:
+  - title: Commit Queue 降低冲突，但引入协调点
+    body: >-
+      对热点表串行或受控并发提交可以显著减少冲突，
+      但协调服务本身需要高可用，并可能成为新的延迟和吞吐瓶颈。
+  - title: 更大的 Micro-batch 减少 Commit 次数，但增加端到端延迟
+    body: >-
+      把多个小 Writer 聚合成更大批次能降低 Metadata 争用，
+      代价是数据可见性和单批失败范围变大。
+  - title: 更强隔离保证语义，但冲突概率更高
+    body: >-
+      Row-level Operation 使用更严格的 Serializable 语义时，
+      会拒绝更多与原操作条件冲突的并发写入。放宽隔离必须由业务语义允许，而不是为了减少报错。
+
+observability:
+  - title: Commit Conflict Rate
+    body: >-
+      按操作类型统计 Commit 成功、冲突、重试和最终失败。
+      只有知道 Append、Update、Delete、Merge 各自的失败分布，才能判断是不是语义冲突。
+  - title: Retry Depth 与 Backoff Time
+    body: >-
+      观察每次成功 Commit 经历了多少轮重试、累计等待多久。
+      平均值正常但尾部不断拉长，通常意味着热点正在恶化。
+  - title: Catalog / Metadata 延迟
+    body: >-
+      观察 Refresh、Commit、状态检查的延迟与错误率。
+      如果 Catalog P95 升高同时冲突率增加，需要优先降低提交压力，而不是扩大 Writer。
+  - title: Unknown Commit State
+    body: >-
+      单独统计网络错误后需要状态检查的提交数量。
+      这类问题必须和明确的 Validation Conflict 分开，否则恢复策略会错误。
+
+cost:
+  - title: 冲突产生的浪费计算
+    body: >-
+      Writer 在失败前可能已经完成文件生成、Shuffle 和序列化。
+      冲突越晚发生，浪费的计算和对象存储 I/O 越多。
+  - title: Retry 的放大效应
+    body: >-
+      一次冲突如果触发大量同步 Refresh / Commit，会把一次业务写入放大成多轮 Catalog 请求，
+      成本和故障压力同时上升。
+  - title: 协调层成本
+    body: >-
+      引入 Queue / Coordinator 可以换取更稳定的提交行为，
+      但需要额外部署、监控、容量规划和高可用设计。
+
+recovery:
+  - title: 先确认 Commit 状态，再决定补偿
+    body: >-
+      网络中断后优先执行状态检查或刷新最新 Snapshot，确认目标提交是否已经成为表历史的一部分。
+      只有明确未提交后，才进入重试。
+  - title: 超过重试预算后停止自动放大
+    body: >-
+      达到最大重试深度或总超时后，将任务转入隔离队列或人工 / 自动补偿流程，
+      不允许 Writer 无限重试占用 Catalog。
+  - title: 恢复阶段先降并发
+    body: >-
+      热点故障期间先把有效 Commit 并发降到系统可稳定处理的水平，
+      清理积压后再逐步提升，而不是故障一恢复就让全部 Writer 同时冲入。
+  - title: 对失败文件采用安全生命周期
+    body: >-
+      Commit 失败可能留下未引用文件。应在确认没有运行中 Writer 和重试需求后再做 Orphan 清理，
+      避免把仍可能被合法提交引用的文件提前删除。
+
+knowledge:
+  - kb-iceberg-commit-concurrency-001
+  - kb-iceberg-production-troubleshooting-001
+
+interviews:
+  - iq-system-concurrency-fault-tolerance-001

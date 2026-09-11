@@ -1,30 +1,158 @@
 id: sc-iceberg-streaming-small-files-001
 type: scenario
 title: 10-second streaming commits causing file and manifest explosion
+title_cn: 10 秒级提交后的文件膨胀
 domain: lakehouse
 scenario_type:
-- troubleshooting
-- architecture_evolution
+  - troubleshooting
+  - architecture_evolution
 difficulty: senior
 hypothetical: true
 scale_dimensions:
-- throughput
-- latency
-- cost
-- operations
-knowledge:
-- kb-iceberg-write-distribution-ordering-001
-- kb-iceberg-maintenance-small-files-001
-- kb-iceberg-production-troubleshooting-001
-projects:
-- north-america
-interviews: []
-status: v0.6.0_seed
+  - throughput
+  - latency
+  - cost
+  - operations
+status: scale_detail_v1
 order: 2
-title_cn: 10 秒级提交后的文件膨胀
+
 summary: 低延迟流式写入导致小文件和 Manifest 快速增长，如何从写入布局到维护策略一起治理。
 display_tags:
-- 低延迟
-- 小文件
-- Manifest
-- 维护
+  - 低延迟
+  - 小文件
+  - Manifest
+  - 维护
+
+quick_answer: >-
+  问题不只是“文件太小”，而是把业务新鲜度直接等同于 Iceberg Commit 新鲜度。
+  需要同时控制 Micro-batch 粒度、写入分布、文件大小、Snapshot 增长和持续维护，
+  在实时性与表健康之间建立预算。
+
+parameters:
+  - label: 提交周期
+    value: 约 10 秒一次
+  - label: 写入模式
+    value: 持续 Streaming / Micro-batch
+  - label: 主要风险
+    value: 小文件、Snapshot / Manifest 增长、规划延迟、维护积压
+  - label: 训练重点
+    value: 新鲜度与表健康之间的工程权衡
+
+constraints:
+  - title: 业务需要低延迟可见
+    body: >-
+      不能简单把 Commit 周期从 10 秒改成几小时。必须先明确真正的 Freshness SLO：
+      用户需要的是事件进入系统很快，还是必须在 Iceberg / Trino 中 10 秒内可查。
+  - title: 每个 Micro-batch 的数据量可能太小
+    body: >-
+      如果单个批次不足以形成接近目标大小的数据文件，即使 Writer 配置正确，
+      最终仍会持续生成小文件。
+  - title: Maintenance 不能无限追着写入跑
+    body: >-
+      Compaction 本身会消耗计算与 I/O。如果生成小文件的速度长期高于重写速度，
+      维护队列只会越来越长。
+
+failure_bottlenecks:
+  - title: Data File 数量持续上升
+    body: >-
+      小批次、细分区和低数据量共同作用时，一个分区会积累大量小文件。
+      查询端需要处理更多文件和更多元数据，规划时间与文件打开成本都会增加。
+  - title: Snapshot 与 Manifest 链路膨胀
+    body: >-
+      高频 Commit 会不断产生新 Snapshot。即使 Manifest 可以自动合并，
+      长期高频提交仍需要关注 Manifest 数量、Metadata 文件与 Snapshot 历史。
+  - title: 查询延迟先在 Planning 阶段恶化
+    body: >-
+      很多团队只关注 Scan Time，但文件和 Manifest 增多后，
+      Trino 可能先花更多时间在 Metadata Planning 与 Split 生成上。
+  - title: Compaction 与 Streaming Writer 形成资源竞争
+    body: >-
+      如果维护任务与流写入使用同一资源池，两者会互相影响。
+      维护追不上时继续提高 Compaction 并发，还可能反过来拉高写入延迟。
+
+design:
+  - title: 先分离 Ingest Latency 与 Table Commit Latency
+    body: >-
+      明确事件进入 Kafka / Flink 的实时性与进入 Iceberg Snapshot 的可见性不是同一个指标。
+      如果业务允许，可在流处理中缓冲更大的 Micro-batch，再以更健康的粒度写入 Iceberg。
+  - title: 按分区聚合数据再落文件
+    body: >-
+      尽量让同一批数据在写出前按目标分区聚合，减少一个 Task 同时写多个小分区文件。
+      Spark 写入时结合 write distribution 与 Task 大小控制文件布局。
+  - title: 给 Commit 频率设置预算
+    body: >-
+      Commit 周期不是固定越短越好。可以根据批次字节量、文件数量或 Freshness SLO 决定是否提交，
+      让“时间触发”与“数据量触发”共同工作。
+  - title: 建立持续 Compaction
+    body: >-
+      使用 Rewrite Data Files 合并明显偏小的数据文件。
+      触发条件应基于小文件数量、大小分布、热点分区和维护积压，而不是无差别全表重写。
+  - title: Manifest 与 Snapshot 分开治理
+    body: >-
+      Data File Compaction 解决的是数据文件布局；Rewrite Manifests 解决的是元数据组织。
+      Snapshot Expiration 解决历史版本生命周期。三者不能被当成一个“优化任务”。
+
+tradeoffs:
+  - title: 更短 Commit 周期换取新鲜度，但增加 Metadata 压力
+    body: >-
+      10 秒可见性不是免费的。Commit 越频繁，Snapshot / Metadata 更新越密集，
+      因此必须用真实 Freshness SLO 来证明这个成本是必要的。
+  - title: 更大 Micro-batch 改善文件健康，但增加可见延迟
+    body: >-
+      延迟和文件大小天然存在张力。设计目标不是消灭这组矛盾，而是把它控制在业务可接受范围内。
+  - title: Fanout 可以减少预排序要求，但会增加文件句柄压力
+    body: >-
+      写入方式的选择会改变 Writer 内部资源使用。
+      不能为了降低 Shuffle 就忽略打开文件数量和最终文件布局。
+
+observability:
+  - title: Commit 速率
+    body: >-
+      观察每分钟 / 每小时 Commit 数、Commit 延迟、失败率与重试次数。
+      如果业务流量没有增加但 Commit 压力持续上升，需要检查触发策略。
+  - title: 文件大小分布
+    body: >-
+      观察平均值之外的 P50 / P90 文件大小、过小文件比例以及每个分区新增文件数。
+      单看平均文件大小容易掩盖热点分区。
+  - title: Metadata 增长
+    body: >-
+      观察 Snapshot 数、Manifest 数、Metadata 文件大小和查询 Planning Time，
+      判断问题究竟在数据文件还是元数据层。
+  - title: Maintenance Backlog
+    body: >-
+      跟踪待 Compaction 文件数量、最长等待时间、每轮重写字节量和维护任务耗时。
+      Backlog 持续增加说明治理速度已经低于问题产生速度。
+
+cost:
+  - title: 小文件的长期读取成本
+    body: >-
+      小文件不仅浪费存储对象请求，还会持续增加每次查询的文件打开和规划成本，
+      是一种会跨越写入与读取阶段累积的债务。
+  - title: Compaction 重写成本
+    body: >-
+      每次合并都要重新读取并写出数据。高频 Compaction 会把“低延迟写入”的成本转移到维护集群。
+  - title: Metadata 生命周期成本
+    body: >-
+      长时间保留大量 Snapshot 与 Metadata 会增加元数据体积；
+      但过度激进的清理又会压缩 Time Travel 与恢复窗口。
+
+recovery:
+  - title: 先止住新增小文件，再追历史债务
+    body: >-
+      故障治理顺序应先调整写入 / Commit 策略，使新增文件恢复健康，
+      再逐步处理历史小文件。否则 Compaction 永远追不上。
+  - title: 维护任务需要可中断和分批
+    body: >-
+      按热点分区或文件组分批 Rewrite，避免一次全表维护占满资源。
+      中断后可以从剩余分区继续，而不是重新扫描整表。
+  - title: Snapshot 清理晚于验证
+    body: >-
+      调整流写策略或执行大规模 Rewrite 后，先确认查询正确性和文件健康，
+      再按照保留策略 Expire Snapshots，并谨慎处理 Orphan Files。
+
+knowledge:
+  - kb-iceberg-write-distribution-ordering-001
+  - kb-iceberg-maintenance-small-files-001
+  - kb-iceberg-production-troubleshooting-001
+
+interviews: []

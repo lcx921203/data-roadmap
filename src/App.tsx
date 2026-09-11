@@ -4,6 +4,7 @@ import { InterviewDetailPage } from './pages/InterviewDetailPage'
 import { InterviewPage } from './pages/InterviewPage'
 import { KnowledgeDetailPage } from './pages/KnowledgeDetailPage'
 import { LearnPage } from './pages/LearnPage'
+import { ScaleDetailPage } from './pages/ScaleDetailPage'
 import { ScalePage } from './pages/ScalePage'
 import { StagePage } from './pages/StagePage'
 import type { HashRoute } from './types/content'
@@ -28,6 +29,10 @@ function RouteContent({ route }: { route: HashRoute }) {
     }
 
     return <InterviewPage />
+  }
+
+  if (route.segments[0]) {
+    return <ScaleDetailPage id={route.segments[0]} />
   }
 
   return <ScalePage />

@@ -69,15 +69,19 @@
 - [x] Project assets reclassified as backstage context
 - [x] Iceberg vertical slice redefined around three public tabs
 
-### Next: V0.6.3 Scale Lab Detail
-- [ ] Scenario loader
-- [ ] Scale Lab detail route
-- [ ] 10B Backfill detail
-- [ ] Streaming Small-files detail
-- [ ] Concurrent Writer detail
+### V0.6.3 Scale Lab Detail
+- [x] Scenario detail schema
+- [x] Scale Lab detail route
+- [x] Clickable Scale scenario list
+- [x] 10B Backfill detail
+- [x] Streaming Small-files detail
+- [x] Concurrent Writer detail
+- [x] Constraints → Failure → Design → Trade-offs → Observability → Cost → Recovery
+- [x] Keep every scenario explicitly hypothetical
 
-### V0.6.4 Interview Integration
+### Next: V0.6.4 Interview Integration
 - [ ] Knowledge → evidence-backed Interview mapping
+- [ ] Scale → evidence-backed Interview mapping
 - [ ] Do not synthesize fake Iceberg frequency
 - [ ] Curated answer / knowledge cross-navigation
 

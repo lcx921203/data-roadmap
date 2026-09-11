@@ -13,7 +13,11 @@ export function ScalePage() {
 
         <section className="scenario-list" aria-label="生产场景">
           {appRegistry.scaleScenarios.map((scenario) => (
-            <article className="scenario-row" key={scenario.id}>
+            <a
+              className="scenario-row scenario-row--link"
+              href={`#/scale/${scenario.id}`}
+              key={scenario.id}
+            >
               <div className="scenario-row__meta">
                 <span>
                   {scenario.domain === 'lakehouse'
@@ -27,14 +31,11 @@ export function ScalePage() {
               {scenario.summary && <p>{scenario.summary}</p>}
 
               {scenario.display_tags?.length ? (
-                <p
-                  className="scenario-row__tags"
-                  aria-label="训练重点"
-                >
+                <p className="scenario-row__tags" aria-label="训练重点">
                   {scenario.display_tags.join(' · ')}
                 </p>
               ) : null}
-            </article>
+            </a>
           ))}
         </section>
       </div>

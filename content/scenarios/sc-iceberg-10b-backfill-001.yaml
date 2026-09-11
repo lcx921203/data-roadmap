@@ -1,39 +1,169 @@
 id: sc-iceberg-10b-backfill-001
 type: scenario
 title: 10B rows historical backfill without destroying online Trino SLO
+title_cn: 100 亿行历史回填
 domain: lakehouse
 scenario_type:
-- system_design
-- capacity
-- troubleshooting
+  - system_design
+  - capacity
+  - troubleshooting
 difficulty: senior
 hypothetical: true
 scale_dimensions:
-- volume
-- throughput
-- concurrency
-- latency
-- reliability
-- cost
-constraints:
-  rows: 10B
-  window: 24h
-  online_query_slo: 99.9% availability; protect interactive P95
-knowledge:
-- kb-iceberg-write-distribution-ordering-001
-- kb-iceberg-commit-concurrency-001
-- kb-iceberg-maintenance-small-files-001
-- kb-iceberg-trino-read-path-001
-projects:
-- north-america
-interviews:
-- iq-large-dataset-tech-selection-001
-status: v0.6.0_seed
+  - volume
+  - throughput
+  - concurrency
+  - latency
+  - reliability
+  - cost
+status: scale_detail_v1
 order: 1
-title_cn: 100 亿行历史回填
+
 summary: 在 24 小时内完成 Backfill，同时保护在线 Trino 查询的延迟与可用性。
 display_tags:
-- 数据规模
-- 资源隔离
-- 查询 SLO
-- 成本
+  - 数据规模
+  - 资源隔离
+  - 查询 SLO
+  - 成本
+
+quick_answer: >-
+  不要把 100 亿行当成一个超大作业硬跑。核心是把回填拆成可重试的范围，
+  隔离回填与在线查询资源，控制文件布局和提交节奏，并把维护与恢复设计成主流程的一部分。
+
+parameters:
+  - label: 数据量
+    value: 100 亿行历史数据
+  - label: 完成窗口
+    value: 24 小时
+  - label: 在线查询
+    value: Trino 交互式查询持续服务
+  - label: 可用性目标
+    value: 99.9%，同时保护交互查询 P95
+  - label: 训练重点
+    value: 吞吐、文件布局、Commit、资源隔离、恢复、成本
+
+constraints:
+  - title: 在线查询不能被回填拖垮
+    body: >-
+      Backfill 与 Trino 会同时消耗 CPU、内存、对象存储带宽以及 Catalog / Metadata 访问能力。
+      设计必须先确定资源隔离和限流边界，而不是只追求回填作业跑得快。
+  - title: 写入吞吐和表健康必须同时成立
+    body: >-
+      大批量写入如果把数据切得过碎，会制造大量小文件；如果每个小任务都独立 Commit，
+      又会快速增加 Snapshot 与 Metadata 压力。吞吐目标不能脱离文件大小和 Commit 粒度。
+  - title: 失败后必须知道从哪里继续
+    body: >-
+      24 小时窗口下不允许失败后整批重跑。每个回填范围都必须可识别、可验证、可重试，
+      并能够判断某个范围究竟未开始、已写文件但未提交，还是已经成功提交。
+
+failure_bottlenecks:
+  - title: 小文件先拖慢读路径
+    body: >-
+      Spark Task 太小、分区过细或数据分布不合理时，会产生大量小文件。
+      文件数上升会增加 Manifest 元数据、对象存储请求以及 Trino 的规划和文件打开成本。
+  - title: Commit 频率把 Catalog 变成热点
+    body: >-
+      每个 Commit 都要生成新的表版本并更新当前 Metadata 指针。
+      如果回填被切成大量极小 Commit，吞吐可能没有提高，反而把压力集中到提交链路。
+  - title: Backfill 与维护任务互相争资源
+    body: >-
+      回填过程中马上大规模 Compaction、Manifest Rewrite 或其他维护，会再次读取和重写数据，
+      与主写入争抢计算和对象存储带宽，甚至进一步影响在线查询。
+  - title: 超大单次 Commit 放大恢复成本
+    body: >-
+      另一种极端是把过多数据塞进一次提交。这样虽然减少 Commit 次数，
+      但单批执行时间、失败重算范围和验证成本都会增大。
+
+design:
+  - title: 先把 100 亿行拆成可恢复的 Backfill Range
+    body: >-
+      按时间区间、业务分片或其他稳定边界拆成多个可独立验证的批次。
+      每个批次记录稳定的输入范围与执行标识，使失败重试不会重复扩大写入范围。
+  - title: 将 Backfill 与在线查询做资源隔离
+    body: >-
+      使用独立计算队列、并发上限和吞吐预算保护 Trino。
+      当 Trino P95、对象存储请求或 Catalog 延迟越过保护线时，优先降低 Backfill 并发，
+      而不是继续增加 Spark Executor。
+  - title: 用 Distribution 管住文件布局
+    body: >-
+      写入按照 Iceberg 分区键进行合理分布。Spark 场景下优先评估 hash distribution；
+      如果表存在对读取有价值的排序要求，再评估成本更高的 range distribution。
+      同时让 Spark Task 大小与目标文件大小匹配，避免“配置了目标文件大小但 Task 本身太小”。
+  - title: Commit 粒度按数据量和恢复粒度共同确定
+    body: >-
+      不以“越频繁越安全”或“越大越高效”作为原则。
+      每批应包含足够数据形成健康文件，同时保持失败后能够在可接受范围内重跑。
+  - title: 维护任务采用分阶段执行
+    body: >-
+      优先完成主回填并持续观察文件分布；对明显异常的分区做受控 Data File Rewrite。
+      Manifest Rewrite 只在元数据组织已经影响规划时执行。
+      Snapshot Expiration 必须晚于业务验证和回滚窗口。
+
+tradeoffs:
+  - title: 更大的批次降低 Commit 压力，但扩大失败半径
+    body: >-
+      批次越大，Snapshot / Commit 数越少，但失败后的重算范围、验证时间和内存压力也更大。
+      最优点来自恢复目标与元数据成本的平衡。
+  - title: Range Distribution 改善局部读取，但写入更贵
+    body: >-
+      Range 模式需要额外采样和 Shuffle，可获得更好的全局聚簇或排序效果；
+      如果查询收益不足以抵消写入成本，应优先使用更简单的 Hash 分布。
+  - title: 立即 Compaction 让表更整齐，但会抢占回填窗口
+    body: >-
+      维护不是越早越好。大规模回填期间应优先处理真正影响查询或文件健康的热点，
+      其余整理工作可以放到主数据完成之后。
+
+observability:
+  - title: Backfill 吞吐与剩余时间
+    body: >-
+      观察 rows / bytes processed、每批完成时间、活跃批次数和预计剩余窗口，
+      判断当前是否还能在 24 小时内完成，而不是只看 Spark Job 是否在 Running。
+  - title: 文件健康
+    body: >-
+      观察每个分区的文件数量、文件大小分布、过小文件比例以及新文件增长速度。
+      这些指标比单纯看写入行数更能提前暴露后续查询问题。
+  - title: Commit 与 Metadata
+    body: >-
+      观察 Commit 延迟、重试次数、失败率、Snapshot 增长速度、Manifest 数量与 Metadata 大小。
+      如果业务吞吐稳定但提交延迟持续上升，瓶颈很可能已经从计算转到元数据链路。
+  - title: Trino SLO
+    body: >-
+      同时观察交互查询 P95 / P99、规划时间、扫描文件数和失败率。
+      Scale 设计是否成立，最终要以在线查询是否被保护住来判断。
+
+cost:
+  - title: Shuffle 与计算成本
+    body: >-
+      为得到更健康的文件布局，需要付出 Repartition / Sort 的计算成本。
+      盲目增加并发也可能让 Shuffle、GC 和对象存储请求先成为瓶颈。
+  - title: 对象存储与元数据请求
+    body: >-
+      小文件越多，PUT / GET / LIST 类请求与文件打开次数通常越高；
+      这部分成本会同时出现在写入、维护和查询阶段。
+  - title: 维护成本
+    body: >-
+      Rewrite Data Files 会再次读取和写出数据，因此必须把它当成独立资源预算，
+      而不是假设 Compaction 是免费的后台动作。
+
+recovery:
+  - title: 以批次状态恢复，而不是整任务重跑
+    body: >-
+      失败后从最近一个已验证批次继续。重新执行前先读取 Iceberg 当前 Snapshot，
+      判断目标范围是否已经提交，避免把网络超时误判成 Commit 失败。
+  - title: 保留足够的回滚窗口
+    body: >-
+      Backfill 完成并通过业务校验前，不要过早 Expire Snapshot。
+      先保留能够回滚和 Time Travel 验证的版本，再进入清理阶段。
+  - title: Orphan 清理必须保守
+    body: >-
+      失败任务可能留下未被 Metadata 引用的文件，但清理动作必须避开仍在运行或可能重试的写入，
+      不能把 Remove Orphan Files 当成失败后的第一反应。
+
+knowledge:
+  - kb-iceberg-write-distribution-ordering-001
+  - kb-iceberg-commit-concurrency-001
+  - kb-iceberg-maintenance-small-files-001
+  - kb-iceberg-trino-read-path-001
+
+interviews:
+  - iq-large-dataset-tech-selection-001

@@ -110,6 +110,16 @@ export interface KnowledgeFrontMatter {
   project_fact_status?: string
 }
 
+export interface ScaleScenarioParameter {
+  label: string
+  value: string
+}
+
+export interface ScaleScenarioDetailItem {
+  title: string
+  body: string
+}
+
 export interface ScaleScenario {
   id: string
   type: 'scenario'
@@ -118,10 +128,20 @@ export interface ScaleScenario {
   title_cn?: string
   summary?: string
   domain?: string
+  scenario_type?: string[]
   difficulty?: string
   hypothetical: boolean
   scale_dimensions?: string[]
   display_tags?: string[]
+  quick_answer?: string
+  parameters?: ScaleScenarioParameter[]
+  constraints?: ScaleScenarioDetailItem[]
+  failure_bottlenecks?: ScaleScenarioDetailItem[]
+  design?: ScaleScenarioDetailItem[]
+  tradeoffs?: ScaleScenarioDetailItem[]
+  observability?: ScaleScenarioDetailItem[]
+  cost?: ScaleScenarioDetailItem[]
+  recovery?: ScaleScenarioDetailItem[]
   knowledge?: string[]
   projects?: string[]
   interviews?: string[]

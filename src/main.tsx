@@ -13,6 +13,7 @@ import './styles/interview-semantics-v1.2.css'
 import './styles/motion-metadata-v1.3.css'
 import './styles/diagram-system-v1.css'
 import './styles/three-tab-product.css'
+import './styles/scale-detail-v1.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
