@@ -225,13 +225,18 @@
 - [x] Keep UI unchanged
 - [x] Keep all dbt article bodies unwritten
 
-### Next: V0.9.1 dbt Project & DAG
-- [ ] 01 dbt Overview & Transformation Mental Model
-- [ ] 02 Project / Target / Adapter / Command Lifecycle
-- [ ] 03 Sources / Models / ref / source / Dependency Graph
-- [ ] 04 Jinja / Macros / Packages / Adapter Abstraction
+### V0.9.1 dbt Project & DAG
+- [x] 01 dbt Overview & Transformation Mental Model
+- [x] 02 Project / Target / Adapter / Command Lifecycle
+- [x] 03 Sources / Models / ref / source / Dependency Graph
+- [x] 04 Jinja / Macros / Packages / Adapter Abstraction
+- [x] Separate dbt resource DAG from database physical execution plan
+- [x] Separate Project / Target / Adapter responsibilities
+- [x] Treat ref() / source() as dependency declarations, not string helpers
+- [x] Treat Jinja / Macros as compile-time SQL generation
+- [x] Preserve Dimensional Modeling / Semantic Layer / Dagster boundaries
 
-### V0.9.2 dbt Materialization & Stateful Modeling
+### Next: V0.9.2 dbt Materialization & Stateful Modeling
 - [ ] 05 Materializations & Physical Persistence
 - [ ] 06 Incremental Models / Unique Key / Strategies / Backfill
 - [ ] 07 Snapshots / Source History / SCD2 Implementation
