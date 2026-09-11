@@ -1,0 +1,41 @@
+/* V1.0.2.1 — Green Signal Palette
+   Replace the global signal/accent family from blue to a calmer green.
+   Goal: reduce visual fatigue while keeping state recognition clear.
+   Structure, layout and dark-surface restraint remain unchanged. */
+
+:root {
+  --color-signal: #5ea37f;
+  --color-signal-strong: #2f6f52;
+  --color-signal-soft: #edf6f0;
+}
+
+:root[data-theme='dark'] {
+  --color-signal: #78c49c;
+  --color-signal-strong: #97d8b4;
+  --color-signal-soft: #16261e;
+}
+
+/* Keep tiny count badges and selected micro-controls readable.
+   These were previously hard-coded blue in dark mode. */
+:root[data-theme='dark'] .filter-control strong {
+  background: #2f6f52;
+  color: #ffffff;
+}
+
+/* The floating directory handle should look integrated in both themes. */
+.directory-fab,
+.directory-chip,
+.reading-directory-fab {
+  border-color: color-mix(in srgb, var(--color-signal) 34%, var(--color-hairline));
+}
+
+/* The current item can stay softly emphasized rather than fluorescent. */
+.reading-directory__item[data-active='true'] {
+  background: color-mix(in srgb, var(--color-signal-soft) 88%, var(--color-surface));
+}
+
+/* Continue-learning card glow follows the new signal automatically,
+   but a tiny extra restraint keeps green from looking neon in dark mode. */
+:root[data-theme='dark'] .continue-focus-card {
+  border-color: color-mix(in srgb, var(--color-signal) 26%, var(--color-hairline-strong));
+}
