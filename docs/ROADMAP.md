@@ -292,17 +292,35 @@
 - [x] Explicitly keep no dbt-specific verified frequency claim
 - [x] Keep every Scale scenario hypothetical and separate from project facts
 
-### Next: V0.9.6 dbt Vertical Slice Freeze
-- [ ] Three-tab closure audit
-- [ ] Mobile reading audit
-- [ ] Freeze dbt V1
+### V0.9.6 dbt Vertical Slice Freeze
+- [x] Deployed-main integrity audit
+- [x] Three-tab closure audit
+- [x] Third Scale domain / Modeling Engineering implementation audit
+- [x] 390px static layout / filter / safe-area audit
+- [x] Validate all 14 dbt contextual relation anchors
+- [x] Truth-boundary / evidence / project-boundary audit
+- [x] Keep frozen V1.9 UI unchanged
+- [x] Freeze dbt V1
+
+## V1.0 Fifth Vertical Slice — MetricFlow / Semantic Layer
+
+### Next: V1.0.0 MetricFlow Knowledge Spine Freeze
+- [ ] Keep MetricFlow / Semantic Layer in Stage 06 / L5 Core
+- [ ] Validate current dbt Semantic Layer / MetricFlow release baseline
+- [ ] Freeze the causal Learn spine before writing article bodies
+- [ ] Freeze dbt Model / Semantic Model / Entity / Dimension / Measure / Metric boundaries
+- [ ] Freeze multi-hop join / metric query / serving responsibility boundaries
+- [ ] Register only evidence-backed Interview seeds
+- [ ] Reuse the frozen Learn / Interview / Scale UI contract
+- [ ] Keep UI unchanged
 
 ### Deferred vertical
-- [ ] Flink — resume after the dbt slice unless priorities change
+- [ ] Flink — resume after MetricFlow unless priorities change
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found
 - [x] Keep Trino frozen unless a verified bug is found
 - [x] Keep Spark frozen unless a verified bug is found
+- [x] Keep dbt frozen unless a verified bug is found
 - [x] Reuse frozen Learn / Interview / Scale UI contract
 - [x] Do not force every technology into the same node count

@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '05'
 topic: dbt
 learning_depth: L5
-status: scale_interview_integrated
+status: frozen_dbt_v1
 technical_baseline:
   validation_date: '2026-09-11'
   stable_production_track: dbt Core v1.12.2
@@ -391,3 +391,13 @@ freeze:
   - sc-dbt-contract-breaking-change-001
   - sc-dbt-slim-ci-cost-001
   interview_integration: evidence_backed_cross_navigation_v0.9.5
+  v1_frozen: true
+  frozen_at: 0.9.6
+  three_tab_closure_audit: passed_v0.9.6
+  modeling_domain_mobile_audit: passed_v0.9.6
+  truth_boundary_audit: passed_v0.9.6
+  contextual_relation_anchor_audit: passed_14_of_14_v0.9.6
+  reopen_v1_only_for:
+  - verified_technical_error
+  - verified_usability_or_interaction_bug
+  - broken_cross_tab_relation
