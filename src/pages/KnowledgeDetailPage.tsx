@@ -14,6 +14,7 @@ import {
   extractMarkdownSubheadings,
   type ReadingDirectoryItem,
 } from '../utils/readingDirectory'
+import { getKnowledgeTopicLabel } from '../utils/knowledgeLabels'
 import { recordKnowledgeVisit } from '../utils/learningProgress'
 
 interface KnowledgeDetailPageProps {
@@ -85,11 +86,8 @@ export function KnowledgeDetailPage({
 
   const neighbors = getKnowledgeNeighbors(id)
   const topicLabel =
-    article.meta.topic === 'iceberg'
-      ? 'Iceberg'
-      : article.meta.domain === 'lakehouse'
-        ? 'Lakehouse'
-        : null
+    getKnowledgeTopicLabel(article.meta.topic) ??
+    (article.meta.domain === 'lakehouse' ? 'Lakehouse' : null)
 
   const metadata = [
     topicLabel,
