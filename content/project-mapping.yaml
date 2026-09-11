@@ -1,9 +1,12 @@
-version: "0.2"
+version: "0.3"
 
 projects:
   north-america:
     display_name: North America Project
+    display_name_cn: 北美项目
+    display_topics: 湖仓 · 数据治理 · 语义层 · Data Agent
     role: project_case
+    status: fact-check-required
     primary_topics:
       - cdc
       - kafka
@@ -18,7 +21,10 @@ projects:
 
   ahu-medical-exam:
     display_name: Ahu Medical Exam Project
+    display_name_cn: 阿虎医考
+    display_topics: 指标体系 · 语义层 · Serving
     role: project_case
+    status: fact-check-required
     primary_topics:
       - dimensional-modeling
       - metric-modeling
@@ -29,7 +35,10 @@ projects:
 
   caishi-live:
     display_name: Caishi Live Project
+    display_name_cn: 彩视直播
+    display_topics: Kafka · Flink · 实时计算
     role: project_case
+    status: fact-check-required
     primary_topics:
       - kafka
       - flink

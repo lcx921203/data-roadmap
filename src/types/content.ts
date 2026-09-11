@@ -14,6 +14,20 @@ export interface TaxonomyFile {
   stages: TaxonomyStage[]
 }
 
+export interface ProjectMappingEntry {
+  display_name: string
+  display_name_cn?: string
+  display_topics?: string
+  role: string
+  status?: string
+  primary_topics: string[]
+}
+
+export interface ProjectMappingFile {
+  version: string
+  projects: Record<string, ProjectMappingEntry>
+}
+
 export interface InterviewQuestionSummary {
   rank: number
   id: string
@@ -91,7 +105,6 @@ export interface KnowledgeFrontMatter {
   scale_scenarios?: string[]
   project_fact_status?: string
 }
-
 
 export interface ScaleScenario {
   id: string

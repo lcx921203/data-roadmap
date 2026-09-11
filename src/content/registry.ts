@@ -4,6 +4,7 @@ import type {
   InterviewQuestionSummary,
   KnowledgeFrontMatter,
   MarkdownDocument,
+  ProjectMappingFile,
   QuestionEvidenceView,
   ScaleScenario,
   TaxonomyFile,
@@ -38,6 +39,9 @@ interface CanonicalFrequencyFile {
 }
 
 export const taxonomy = loadYaml<TaxonomyFile>('content/taxonomy.yaml')
+export const projectMapping = loadYaml<ProjectMappingFile>(
+  'content/project-mapping.yaml',
+)
 
 const firstInterviewBank = loadYaml<InterviewBankFile>(
   'content/interviews/first-interview-bank-30-v0.3.8.yaml',
@@ -117,6 +121,13 @@ export const scaleScenarios = listYamlAssets('content/scenarios/')
   .map((asset) => parseYaml<ScaleScenario>(asset.raw))
   .filter((scenario) => scenario?.type === 'scenario')
   .sort((left, right) => (left.order ?? 999) - (right.order ?? 999))
+
+export const projects = Object.entries(projectMapping.projects).map(
+  ([id, project]) => ({
+    id,
+    ...project,
+  }),
+)
 
 function evidencePathPriority(path: string): number {
   if (path.includes('/final-review/')) return 4
@@ -215,8 +226,6 @@ export function getQuestionEvidence(questionId: string): QuestionEvidenceView[] 
     })
   }
 
-  // Future fallback: only direct mappings that are explicitly present
-  // on an Evidence record count as question-level Evidence.
   const seen = new Set<string>()
   const results: QuestionEvidenceView[] = []
 
@@ -320,21 +329,5 @@ export const appRegistry = {
     'Governance',
     'Agent',
   ],
-  projects: [
-    {
-      id: 'north-america',
-      name: 'North America Project',
-      status: 'fact-check-required',
-    },
-    {
-      id: 'ahu',
-      name: 'Ahu Medical Exam',
-      status: 'fact-check-required',
-    },
-    {
-      id: 'caishi',
-      name: 'Caishi Live',
-      status: 'fact-check-required',
-    },
-  ],
+  projects,
 } as const

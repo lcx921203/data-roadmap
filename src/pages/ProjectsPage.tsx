@@ -1,24 +1,6 @@
 import { TopBar } from '../components/TopBar'
 import { appRegistry } from '../content/registry'
 
-const projectDisplay: Record<
-  string,
-  { name: string; topics: string }
-> = {
-  'north-america': {
-    name: '北美项目',
-    topics: '湖仓 · 数据治理 · 语义层 · Data Agent',
-  },
-  ahu: {
-    name: '阿虎医考',
-    topics: '指标体系 · 语义层 · Serving',
-  },
-  caishi: {
-    name: '彩视直播',
-    topics: 'Kafka · Flink · 实时计算',
-  },
-}
-
 export function ProjectsPage() {
   return (
     <>
@@ -30,21 +12,17 @@ export function ProjectsPage() {
         </p>
 
         <section className="project-list" aria-label="项目案例">
-          {appRegistry.projects.map((project) => {
-            const display = projectDisplay[project.id] ?? {
-              name: project.name,
-              topics: '项目案例',
-            }
-
-            return (
-              <article className="project-row" key={project.id}>
-                <div>
-                  <strong>{display.name}</strong>
-                  <span>{display.topics}</span>
-                </div>
-              </article>
-            )
-          })}
+          {appRegistry.projects.map((project) => (
+            <article className="project-row" key={project.id}>
+              <div>
+                <strong>{project.display_name_cn ?? project.display_name}</strong>
+                <span>
+                  {project.display_topics ??
+                    project.primary_topics.join(' · ')}
+                </span>
+              </div>
+            </article>
+          ))}
         </section>
       </div>
     </>

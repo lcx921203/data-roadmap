@@ -60,21 +60,35 @@
 - [x] Project truthfulness boundary
 - [x] Interview evidence boundary
 
-### Next: V0.6.1 Project Case Fact Boundary
+### V0.6.1 Four-Tab Content Contract
+- [x] Freeze Learn / Interview / Scale / Projects responsibilities
+- [x] Separate Learn Stage 11 from top-level Scale Lab
+- [x] Standardize canonical project IDs
+- [x] Define project metadata source of truth
+- [x] Freeze cross-tab truth boundaries
+- [x] Define reverse-link policy
+
+### Next: V0.6.2 Project Case Fact Boundary
 - [ ] North America fact checklist
 - [ ] Actual / Boundary / Mapping structure
 - [ ] Only verified project facts rendered as Actual
 - [ ] Connect Iceberg Knowledge nodes
 - [ ] Connect Scale scenarios without experience inflation
 
-### V0.6.2 Scale Lab Detail
+### V0.6.3 Scale Lab Detail
 - [ ] Scenario loader
 - [ ] Scale Lab detail route
 - [ ] 10B Backfill detail
 - [ ] Streaming Small-files detail
 - [ ] Concurrent Writer detail
 
-### V0.6.3 Interview Integration
+### V0.6.4 Interview Integration
 - [ ] Knowledge → evidence-backed Interview mapping
 - [ ] Do not synthesize fake Iceberg frequency
 - [ ] Curated answer / knowledge cross-navigation
+
+### V0.6.5 Cross-Tab Navigation
+- [ ] Knowledge → Interview / Scale / Project
+- [ ] Interview → Knowledge
+- [ ] Scale → Knowledge / Project / Interview
+- [ ] Project → Knowledge / Scale / Interview

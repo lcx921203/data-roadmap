@@ -19,4 +19,4 @@ stages:
   - {id: "08", slug: governance, title_cn: 数据治理, title_en: Data Governance}
   - {id: "09", slug: serving, title_cn: 数据服务与 OLAP, title_en: Serving & OLAP}
   - {id: "10", slug: agent, title_cn: AI 数据智能体, title_en: AI Data Agent}
-  - {id: "11", slug: production, title_cn: 生产架构与规模化能力, title_en: Production Architecture & Scale Lab}
+  - {id: "11", slug: production, title_cn: 生产工程基础, title_en: Production Engineering}
