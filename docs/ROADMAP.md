@@ -236,12 +236,20 @@
 - [x] Treat Jinja / Macros as compile-time SQL generation
 - [x] Preserve Dimensional Modeling / Semantic Layer / Dagster boundaries
 
-### Next: V0.9.2 dbt Materialization & Stateful Modeling
-- [ ] 05 Materializations & Physical Persistence
-- [ ] 06 Incremental Models / Unique Key / Strategies / Backfill
-- [ ] 07 Snapshots / Source History / SCD2 Implementation
+### V0.9.2 dbt Materialization & Stateful Modeling
+- [x] 05 Materializations & Physical Persistence
+- [x] 06 Incremental Models / Unique Key / Strategies / Backfill
+- [x] 07 Snapshots / Source History / SCD2 Implementation
+- [x] Cover all 5 current built-in materializations
+- [x] Separate model logic from persistence strategy
+- [x] Separate incremental current-state maintenance from source-history snapshots
+- [x] Treat unique_key as incremental matching semantics, not a database constraint
+- [x] Treat microbatch as bounded incremental SQL batches, not a streaming runtime
+- [x] Connect late-arriving data to lookback / drift / backfill trade-offs
+- [x] Use current snapshot timestamp / check / hard_deletes semantics
+- [x] Preserve Stage 03 SCD theory ownership
 
-### V0.9.3 dbt Quality, Contracts & Metadata
+### Next: V0.9.3 dbt Quality, Contracts & Metadata
 - [ ] 08 Data Tests / Unit Tests / Freshness / Reconciliation
 - [ ] 09 Model Contracts / Versions / Change Safety
 - [ ] 10 Docs / Artifacts / Lineage / Metadata Integration
