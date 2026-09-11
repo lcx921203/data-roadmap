@@ -80,11 +80,15 @@
 - [x] Keep Join / Memory / Concurrency / FTE out of the early layers
 - [x] Use Stage 04 orders 12-16 without changing UI sorting
 
-### Next: V0.7.2 Trino Scan & Optimizer
-- [ ] 06 Scan / Pushdown / Iceberg Read Boundary
-- [ ] 07 Statistics / CBO / Join / Dynamic Filtering
+### V0.7.2 Trino Scan & Optimizer
+- [x] 06 Scan / Pushdown / Iceberg Read Boundary
+- [x] 07 Statistics / CBO / Join / Dynamic Filtering
+- [x] Separate Pruning from Pushdown
+- [x] Preserve Iceberg metadata ownership
+- [x] Explain Connector-specific pushdown boundary
+- [x] Freeze Statistics -> CBO -> Join -> Dynamic Filtering causal chain
 
-### V0.7.3 Trino Runtime Pressure & Reliability
+### Next: V0.7.3 Trino Runtime Pressure & Reliability
 - [ ] 08 Memory / Exchange / Large Query Pressure
 - [ ] 09 Concurrency / Queue / Resource Groups
 - [ ] 10 Fault-Tolerant Execution & Recovery

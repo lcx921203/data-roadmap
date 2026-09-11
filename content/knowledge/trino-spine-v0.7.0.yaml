@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: trino
 learning_depth: L5
-status: core_execution_model_partial
+status: scan_optimizer_partial
 product_boundary:
   previous_vertical: iceberg
   handoff_from:
@@ -310,6 +310,6 @@ freeze:
   reopen_structure_only_for:
   - verified_technical_error
   - proven_progression_break
-  body_status: partial_5_of_11
-  published_nodes: 5
-  remaining_nodes: 6
+  body_status: partial_7_of_11
+  published_nodes: 7
+  remaining_nodes: 4
