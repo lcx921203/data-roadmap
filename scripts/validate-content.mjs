@@ -119,8 +119,8 @@ for (const question of [
   mergedInterviewIds.add(question.id)
 }
 
-if (components?.status !== 'frozen' || components?.version !== '1.5') {
-  throw new Error('Design components-v1.yaml must remain frozen at V1.5')
+if (components?.status !== 'frozen' || components?.version !== '1.6') {
+  throw new Error('Design components-v1.yaml must remain frozen at V1.6')
 }
 
 const ids = new Set()
@@ -473,18 +473,29 @@ for (const id of ['iceberg-metadata-tree', 'iceberg-manifest-tree']) {
   }
 }
 
-const overviewDiagram = readText(
+const overviewKnowledge = readText(
   'content/knowledge/kb-iceberg-overview-001.md',
 )
-if (!overviewDiagram.includes('```diagram-iceberg-metadata-tree')) {
-  throw new Error('Iceberg overview must use the metadata diagram')
+if (overviewKnowledge.includes('```diagram-iceberg-metadata-tree')) {
+  throw new Error(
+    'Iceberg overview should use the concise text relationship chain, not the metadata diagram',
+  )
 }
 
-const manifestDiagram = readText(
+const manifestKnowledge = readText(
   'content/knowledge/kb-iceberg-manifest-tree-001.md',
 )
-if (!manifestDiagram.includes('```diagram-iceberg-manifest-tree')) {
-  throw new Error('Manifest knowledge must use the manifest diagram')
+if (manifestKnowledge.includes('```diagram-iceberg-manifest-tree')) {
+  throw new Error(
+    'Manifest knowledge should use the concise text relationship chain, not the manifest diagram',
+  )
+}
+if (
+  !manifestKnowledge.includes(
+    '1 个 Snapshot → 1 个 Manifest List → N 个 Manifest',
+  )
+) {
+  throw new Error('Manifest knowledge must keep the core quantity relationship')
 }
 
 const diagramCss = readText('src/styles/diagram-system-v1.css')
@@ -495,7 +506,7 @@ if (
   throw new Error('Technical Diagram CSS contract is incomplete')
 }
 
-console.log('Technical Diagram System V0.6.0.8 validation passed.')
+console.log('Technical Diagram capability validation passed.')
 
 
 const diagramFrameSource = readText(
@@ -541,7 +552,7 @@ if (
   throw new Error('Embedded Quick Answer diagram must flatten its outer frame')
 }
 
-console.log('Technical Diagram System V1.1 mobile refinement passed.')
+console.log('Technical Diagram optional capability validation passed.')
 
 console.log(
   `Content validation passed: ${taxonomy.stages.length} stages, ` +
@@ -549,5 +560,5 @@ console.log(
     `${curatedCount} curated answers, ` +
     `${spine.nodes.length} Iceberg L5 spine nodes, ` +
     `${scenarioFiles.length} hypothetical Iceberg Scale scenarios, ` +
-    `Design System V1.5 frozen.`,
+    `Design System V1.6 frozen.`,
 )

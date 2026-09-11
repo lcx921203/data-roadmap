@@ -31,12 +31,11 @@ scale_scenarios:
 
 Iceberg 是 **Table Format（表格式）**，不是 Parquet 的替代品。Parquet 解决“单个文件怎么存”，Iceberg 解决“一张表由哪些文件组成、当前版本是什么、如何提交、如何演进、如何让多个引擎看到一致的表状态”。
 
-一句话抓住主线：
+先只记住一条主链：
 
-```diagram-iceberg-metadata-tree
-```
+**Catalog → Table Metadata → Snapshot → Manifest List → Manifest → Data / Delete Files**
 
-Reader 读取的是某个已提交 Snapshot 所代表的稳定表状态，而不是临时去目录里猜“现在有哪些文件”。
+Reader 读取的是某个已提交 Snapshot 所代表的稳定表状态，而不是临时去目录里猜“现在有哪些文件”。这条主链先解决“表状态最终如何定位到真实数据文件”，后面的章节再逐层展开每一层为什么存在。
 
 ## 为什么需要它
 
@@ -68,8 +67,8 @@ Iceberg 的读写与运维可以沿下面这条链理解：
 
 ```text
 表状态
-→ Snapshot
-→ Manifest
+→ Table Metadata / Snapshot
+→ Manifest List / Manifest
 → Partition / Schema
 → Write Distribution / Ordering
 → Commit

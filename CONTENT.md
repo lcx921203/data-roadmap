@@ -2,15 +2,114 @@
 
 # DataRoadmap 内容选型与学习深度规范
 
-> Version: **1.1 / Interview Semantics Revision at V0.6.0.6**
+> Version: **1.2 / Content Clarity First at V0.6.0.10**
 
 ## 1. 内容总原则
 
-> **主栈深学，同类横向对比；生产实现优先，项目案例只写真实事实；完整规模训练进入 Scale Lab；面试题由真实面经校准。**
+> **内容正确性优先，知识结构优先；主栈深学，同类横向对比；生产实现优先，项目案例只写真实事实；完整规模训练进入 Scale Lab；面试题由真实面经校准。**
 
 DataRoadmap 不建设“大数据百科全书”。
 
-## 2. Learning Depth（学习深度）
+
+## 2. Content Clarity First（内容讲清楚优先）
+
+Knowledge 的首要目标不是“内容多”或“图多”，而是让学习者形成稳定、连续、可复述的知识模型。
+
+优先级：
+
+```text
+Correctness
+→ Knowledge Structure
+→ Causal / Dependency Order
+→ Completeness
+→ Presentation
+→ Decoration
+```
+
+其中 Presentation 包括 Diagram、Card、动效等；它们不能反过来驱动知识结构。
+
+### 一个概念，一个主讲位置
+
+每个核心概念必须有唯一的 Primary Teaching Location（主讲位置）。
+
+其他章节再次出现时，只允许：
+
+- 必要回顾；
+- 当前链路中的角色说明；
+- 明确的下一层深化；
+- 指向主讲位置的关联。
+
+禁止在多个章节重复从头讲同一套定义和机制。
+
+### 层层递进
+
+一个章节的新内容必须能回答：
+
+> 为什么现在学这个？
+
+推荐顺序：
+
+```text
+是什么 / 为什么需要
+→ 它和上一层什么关系
+→ 核心机制
+→ 生产问题
+→ 大规模放大后发生什么
+→ 治理 / 维护 / 排障
+```
+
+前置概念没有建立时，不提前塞入后续复杂机制。
+
+### 第一次讲清 vs 后续深化
+
+例如 Manifest：
+
+```text
+结构章节
+→ Manifest List / Manifest / Data File 的关系与职责
+
+写入章节
+→ 新 Commit 如何产生 / 复用 Manifest
+
+规模章节
+→ 为什么 Manifest 会越来越碎
+
+维护章节
+→ Merge / Rewrite 如何治理
+```
+
+这是递进，不是重复。
+
+### 去碎片化审计
+
+每次补充知识后，必须检查：
+
+- 是否与其他章节重复；
+- 是否应该移动到更合适的主讲位置；
+- 是否缺少前置概念；
+- 是否突然跳到后续机制；
+- 是否同一个结论在多个地方反复出现；
+- 是否存在“这里补一点、那里补一点”的碎片化结构。
+
+如果新增内容破坏主线，优先重组原内容，而不是继续追加一段。
+
+### 表达形式选择
+
+默认优先级：
+
+```text
+普通文字 / 一句话关系链
+→ 列表 / 表格
+→ 轻量结构表达
+→ Technical Diagram
+```
+
+只有当**非线性关系、并发分支、状态转换、多路径故障**无法用文字更清楚地表达时，才使用 Diagram。
+
+Diagram 是辅助工具，不是默认内容形态。
+
+
+## 4. Learning Depth（学习深度）
 
 ### L1 — Awareness｜了解
 知道是什么、定位和基本用途。
@@ -38,7 +137,7 @@ DataRoadmap 不建设“大数据百科全书”。
 
 L1–L5 表示 **Learning Depth（学习深度）**，不是“题目难度 1–5”。
 
-## 3. Stack Role
+## 4. Stack Role
 
 内部允许：
 
@@ -49,7 +148,7 @@ L1–L5 表示 **Learning Depth（学习深度）**，不是“题目难度 1–
 
 这些属于内容模型，不直接原样显示在前台。
 
-## 4. Production First
+## 5. Production First
 
 主栈知识优先回答：
 
@@ -62,7 +161,7 @@ L1–L5 表示 **Learning Depth（学习深度）**，不是“题目难度 1–
 7. 项目是否有真实锚点；
 8. 真实面试是否存在证据。
 
-## 5. Project Case
+## 6. Project Case
 
 固定区分：
 
@@ -76,7 +175,7 @@ Scale Extension
 
 不得把 Production Pattern 或 Scale Lab 写成真实个人经历。
 
-## 6. 顶级 Scale Lab
+## 7. 顶级 Scale Lab
 
 顶级导航 `Scale` 对应独立 **Production Scenario（生产场景）**。
 
@@ -104,7 +203,7 @@ Recovery
 
 这些 Scenario 必须保持 `hypothetical: true`，除非明确引用已核验真实项目事实。
 
-## 7. Interview 内的“规模追问”
+## 8. Interview 内的“规模追问”
 
 Interview Answer 中禁止再把局部规模扩展标题显示为 `Scale Lab`。
 
@@ -122,7 +221,7 @@ Interview Answer 中禁止再把局部规模扩展标题显示为 `Scale Lab`。
 
 如果内容值得完整展开，应建立独立 `sc-*` Scenario，并通过站内 Mapping 关联。
 
-## 8. Interview Bank
+## 9. Interview Bank
 
 Interview Bank 与 Knowledge Base 解耦。
 
@@ -141,7 +240,7 @@ Interview Bank 与 Knowledge Base 解耦。
 
 不得为了 Knowledge 完整性自动生成“高频面试题”。
 
-## 9. 关联追问与答案
+## 10. 关联追问与答案
 
 主问题的追问不能永久只放一个题目列表。
 
@@ -188,7 +287,7 @@ Interview Bank 与 Knowledge Base 解耦。
 
 V1 不使用 Runtime AI 临时生成追问答案。
 
-## 10. Answer Structure V1.1
+## 11. Answer Structure V1.1
 
 主问题推荐：
 
@@ -207,7 +306,7 @@ Production 实现
 
 Interview / Learn 两种阅读模式读取同一份内容源。
 
-## 11. Frontstage / Backstage Boundary
+## 12. Frontstage / Backstage Boundary
 
 前台不直接显示：
 

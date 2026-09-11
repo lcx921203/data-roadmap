@@ -1,5 +1,5 @@
-version: '1.5'
-frozen_at: 0.6.0.9
+version: '1.6'
+frozen_at: 0.6.0.10
 status: frozen
 viewport_baseline:
   width: 390
@@ -21,6 +21,9 @@ principles:
   diagram_relation_is_semantic: true
   embedded_diagram_avoids_nested_card: true
   diagram_palette_stable_within_domain: true
+  content_correctness_first: true
+  knowledge_structure_before_visualization: true
+  diagram_is_optional_secondary: true
 components:
 - id: app-shell
   status: frozen
@@ -142,6 +145,11 @@ components:
   - embedded_in_surface_flattens_outer_frame
   - caption_preferred_over_extra_callout
   - split_if_single_concept_becomes_too_tall
+  - not_default_learning_surface
+  - simple_linear_relation_prefers_text
+  - must_reduce_cognitive_load
+  - must_not_omit_key_constraints
+  usage_policy: exception_only_when_text_is_less_clear
 - id: diagram-node
   status: frozen
   rules:

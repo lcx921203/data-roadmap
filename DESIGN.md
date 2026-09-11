@@ -1,10 +1,10 @@
 # DataRoadmap Design System
 
-> Version: **1.5 / Diagram Mobile Refinement at V0.6.0.9**
+> Version: **1.6 / Content Clarity First at V0.6.0.10**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
-V1.5 在 V1.4 Technical Diagram System 上完成首轮 iPhone Safari 实测精修：降低移动端纵向密度、明确一对多方向、减少嵌套卡片感，并冻结 Diagram Relation Grammar（图表关系语法）。
+V1.6 保留 Technical Diagram 作为可选能力，但将内容正确性与知识结构提升为最高优先级。Diagram 只有在明显降低理解成本时才使用，不能为了视觉丰富而增加认知负担。
 
 ```text
 Content is the interface.
@@ -347,25 +347,26 @@ Continue Learning
 
 ## 19. Technical Diagram System
 
-Technical Diagram 用于表达文本难以直观说明的：
+Technical Diagram 是 **Secondary Learning Aid（次级学习辅助）**。
+
+使用前必须先问：
+
+> 不画图，能不能用一句话关系链或短文本更快、更完整地讲清楚？
+
+如果能，默认不用图。
+
+只有下列关系在文字中明显变得难以追踪时，才使用 Technical Diagram：
 
 ```text
-Hierarchy
-Flow
-Branch
-Dependency
-Read / Write Path
+Non-linear Branch
+Concurrent Flow
 State Transition
+Retry / Rollback
+Many-to-Many Dependency
+Complex Read / Write Path
 ```
 
-优先适用于：
-
-- Iceberg Metadata / Snapshot / Manifest；
-- CDC 链路；
-- Spark / Flink 执行与状态流；
-- Data Governance 血缘；
-- Agent Router / Planner / Executor；
-- Serving / Semantic 数据路径。
+像 `Snapshot → Manifest List → N Manifest → M Data Files` 这种简单线性层级，优先直接用文字关系链，而不是大图。
 
 ### Mobile-first
 
@@ -643,3 +644,27 @@ Production Pattern / Scale / Curated Extension 不得自动变成真实项目经
 - Diagram Mobile Density；
 - Diagram Relation Grammar；
 - Embedded Diagram flattening。
+
+
+## 24. Learning Clarity over Visualization
+
+用户学习页面遵循：
+
+```text
+Correctness
+→ Knowledge Structure
+→ Reading Flow
+→ Visual Aid
+```
+
+规则：
+
+- 图不能成为理解某知识点的唯一入口；
+- 图不能遗漏正文中的关键限制条件；
+- 图如果需要大量解释才能读懂，应优先改回文字；
+- 简单层级关系优先一句话链路；
+- 复杂非线性关系才考虑 Diagram；
+- 删除不产生明显认知收益的图；
+- 视觉丰富度不是 Knowledge 页 KPI。
+
+当前 Iceberg `Metadata Tree` 与 `Manifest Tree` 两张图从前台正文移除，保留 Diagram 能力作为后续复杂场景的可选工具。

@@ -83,7 +83,7 @@ DESIGN.md
 content/design/components-v1.yaml
 ```
 
-当前：Design System V1.5。
+当前：Design System V1.6。
 
 核心：
 
@@ -115,7 +115,7 @@ GitHub Pages
 
 ## Technical Diagram rules
 
-技术结构、流程、分支关系优先考虑 Diagram，不使用黑色 CodeBlock 模拟图。
+Technical Diagram 是可选辅助能力，不是默认表达方式。先尝试用普通文字、关系链、列表或表格讲清楚；只有复杂非线性关系使用 Diagram。仍然禁止用黑色 CodeBlock 模拟普通结构图。
 
 Markdown Directive：
 
@@ -149,3 +149,38 @@ Markdown Directive：
 - Mobile 主节点约 52–56px，Arrow Gap 约 30–34px；
 - 单概念图过长时优先拆图，不能靠无限缩小字体解决；
 - 同一技术域相同语义节点跨图保持同一颜色。
+
+
+## Knowledge Structure Audit
+
+每次补充 Knowledge 后必须同时审计：
+
+1. Correctness：事实和机制是否准确；
+2. Primary Teaching Location：概念是否只有一个主讲位置；
+3. Prerequisite Order：前置概念是否先出现；
+4. Progressive Depth：是否从结构 → 机制 → 问题 → 治理逐层深化；
+5. Duplication：是否在多个章节重复从头讲；
+6. Fragmentation：是否变成“这里补一点、那里补一点”；
+7. Transition：章节是否能回答“为什么现在学这个”；
+8. Presentation：Diagram / CodeBlock 是否真的比文字更清楚。
+
+优先级：
+
+```text
+内容正确
+→ 知识结构完整
+→ 因果与前置顺序
+→ 内容完整度
+→ UI / Diagram
+```
+
+简单关系，例如：
+
+```text
+1 Snapshot
+→ 1 Manifest List
+→ N Manifest
+→ M Data / Delete Files
+```
+
+直接用文字关系链，不使用大 Diagram。
