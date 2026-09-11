@@ -263,13 +263,23 @@
 - [x] Keep Artifact schemas version-sensitive
 - [x] Preserve DataHub enterprise-governance ownership
 
-### Next: V0.9.4 dbt CI & Production Closure
-- [ ] 11 Selection / State / Defer / CI
-- [ ] 12 Production Troubleshooting / Cost / Orchestration Boundary
-- [ ] Knowledge progression audit
-- [ ] Technical correctness audit
+### V0.9.4 dbt CI & Production Closure
+- [x] 11 Selection / State / Defer / CI
+- [x] 12 Production Troubleshooting / Cost / Orchestration Boundary
+- [x] Separate node selection from graph expansion
+- [x] Teach classic Artifact-based state separately from managed dbt State Preview
+- [x] Freeze state:modified as Manifest comparison, not Git-diff shorthand
+- [x] Freeze defer as ref-resolution fallback, not data copy
+- [x] Preserve idempotence as a State / Defer prerequisite
+- [x] Separate Parse / Compile / Database Execute / Materialization / Incremental failure domains
+- [x] Treat Full Refresh as a production change, not a generic retry
+- [x] Tie dbt concurrency to target-platform capacity
+- [x] Preserve dbt Core / dbt Platform / Dagster orchestration boundaries
+- [x] Knowledge progression audit
+- [x] Technical correctness audit
+- [x] Freeze dbt Learn V1 at 12 / 12
 
-### V0.9.5 dbt Scale & Interview Integration
+### Next: V0.9.5 dbt Scale & Interview Integration
 - [ ] Create only justified hypothetical dbt Scale scenarios
 - [ ] Map only existing evidence-backed Interview questions
 - [ ] Do not invent dbt-specific frequency

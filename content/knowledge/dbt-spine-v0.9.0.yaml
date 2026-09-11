@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '05'
 topic: dbt
 learning_depth: L5
-status: quality_contracts_metadata_partial
+status: learn_v1_complete_pending_scale_interview
 technical_baseline:
   validation_date: '2026-09-11'
   stable_production_track: dbt Core v1.12.2
@@ -371,7 +371,7 @@ nodes:
   - claim_demo_scale_as_project_production_evidence
   handoff_to: scale_and_interview_integration
 freeze:
-  body_written: false
+  body_written: true
   ui_changes: false
   scale_scenarios_written: false
   interview_answers_written: false
@@ -381,6 +381,8 @@ freeze:
   - verified_technical_error
   - proven_progression_break
   - major_stable_dbt_v2_semantic_change_before_body_publication
-  body_status: partial_10_of_12
-  published_nodes: 10
-  remaining_nodes: 2
+  body_status: complete_12_of_12
+  published_nodes: 12
+  remaining_nodes: 0
+  progression_audit: passed_v0.9.4
+  technical_correctness_audit: passed_v0.9.4
