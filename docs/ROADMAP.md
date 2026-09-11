@@ -39,7 +39,7 @@
 - [x] Detail-page Foundation
 - [x] Close V0.5 milestone
 
-## V0.6 First Vertical Slice
+## V0.6 First Vertical Slice — Iceberg
 
 ### V0.6.0 - V0.6.6 Iceberg Content Loop
 - [x] Iceberg Learn V1
@@ -50,42 +50,58 @@
 - [x] Freeze Iceberg V1 content loop
 
 ### V0.6.7 UI Review & Polish
-
-#### V0.6.7.1 Reading & Navigation Foundation
 - [x] Reading Directory
-- [x] One-hand directory interaction
-- [x] Left-edge draggable directory control
-- [x] Right-side reading drawer
-- [x] Contextual section relations
-- [x] Bottom navigation separation
-
-#### V0.6.7.2 Three-Tab Page Review
-- [x] Identify over-structuring
-- [x] Restore Learn / Stage / Interview presentation
-- [x] Keep continuity as a content-first principle
-
-#### V0.6.7.2.1 Scale Hierarchy Correction
-- [x] Domain -> Training Theme -> Scenario
-- [x] Scale navigation taxonomy
-- [x] Lakehouse training themes
-- [x] Future-only domain filter
-- [x] Future-only Sticky Domain context
-
-#### V0.6.7.3 UI Conformance & Freeze
-- [x] 390px full-path review
-- [x] iOS Safe Area review
-- [x] Left-hand one-thumb reach review
-- [x] Sticky header collision review
-- [x] Touch Target review
-- [x] Typography / spacing token conformance
-- [x] Cross-link priority review
-- [x] Isolate legacy Projects frontstage source
-- [x] Normalize Desktop Scale naming
-- [x] Fix future multi-domain page-padding token
-- [x] Consolidate Design System V1.9
+- [x] One-hand reading interaction
+- [x] Contextual relations
+- [x] Scale hierarchy correction
+- [x] UI conformance
 - [x] Freeze Iceberg V1 UI
 
-### Next
-- [ ] Select next technology vertical slice
-- [ ] Reuse frozen Learn / Interview / Scale contract
-- [ ] Keep Iceberg frozen unless a verified bug is found
+## V0.7 Second Vertical Slice — Trino
+
+### V0.7.0 Trino Knowledge Spine Freeze
+- [x] Keep Trino in Stage 04 / L5 Core
+- [x] Freeze 11-node causal knowledge spine
+- [x] Freeze responsibilities for every node
+- [x] Freeze prerequisites and handoffs
+- [x] Freeze explicit must-not-cover boundaries
+- [x] Freeze Iceberg / Trino responsibility boundary
+- [x] Register current evidence-backed Interview seeds
+- [x] Keep UI unchanged
+- [x] Keep all article bodies unwritten
+
+### Next: V0.7.1 Trino Core Execution Model
+- [ ] 01 Trino Overview & System Mental Model
+- [ ] 02 Coordinator / Worker & Query Lifecycle
+- [ ] 03 Catalog / Connector / SPI Boundary
+- [ ] 04 SQL to Logical / Distributed Plan
+- [ ] 05 Stage / Task / Split / Driver / Operator
+
+### V0.7.2 Trino Scan & Optimizer
+- [ ] 06 Scan / Pushdown / Iceberg Read Boundary
+- [ ] 07 Statistics / CBO / Join / Dynamic Filtering
+
+### V0.7.3 Trino Runtime Pressure & Reliability
+- [ ] 08 Memory / Exchange / Large Query Pressure
+- [ ] 09 Concurrency / Queue / Resource Groups
+- [ ] 10 Fault-Tolerant Execution & Recovery
+
+### V0.7.4 Trino Production Closure
+- [ ] 11 Observability / Troubleshooting / Capacity
+- [ ] Knowledge progression audit
+- [ ] Technical correctness audit
+
+### V0.7.5 Trino Scale & Interview Integration
+- [ ] Create only justified hypothetical Scale scenarios
+- [ ] Map existing evidence-backed Interview questions
+- [ ] Do not invent Trino-specific frequency
+- [ ] Add contextual cross-tab relations
+
+### V0.7.6 Trino Vertical Slice Freeze
+- [ ] Three-tab closure audit
+- [ ] Mobile reading audit
+- [ ] Freeze Trino V1
+
+### Product Rule
+- [x] Keep Iceberg frozen unless a verified bug is found
+- [x] Reuse frozen Learn / Interview / Scale UI contract

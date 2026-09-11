@@ -1,0 +1,313 @@
+version: 0.7.0
+type: knowledge_spine
+stage_id: '04'
+topic: trino
+learning_depth: L5
+status: frozen_structure_no_body
+
+product_boundary:
+  previous_vertical: iceberg
+  handoff_from:
+    - kb-iceberg-trino-read-path-001
+  iceberg_owns:
+    - snapshot_and_table_state
+    - manifest_tree
+    - partition_and_schema_evolution
+    - delete_applicability
+    - candidate_file_selection_semantics
+  trino_owns:
+    - query_engine_architecture
+    - connector_boundary
+    - query_planning
+    - distributed_execution
+    - scan_and_pushdown
+    - join_and_optimizer
+    - memory_and_exchange
+    - workload_concurrency
+    - fault_tolerant_execution
+    - observability_and_capacity
+  rule: Do not reteach Iceberg internals inside the Trino vertical.
+
+content_principles:
+  progression: causal
+  content_first_continuity: true
+  avoid_fragmentation: true
+  modern_trino_only: true
+  project_actual: backstage_only
+  production_pattern: publishable_as_knowledge
+  scale_lab: hypothetical_only
+  interview_frequency: evidence_only
+
+interview_seed_ids:
+  - iq-olap-engine-selection-001
+  - iq-sql-performance-plan-index-001
+
+interview_policy:
+  mapping_means_relevance_not_trino_frequency: true
+  do_not_create_fake_trino_specific_frequency: true
+
+nodes:
+  - order: 1
+    id: kb-trino-overview-001
+    title: Trino Overview & System Mental Model
+    title_cn: Trino 总览与核心心智模型
+    responsibility: >
+      建立 Trino 是分布式 SQL Query Engine 而不是存储系统/数据库的核心心智模型，
+      串起 Client → Coordinator → Connector → Worker → Result 的全链路。
+    prerequisites: []
+    must_explain:
+      - what_trino_is_and_is_not
+      - federated_query_engine_positioning
+      - coordinator_worker_connector_high_level_chain
+      - interactive_query_engine_strengths_and_boundaries
+    must_not_cover:
+      - connector_spi_details
+      - optimizer_rules
+      - stage_task_split_runtime_details
+      - iceberg_metadata_tree
+      - resource_group_configuration
+    handoff_to: kb-trino-query-lifecycle-001
+
+  - order: 2
+    id: kb-trino-query-lifecycle-001
+    title: Coordinator, Worker & Query Lifecycle
+    title_cn: Coordinator、Worker 与 Query Lifecycle
+    responsibility: >
+      解释 SQL 从提交到完成的生命周期，以及 Coordinator 与 Worker 的职责边界，
+      为后面的 Planning 与 Execution 建立运行骨架。
+    prerequisites:
+      - kb-trino-overview-001
+    must_explain:
+      - coordinator_responsibility
+      - worker_responsibility
+      - query_state_lifecycle
+      - scheduling_high_level
+      - result_return_path
+    must_not_cover:
+      - connector_spi_contract
+      - logical_optimizer_rules
+      - join_distribution_decisions
+      - resource_groups
+      - fault_tolerant_execution_details
+    handoff_to: kb-trino-catalog-connector-spi-001
+
+  - order: 3
+    id: kb-trino-catalog-connector-spi-001
+    title: Catalog, Connector & SPI Boundary
+    title_cn: Catalog、Connector 与 SPI 边界
+    responsibility: >
+      回答 Trino 自己不存数据时如何访问 Iceberg、Hive、MySQL 等外部系统，
+      明确 Catalog、Connector 与 SPI 在 Metadata、Statistics、Split 和读写能力中的边界。
+    prerequisites:
+      - kb-trino-query-lifecycle-001
+    must_explain:
+      - catalog_to_connector_binding
+      - connector_as_translation_layer
+      - metadata_and_statistics_contract
+      - split_enumeration_boundary
+      - pushdown_capability_boundary
+    must_not_cover:
+      - iceberg_snapshot_manifest_details
+      - connector_source_code_deep_dive
+      - distributed_plan_generation
+      - join_tuning
+    handoff_to: kb-trino-query-planning-001
+
+  - order: 4
+    id: kb-trino-query-planning-001
+    title: SQL to Logical & Distributed Plan
+    title_cn: 从 SQL 到 Distributed Plan
+    responsibility: >
+      解释 Parser / Analyzer / Planner / Optimizer 如何把 SQL 变成 Logical Plan，
+      再变成可以跨 Worker 执行的 Distributed Plan。
+    prerequisites:
+      - kb-trino-catalog-connector-spi-001
+    must_explain:
+      - parser_and_ast
+      - analyzer_and_type_resolution
+      - metadata_lookup
+      - logical_plan
+      - optimizer_high_level
+      - distributed_plan
+      - explain_as_observation_tool
+    must_not_cover:
+      - detailed_stage_task_runtime
+      - cost_based_join_enumeration_deep_dive
+      - memory_pressure
+      - resource_groups
+    handoff_to: kb-trino-stage-task-split-001
+
+  - order: 5
+    id: kb-trino-stage-task-split-001
+    title: Stage, Task, Split, Driver & Operator
+    title_cn: Stage、Task、Split、Driver 与 Operator
+    responsibility: >
+      把 Distributed Plan 落到真正的执行单元，解释 Stage DAG、Task、Split、
+      Driver、Operator 之间的层级和并行关系。
+    prerequisites:
+      - kb-trino-query-planning-001
+    must_explain:
+      - stage_dag
+      - task_per_worker_execution
+      - split_as_source_work_unit
+      - driver_and_operator_pipeline
+      - intra_node_and_inter_node_parallelism
+    must_not_cover:
+      - cbo_join_selection
+      - resource_group_queueing
+      - iceberg_delete_applicability
+      - production_capacity_calculation
+    handoff_to: kb-trino-scan-pushdown-001
+
+  - order: 6
+    id: kb-trino-scan-pushdown-001
+    title: Scan, Pushdown & Iceberg Read Boundary
+    title_cn: Scan、Pushdown 与 Iceberg Read Boundary
+    responsibility: >
+      从 Trino 视角解释 Connector 如何枚举 Split、应用 Predicate / Projection /
+      Partition / File Pruning 与 Pushdown，并明确与 Iceberg Read Path 的职责边界。
+    prerequisites:
+      - kb-trino-stage-task-split-001
+    external_prerequisites:
+      - kb-iceberg-trino-read-path-001
+    must_explain:
+      - split_enumeration
+      - predicate_pushdown
+      - projection_pushdown
+      - partition_and_file_pruning_boundary
+      - connector_vs_engine_filtering
+      - worker_scan_path
+    must_not_cover:
+      - snapshot_manifest_delete_semantics
+      - re_explain_iceberg_partition_evolution
+      - join_distribution
+      - resource_groups
+    handoff_to: kb-trino-cbo-join-dynamic-filtering-001
+
+  - order: 7
+    id: kb-trino-cbo-join-dynamic-filtering-001
+    title: Statistics, CBO, Join & Dynamic Filtering
+    title_cn: Statistics、CBO、Join 与 Dynamic Filtering
+    responsibility: >
+      解释 Statistics 如何影响 Cost-Based Optimizer，进而影响 Join Order、
+      Build / Probe、Broadcast / Partitioned Join，以及 Dynamic Filtering 如何反向减少 Scan。
+    prerequisites:
+      - kb-trino-scan-pushdown-001
+    must_explain:
+      - table_and_column_statistics
+      - cost_based_optimizer
+      - join_order
+      - build_probe
+      - broadcast_vs_partitioned_join
+      - dynamic_filtering
+      - wrong_statistics_failure_mode
+    must_not_cover:
+      - full_memory_management_model
+      - resource_group_policy
+      - fault_tolerant_execution
+      - generic_sql_index_tuning_as_if_trino_owned_indexes
+    handoff_to: kb-trino-memory-exchange-pressure-001
+
+  - order: 8
+    id: kb-trino-memory-exchange-pressure-001
+    title: Memory, Exchange & Large Query Pressure
+    title_cn: Memory、Exchange 与大查询压力
+    responsibility: >
+      解释 Join / Aggregate / Sort / Window 为什么消耗内存，
+      Exchange 为什么产生跨节点数据移动，以及大查询如何形成 Memory、Network、Skew 与 Spill 压力。
+    prerequisites:
+      - kb-trino-cbo-join-dynamic-filtering-001
+    must_explain:
+      - operator_memory_pressure
+      - exchange_and_shuffle_like_data_movement
+      - partition_skew
+      - user_vs_system_memory_boundary_at_concept_level
+      - spill_mechanism_and_cost
+      - why_spill_is_not_default_modern_solution
+    must_not_cover:
+      - treat_spill_as_primary_recovery_strategy
+      - workload_queueing
+      - fte_task_retry_details
+      - full_capacity_model
+    handoff_to: kb-trino-concurrency-resource-groups-001
+
+  - order: 9
+    id: kb-trino-concurrency-resource-groups-001
+    title: Concurrency, Queue & Resource Groups
+    title_cn: Concurrency、Queue 与 Resource Group
+    responsibility: >
+      从单 Query 扩展到多 Query，解释并发、排队、资源隔离、优先级与
+      Resource Group 如何保护交互式查询和不同租户/工作负载。
+    prerequisites:
+      - kb-trino-memory-exchange-pressure-001
+    must_explain:
+      - concurrent_query_pressure
+      - queueing
+      - resource_group_hierarchy
+      - concurrency_limits
+      - workload_isolation
+      - interactive_vs_batch_tradeoff
+    must_not_cover:
+      - re_teach_join_algorithms
+      - connector_internals
+      - task_retry_mechanics
+      - final_capacity_formula
+    handoff_to: kb-trino-fault-tolerant-execution-001
+
+  - order: 10
+    id: kb-trino-fault-tolerant-execution-001
+    title: Fault-Tolerant Execution & Recovery
+    title_cn: Fault-Tolerant Execution 与失败恢复
+    responsibility: >
+      解释 Query Retry 与 Task Retry、Exchange Manager、中间结果持久化和 Worker Failure
+      的恢复边界，并区分交互式低延迟模式与更重的容错执行模式。
+    prerequisites:
+      - kb-trino-concurrency-resource-groups-001
+    must_explain:
+      - retry_policy_none_query_task
+      - query_retry_vs_task_retry
+      - exchange_manager_role
+      - intermediate_exchange_spooling
+      - worker_failure_recovery
+      - overhead_and_workload_fit
+    must_not_cover:
+      - claim_retry_is_free
+      - confuse_fte_with_spill
+      - imply_all_connectors_have_identical_fte_behavior
+      - production_incident_runbook
+    handoff_to: kb-trino-production-troubleshooting-001
+
+  - order: 11
+    id: kb-trino-production-troubleshooting-001
+    title: Observability, Troubleshooting & Capacity
+    title_cn: Observability、Troubleshooting 与 Capacity
+    responsibility: >
+      把前 10 节重新串成生产排障链，区分 Planning、Scan、Join/Exchange、Memory、
+      Queue/Concurrency 与 Failure 瓶颈，并建立容量和 SLO 思维。
+    prerequisites:
+      - kb-trino-fault-tolerant-execution-001
+    must_explain:
+      - planning_vs_execution_latency
+      - scan_bytes_and_split_health
+      - join_and_exchange_bottlenecks
+      - memory_and_skew_signals
+      - queue_and_resource_group_signals
+      - failure_and_retry_signals
+      - query_observability
+      - capacity_dimensions
+      - cost_tradeoffs
+    must_not_cover:
+      - introduce_new_core_engine_mechanisms
+      - generic_checklist_without_causal_diagnosis
+      - claim_demo_runtime_production_evidence
+    handoff_to: scale_and_interview_integration
+
+freeze:
+  body_written: false
+  ui_changes: false
+  scale_scenarios_written: false
+  interview_answers_written: false
+  structure_frozen: true
+  reopen_structure_only_for:
+    - verified_technical_error
+    - proven_progression_break
