@@ -394,12 +394,26 @@
 - [x] Keep physical Serving architecture in Stage 09
 - [x] Keep green Light / Dark palette frozen
 
-### Next: V1.0.4 MetricFlow Production Closure
-- [ ] 12 Production Quality / Reconciliation / Semantic Operations
-- [ ] Knowledge progression audit
-- [ ] Technical correctness audit
+### V1.0.4 MetricFlow Production Closure
+- [x] 12 Production Quality / Reconciliation / Semantic Operations
+- [x] Freeze upstream dbt -> semantic definition -> join -> time -> SQL -> engine -> cache/export -> consumer -> reconciliation troubleshooting chain
+- [x] Separate data error from semantic-definition error
+- [x] Separate semantic complexity from target-engine runtime pressure
+- [x] Separate Validation from business Reconciliation
+- [x] Treat Metric Time as part of the business contract
+- [x] Use Generated SQL / Dataflow Plan as the semantic/runtime boundary
+- [x] Separate Result Cache / Declarative Cache / Export freshness concerns
+- [x] Record current declarative-cache security-context caveat as platform/version-sensitive
+- [x] Preserve MetricFlow / DataHub governance boundary
+- [x] Preserve MetricFlow / Stage 09 serving boundary
+- [x] Preserve MetricFlow / Stage 10 Agent runtime boundary
+- [x] Keep current platform-support matrix version-sensitive; do not infer Trino support
+- [x] Knowledge progression audit
+- [x] Technical correctness audit
+- [x] Freeze MetricFlow Learn V1 at 12 / 12
+- [x] Keep UI / green Light-Dark palette frozen
 
-### V1.0.5 MetricFlow Scale & Interview Integration
+### Next: V1.0.5 MetricFlow Scale & Interview Integration
 - [ ] Add only justified hypothetical Semantic Layer Scale scenarios
 - [ ] Map only existing evidence-backed Interview questions
 - [ ] Do not invent MetricFlow-specific frequency
