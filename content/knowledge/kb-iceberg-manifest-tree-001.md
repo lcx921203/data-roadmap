@@ -33,11 +33,11 @@ related:
 
 再记住两个限制：
 
-**一个 Manifest 只追踪 Data 或 Deletes 其中一种 Content。**
+**一个 Manifest 要么是 Data Manifest，要么是 Delete Manifest，只追踪一种 Content。**
 
 **一个 Manifest 只对应一个 Partition Spec，但可以覆盖这个 Spec 下多个 Partition Value。**
 
-Manifest 写出后是不可变的。
+Manifest 写出后就是不可变文件。
 
 ## Manifest List 负责什么
 
@@ -122,7 +122,7 @@ Manifest List + Manifest 两层主要带来两个价值：
 
 ## Manifest 为什么不是“写满再切”
 
-Manifest 一旦写出就是不可变文件。
+Manifest 写出后就是不可变文件。
 
 因此旧 Manifest 即使远小于 8 MB，下一次 Commit 也不会把它重新打开继续追加。
 
