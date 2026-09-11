@@ -16,6 +16,7 @@ import './styles/three-tab-product.css'
 import './styles/scale-detail-v1.css'
 import './styles/interview-integration-v1.css'
 import './styles/cross-navigation-v1.css'
+import './styles/reading-navigation-v1.7.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

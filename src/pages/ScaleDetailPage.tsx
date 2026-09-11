@@ -1,11 +1,19 @@
+import { useMemo, useState } from 'react'
+import { DirectoryIcon } from '../components/Icons'
+import { ReadingDirectorySheet } from '../components/ReadingDirectorySheet'
 import { RelatedInterviewSection } from '../components/RelatedInterviewSection'
 import { RelatedKnowledgeSection } from '../components/RelatedKnowledgeSection'
 import { TopBar } from '../components/TopBar'
 import { appRegistry } from '../content/registry'
+import { useActiveReadingSection } from '../hooks/useActiveReadingSection'
 import type {
   ScaleScenarioDetailItem,
   ScaleScenarioParameter,
 } from '../types/content'
+import {
+  makeDetailItemId,
+  type ReadingDirectoryItem,
+} from '../utils/readingDirectory'
 
 function DetailSection({
   id,
@@ -22,8 +30,12 @@ function DetailSection({
     <section className="scale-detail__section" id={id}>
       <h2>{title}</h2>
       <div className="scale-detail__list">
-        {items.map((item) => (
-          <article className="scale-detail__item" key={item.title}>
+        {items.map((item, index) => (
+          <article
+            className="scale-detail__item"
+            id={makeDetailItemId(id, index)}
+            key={item.title}
+          >
             <h3>{item.title}</h3>
             <p>{item.body}</p>
           </article>
@@ -48,7 +60,10 @@ function ParameterSection({
       <h2>场景参数</h2>
       <dl className="scale-parameters">
         {items.map((item) => (
-          <div className="scale-parameters__row" key={item.label}>
+          <div
+            className="scale-parameters__row"
+            key={item.label}
+          >
             <dt>{item.label}</dt>
             <dd>{item.value}</dd>
           </div>
@@ -58,20 +73,105 @@ function ParameterSection({
   )
 }
 
-const sectionLinks = [
-  ['scale-section-parameters', '场景参数'],
-  ['scale-section-constraints', '约束'],
-  ['scale-section-failures', '瓶颈与故障'],
-  ['scale-section-design', '设计'],
-  ['scale-section-tradeoffs', '权衡'],
-  ['scale-section-observability', '可观测性'],
-  ['scale-section-cost', '成本'],
-  ['scale-section-recovery', '恢复'],
-] as const
+function appendDetailItems(
+  target: ReadingDirectoryItem[],
+  sectionId: string,
+  title: string,
+  items?: ScaleScenarioDetailItem[],
+) {
+  if (!items?.length) return
+
+  target.push({
+    id: sectionId,
+    label: title,
+    level: 2,
+  })
+
+  items.forEach((item, index) => {
+    target.push({
+      id: makeDetailItemId(sectionId, index),
+      label: item.title,
+      level: 3,
+    })
+  })
+}
 
 export function ScaleDetailPage({ id }: { id: string }) {
   const scenario =
-    appRegistry.scaleScenarios.find((item) => item.id === id) ?? null
+    appRegistry.scaleScenarios.find((item) => item.id === id) ??
+    null
+  const [directoryOpen, setDirectoryOpen] = useState(false)
+
+  const directoryItems = useMemo<ReadingDirectoryItem[]>(() => {
+    if (!scenario) return []
+
+    const items: ReadingDirectoryItem[] = []
+
+    if (scenario.quick_answer) {
+      items.push({
+        id: 'scale-section-quick',
+        label: '先抓住主线',
+        level: 2,
+      })
+    }
+
+    if (scenario.parameters?.length) {
+      items.push({
+        id: 'scale-section-parameters',
+        label: '场景参数',
+        level: 2,
+      })
+    }
+
+    appendDetailItems(
+      items,
+      'scale-section-constraints',
+      '约束',
+      scenario.constraints,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-failures',
+      '瓶颈与故障',
+      scenario.failure_bottlenecks,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-design',
+      '设计',
+      scenario.design,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-tradeoffs',
+      '权衡',
+      scenario.tradeoffs,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-observability',
+      '可观测性',
+      scenario.observability,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-cost',
+      '成本',
+      scenario.cost,
+    )
+    appendDetailItems(
+      items,
+      'scale-section-recovery',
+      '恢复',
+      scenario.recovery,
+    )
+
+    return items
+  }, [scenario])
+
+  const activeSectionId = useActiveReadingSection(
+    directoryItems.map((item) => item.id),
+  )
 
   if (!scenario) {
     return (
@@ -87,43 +187,44 @@ export function ScaleDetailPage({ id }: { id: string }) {
     )
   }
 
-  const visibleSections = sectionLinks.filter(([sectionId]) => {
-    if (sectionId === 'scale-section-parameters') {
-      return Boolean(scenario.parameters?.length)
-    }
-    if (sectionId === 'scale-section-constraints') {
-      return Boolean(scenario.constraints?.length)
-    }
-    if (sectionId === 'scale-section-failures') {
-      return Boolean(scenario.failure_bottlenecks?.length)
-    }
-    if (sectionId === 'scale-section-design') {
-      return Boolean(scenario.design?.length)
-    }
-    if (sectionId === 'scale-section-tradeoffs') {
-      return Boolean(scenario.tradeoffs?.length)
-    }
-    if (sectionId === 'scale-section-observability') {
-      return Boolean(scenario.observability?.length)
-    }
-    if (sectionId === 'scale-section-cost') {
-      return Boolean(scenario.cost?.length)
-    }
-    return Boolean(scenario.recovery?.length)
-  })
-
   return (
     <>
-      <TopBar title="Scale" backHref="/scale" />
+      <TopBar
+        title="Scale"
+        backHref="/scale"
+        action={
+          directoryItems.length > 0 ? (
+            <button
+              className="top-bar__directory-action"
+              type="button"
+              onClick={() => setDirectoryOpen(true)}
+            >
+              <DirectoryIcon />
+              <span>目录</span>
+            </button>
+          ) : null
+        }
+      />
 
       <article className="page reading-page scale-detail">
         <p className="eyebrow">
-          {scenario.domain === 'lakehouse' ? '湖仓' : '生产场景'} · 规模化训练
+          {scenario.domain === 'lakehouse'
+            ? '湖仓'
+            : '生产场景'}{' '}
+          · 规模化训练
         </p>
 
         <h1>{scenario.title_cn ?? scenario.title}</h1>
 
-        {scenario.summary && <p className="page-lead">{scenario.summary}</p>}
+        {scenario.summary && (
+          <p className="page-lead">{scenario.summary}</p>
+        )}
+
+        {scenario.display_tags?.length ? (
+          <p className="detail-metadata-line">
+            {scenario.display_tags.join(' · ')}
+          </p>
+        ) : null}
 
         {scenario.hypothetical && (
           <p className="scale-detail__truth">
@@ -131,38 +232,18 @@ export function ScaleDetailPage({ id }: { id: string }) {
           </p>
         )}
 
-        {visibleSections.length > 0 && (
-          <nav className="quick-navigation" aria-label="本页快速导航">
-            {visibleSections.map(([sectionId, label]) => (
-              <a
-                key={sectionId}
-                href={`#${sectionId}`}
-                onClick={(event) => {
-                  event.preventDefault()
-                  document.getElementById(sectionId)?.scrollIntoView({
-                    block: 'start',
-                    behavior: window.matchMedia(
-                      '(prefers-reduced-motion: reduce)',
-                    ).matches
-                      ? 'auto'
-                      : 'smooth',
-                  })
-                }}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-        )}
-
         {scenario.quick_answer && (
-          <section className="scale-detail__quick">
+          <section
+            className="scale-detail__quick"
+            id="scale-section-quick"
+          >
             <h2>先抓住主线</h2>
             <p>{scenario.quick_answer}</p>
           </section>
         )}
 
         <ParameterSection items={scenario.parameters} />
+
         <DetailSection
           id="scale-section-constraints"
           title="约束"
@@ -202,6 +283,13 @@ export function ScaleDetailPage({ id }: { id: string }) {
         <RelatedKnowledgeSection ids={scenario.knowledge} />
         <RelatedInterviewSection ids={scenario.interviews} />
       </article>
+
+      <ReadingDirectorySheet
+        open={directoryOpen}
+        items={directoryItems}
+        activeId={activeSectionId}
+        onClose={() => setDirectoryOpen(false)}
+      />
     </>
   )
 }

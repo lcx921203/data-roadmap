@@ -1,13 +1,17 @@
 import type { ReactNode } from 'react'
 import { CodeBlock } from './CodeBlock'
 import { TechnicalDiagram } from './TechnicalDiagram'
+import { makeSubheadingId } from '../utils/readingDirectory'
 
 interface MarkdownBlocksProps {
   markdown: string
+  headingPrefix?: string
 }
 
 function inline(text: string): ReactNode[] {
-  const tokens = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).filter(Boolean)
+  const tokens = text
+    .split(/(\*\*[^*]+\*\*|`[^`]+`)/g)
+    .filter(Boolean)
 
   return tokens.map((token, index) => {
     if (token.startsWith('**') && token.endsWith('**')) {
@@ -33,10 +37,14 @@ function isBoundary(line: string): boolean {
   )
 }
 
-export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
+export function MarkdownBlocks({
+  markdown,
+  headingPrefix,
+}: MarkdownBlocksProps) {
   const lines = markdown.split('\n')
   const blocks: ReactNode[] = []
   let i = 0
+  let h3Index = 0
 
   while (i < lines.length) {
     const line = lines[i]
@@ -51,10 +59,12 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
       const language = fence[1] || 'text'
       const code: string[] = []
       i += 1
+
       while (i < lines.length && !/^```\s*$/.test(lines[i])) {
         code.push(lines[i])
         i += 1
       }
+
       i += 1
 
       if (language.startsWith('diagram-')) {
@@ -79,24 +89,38 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
 
     const h3 = line.match(/^###\s+(.+)$/)
     if (h3) {
-      blocks.push(<h3 key={`h3-${blocks.length}`}>{inline(h3[1])}</h3>)
+      const label = h3[1].trim()
+      const headingId = headingPrefix
+        ? makeSubheadingId(headingPrefix, h3Index, label)
+        : undefined
+
+      blocks.push(
+        <h3 id={headingId} key={`h3-${blocks.length}`}>
+          {inline(label)}
+        </h3>,
+      )
+      h3Index += 1
       i += 1
       continue
     }
 
     const h4 = line.match(/^####\s+(.+)$/)
     if (h4) {
-      blocks.push(<h4 key={`h4-${blocks.length}`}>{inline(h4[1])}</h4>)
+      blocks.push(
+        <h4 key={`h4-${blocks.length}`}>{inline(h4[1])}</h4>,
+      )
       i += 1
       continue
     }
 
     if (/^>\s?/.test(line)) {
       const quote: string[] = []
+
       while (i < lines.length && /^>\s?/.test(lines[i])) {
         quote.push(lines[i].replace(/^>\s?/, ''))
         i += 1
       }
+
       blocks.push(
         <blockquote key={`quote-${blocks.length}`}>
           {quote.map((value, index) => (
@@ -109,10 +133,12 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
 
     if (/^[-*]\s+/.test(line)) {
       const items: string[] = []
+
       while (i < lines.length && /^[-*]\s+/.test(lines[i])) {
         items.push(lines[i].replace(/^[-*]\s+/, ''))
         i += 1
       }
+
       blocks.push(
         <ul key={`ul-${blocks.length}`}>
           {items.map((value, index) => (
@@ -125,10 +151,12 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
 
     if (/^\d+\.\s+/.test(line)) {
       const items: string[] = []
+
       while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
         items.push(lines[i].replace(/^\d+\.\s+/, ''))
         i += 1
       }
+
       blocks.push(
         <ol key={`ol-${blocks.length}`}>
           {items.map((value, index) => (
@@ -146,6 +174,7 @@ export function MarkdownBlocks({ markdown }: MarkdownBlocksProps) {
 
     const paragraph: string[] = [line.trim()]
     i += 1
+
     while (
       i < lines.length &&
       lines[i].trim() &&

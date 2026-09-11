@@ -1,14 +1,13 @@
 # DataRoadmap Design System
 
-> Version: **1.6 / Content Clarity First at V0.6.0.10**
+> Version: **1.7 / Three-Tab Reading Foundation**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
-
-V1.6 保留 Technical Diagram 作为可选能力，但将内容正确性与知识结构提升为最高优先级。Diagram 只有在明显降低理解成本时才使用，不能为了视觉丰富而增加认知负担。
 
 ```text
 Content is the interface.
 Evidence is the trust layer.
+Navigation should support reading, not compete with it.
 ```
 
 ## 1. Product Character
@@ -34,7 +33,20 @@ Glassmorphism
 Neon AI
 Heavy Shadow
 Gamification Dashboard
+Decorative Motion
 ```
+
+DataRoadmap 不是作者项目展示站，也不是 Dashboard 产品。
+
+公共产品只保留：
+
+```text
+Learn
+Interview
+Scale
+```
+
+---
 
 ## 2. Color
 
@@ -43,6 +55,7 @@ Canvas          #FCFCFA
 Surface         #F6F6F3
 Surface Raised  #FFFFFF
 Surface Strong  #EEEDE8
+
 Ink             #171717
 Ink Soft        #5F5F5B
 Ink Muted       #8A8A84
@@ -54,7 +67,15 @@ Signal Strong   #2346B5
 Signal Soft     #EEF2FF
 ```
 
-Signal 只用于 Active、Link、Focus、Primary Action、Current Learning State 和 Diagram Active Path。
+Signal 只用于：
+
+- Active；
+- Link；
+- Focus；
+- Primary Action；
+- Current Reading / Learning State。
+
+---
 
 ## 3. Typography
 
@@ -69,200 +90,164 @@ Meta          12 / 1.45 / 500
 Mono          13 / 1.60 / 400
 ```
 
+原则：
+
+- 正文最低 16px；
+- 不通过缩小文字解决移动端密度；
+- 用层级、留白、目录和折叠解决长内容问题。
+
+---
+
 ## 4. Base Layout
 
-- Mobile 20px page padding；
+- Mobile page padding = 20px；
+- Touch Target >= 44×44；
 - Row / Section / Divider 优先于 Card；
 - Default Border = 1px Hairline；
 - Default Shadow = none；
-- Touch Target >=44×44；
-- 支持 iOS Safe Area 与 Reduced Motion。
+- iOS Safe Area 必须支持；
+- Reduced Motion 必须支持。
 
-## 5. Information Architecture
+---
+
+## 5. Three-Tab Navigation
+
+公共一级导航：
 
 ```text
 Learn
 Interview
 Scale
-Projects
 ```
 
-`Scale` 是完整生产场景入口。
+### Bottom Navigation
 
-Interview Detail 中的规模扩展不得使用与顶级 `Scale Lab` 相同的视觉/命名层级。
+Bottom Navigation 是独立的 App Navigation Surface（应用导航层）。
 
-## 6. Continue Learning
+必须：
 
-结构：
+- 使用 `Surface Raised`；
+- 顶部使用 `Hairline Strong`；
+- 正文与底栏之间保留额外 breathing space；
+- Active 只使用 Signal Blue；
+- 允许 2px 安静 Active Indicator；
+- 不使用大 Pill；
+- 不使用大 Shadow；
+- Safe Area 在导航层内部计算。
+
+禁止让 Bottom Navigation 看起来像正文最后一行。
+
+---
+
+## 6. Top Bar
+
+### List / Home
+
+TopBar 只承担：
+
+- Brand / Tab Context；
+- 必要的全局操作。
+
+### Reading Detail
+
+Detail TopBar：
 
 ```text
-继续学习                  第 N / M 节
-Stage · Topic
-Current Knowledge
-Summary
-Position Bar
+Back
+Context
+Directory
 ```
 
-- 整块点击；
-- Signal Soft Surface + Signal Hairline；
-- 允许仅在 1px Border 内使用低频 Signal 单色流动高光；
-- 动效周期建议 7–9 秒，无外发光、无 Shadow、无多色霓虹；
-- `prefers-reduced-motion: reduce` 时必须关闭流动高光并回退静态 Hairline；
-- 无单独 CTA；
-- 无 Shadow；
-- N / M 动态；
-- Position 不是 Completion。
+目录入口必须在长文中固定可达。
 
-## 7. Interview Discovery
+目录按钮使用：
 
 ```text
-Search
-= 问题 / 场景 / 故障 / 关键词
-
-Technology Chips
-= 快速进入某技术题集
-
-Filter
-= 频次 / 答案状态 / 后续高级条件
+list icon + 目录
 ```
 
-Filter 放在它实际影响的 Question List 附近，使用独立 Filter Control，不与 Technology Pill 混淆。
+不使用浮动大按钮，不覆盖正文。
 
-## 8. Evidence Summary
+---
 
-题目附近：
+## 7. Reading Directory
+
+长文章不再使用横向 Quick Navigation 作为主要目录。
+
+原因：
+
+- 长标题难扫描；
+- 横向内容不可完整预见；
+- 无法表达章节层级；
+- 用户缺少整篇位置感。
+
+统一使用：
 
 ```text
-Frequency Band
-N 份面经 · M 家公司
-面经依据 ›
+Directory Trigger
+↓
+Bottom Sheet
+├─ Reading Progress
+├─ Current Section
+└─ Full Section Tree
+   ├─ H2
+   └─ H3
 ```
 
-只有“面经依据”可点击。
+### Current Section
 
-## 9. Evidence Disclosure
+当前章节：
 
-移动端 BottomSheet：
+- `Signal Soft` 背景；
+- `Signal Strong` 文字；
+- 不使用 Shadow；
+- 不使用大 Card。
+
+### Progress
+
+Reading Progress 是位置感，不是 Completion Badge。
+
+当前 V1.7 使用章节位置估算进度。
+
+---
+
+## 8. Reading Page Hierarchy
+
+统一阅读结构：
 
 ```text
-题目出现记录
-N 份面经 · M 家公司
-
-按公司
-Company A · n份
-  Role / Round
-  Publisher · Date
+TopBar
+↓
+Article Header
+  Title
+  Summary
+  Secondary Metadata
+↓
+Quick Understanding / Main Line
+↓
+Body
+↓
+Primary Continuation
+↓
+Cross-Tab Extensions
 ```
 
-公司按记录数降序；同公司内部按日期降序。
+### Learn Detail
 
-不显示 Source URL、内部 Reliability、Mapping Type。
-
-## 10. Quick Answer
-
-Signal Soft + Signal Hairline，是阅读强调容器，不是 CTA。
-
-## 11. Reading Segment
+必须：
 
 ```text
-Interview | Learn
+正文
+→ 上一节 / 下一节
+→ 相关 Scale
+→ 真实 Interview
 ```
 
-同一份 Curated Answer，不复制内容。
+同 Tab 学习连续性优先于跨 Tab 延伸。
 
-Interview 模式优先：
+### Scale Detail
 
-- 考察点；
-- 排障；
-- 常见错误；
-- 项目结合；
-- 规模追问；
-- 关联追问。
-
-Learn 模式优先：
-
-- 核心 / 完整原理；
-- Production；
-- 配置 / 代码；
-- 故障机制；
-- 深入技术内容。
-
-## 12. Interview Scale Follow-up
-
-组件名称：
-
-```text
-ScaleFollowUpSection
-```
-
-前台标题：
-
-```text
-规模追问
-```
-
-它是当前题的局部规模扩展。
-
-禁止：
-
-- 标题写 `Scale Lab`；
-- 用黑色 CodeBlock 表示规模参数、架构约束或 P0/P1/P2 分级；
-- 出现 Copy 按钮；
-- 让用户误以为这是顶级 Scale Scenario。
-
-`text` fenced block 在这个 Section 内应转换为轻量 Row / Divider / Constraint Surface，而非 Code Surface。
-
-前台不显示 `INTERVIEW FOLLOW-UP` 等内部英文 Kicker。树状文本中的 `├── / └──` 不直接打印，转换为真正的视觉层级。
-
-## 13. Related Follow-ups
-
-组件名称：
-
-```text
-FollowUpDisclosure
-```
-
-前台标题：
-
-```text
-关联追问
-```
-
-交互：
-
-```text
-Question                         +
-↓ tap
-Concise Curated Answer
-```
-
-- Question Row >=44px；
-- 使用 Hairline 分隔；
-- 整行是唯一点击区域；`+ / −` 只作为安静状态指示，不使用圆形按钮边框；
-- 默认折叠；
-- 一次可展开一条；
-- 不使用 Card Wall；
-- Curated Extension 不冒充 Evidence-backed 高频题；
-- 有 Canonical Question ID 时后续可跳站内完整题目详情；
-- 无答案时明确“答案整理中”；
-- 禁止 Runtime AI 即时补答案。
-
-## 14. Code Block
-
-只有真正的代码、配置、命令、SQL 才进入 CodeBlock。
-
-以下内容不得默认使用黑色 CodeBlock：
-
-- 规模参数；
-- KPI；
-- 架构职责；
-- P0/P1/P2 分级；
-- 普通流程文本；
-- 纯概念列表。
-
-## 15. Scale
-
-顶级 Scale Detail 使用完整系统设计结构：
+保持：
 
 ```text
 Scenario
@@ -276,86 +261,198 @@ Cost
 Recovery
 ```
 
-Scale List 的难度字段只有在用户有明确解释和筛选价值时才显示；不得直接打印 `SENIOR` 等内部枚举。
+目录解决移动端跳转，不删生产深度。
 
-Scale List 不重复显示 `Scale / SCALE LAB / 生产场景` 三层标题；保留 TopBar `Scale` + 页面标题 `生产场景` 即可。
+---
 
-场景的 Secondary Metadata 使用统一中点语法，例如：`数据规模 · 资源隔离 · 查询 SLO · 成本`，不把纯描述性元信息做成独立 Chip。
+## 9. Secondary Metadata Grammar
 
-## 16. Projects
-
-Project List 使用用户熟悉的项目名称为主标题；关联技术作为 Secondary Metadata。
-
-不重复显示：
+描述性 Metadata 统一：
 
 ```text
-Projects
-PROJECTS
-项目案例
-```
-
-一个页面只保留必要层级。
-
-
-## 17. Metadata Grammar
-
-纯描述性、同层级的 Secondary Metadata 统一使用：
-
-```text
-A · B · C · D
+A · B · C
 ```
 
 适用：
 
-- Scale 场景训练重点；
-- Projects 关联技术；
-- Company / Role / Round 等简短并列元信息。
+- `Iceberg · L5 · 深度掌握`
+- `数据规模 · 资源隔离 · 查询 SLO · 成本`
+- Company / Role / Round
 
 规则：
 
-- 中点两侧保留一个空格；
-- 非交互 Metadata 不做 Chip / Pill；
-- Chip 只用于真实筛选、选择或状态切换；
-- 同一页面相同语义使用相同排版语言。
+- 非交互 Metadata 不做 Chip；
+- Chip 只用于 Filter / Choice / State；
+- 相同语义使用相同语法。
 
-## 18. Motion
+---
 
-默认原则仍然是 Calm / Reduced Motion Friendly。
+## 10. Learn
 
-允许的 Current State Motion Exception：
+Learn 回答：
+
+> 我应该理解什么？
+
+Learn 是连续学习路径，不是知识卡片墙。
+
+首页重点：
+
+- 当前学习位置；
+- 学习路线；
+- Stage 顺序。
+
+Detail 重点：
+
+- 30 秒理解；
+- 知识递进；
+- 上一节 / 下一节；
+- 再进入 Scale / Interview。
+
+---
+
+## 11. Interview
+
+Interview 回答：
+
+> 企业会怎么问？我应该怎么回答？
+
+Discovery：
 
 ```text
-Continue Learning
-→ 1px Signal Border Moving Highlight
+Search
+Technology Filter
+Advanced Filter
+Question List
 ```
 
-限制：
+Evidence：
 
-- 只允许 Continue Learning 当前学习状态使用；
-- 只在 Border 内运动；
-- Signal Blue 单色系；
-- 推荐 7–9 秒一圈；
-- 无外发光；
-- 无 Shadow；
-- 无多色 Gradient / Neon；
-- 不在 Question / Scale / Projects / Evidence 卡片复制；
-- `prefers-reduced-motion` 必须关闭；
-- 不支持 Mask 的浏览器自动回退静态 Hairline。
+```text
+Frequency Band
+N 份面经 · M 家公司
+面经依据
+```
 
-动效用于提示“当前状态”，不用于装饰。
+频率只能来自 Evidence。
 
+Reading Segment 前台名称：
 
-## 19. Technical Diagram System
+```text
+面试回答 | 深入理解
+```
 
-Technical Diagram 是 **Secondary Learning Aid（次级学习辅助）**。
+不得再使用 `Interview | Learn` 造成顶级 Tab 混淆。
 
-使用前必须先问：
+---
 
-> 不画图，能不能用一句话关系链或短文本更快、更完整地讲清楚？
+## 12. Scale
 
-如果能，默认不用图。
+Scale 回答：
 
-只有下列关系在文字中明显变得难以追踪时，才使用 Technical Diagram：
+> 规模、并发、可靠性、成本约束扩大后怎么设计？
+
+Scale Scenario 默认明确：
+
+```yaml
+hypothetical: true
+```
+
+它是生产训练，不是项目经历。
+
+Scale Detail 可以很长，但必须通过 Directory 提供结构感。
+
+---
+
+## 13. Cross-Tab Extensions
+
+Cross-link 是 Secondary Extension（次级延伸）。
+
+视觉优先级：
+
+```text
+Primary Content
+> Same-Tab Continuation
+> Cross-Tab Extension
+```
+
+Cross-link 表示：
+
+```text
+useful together
+```
+
+不表示：
+
+```text
+high interview frequency
+real project fact
+```
+
+---
+
+## 14. Quick Answer / Main Line
+
+Quick Answer 使用：
+
+- Signal Soft；
+- Signal Hairline；
+- 无 Shadow。
+
+它是阅读强调，不是 CTA。
+
+---
+
+## 15. Bottom Sheet
+
+统一 BottomSheet 支持：
+
+- `aria-modal`；
+- Focus Trap；
+- Escape Close；
+- Restore Focus；
+- Mobile max-height 82vh；
+- 顶部圆角约 14px。
+
+适用：
+
+- Evidence；
+- Filters；
+- Reading Directory。
+
+---
+
+## 16. Code Block
+
+只有真实代码、SQL、配置、命令使用 CodeBlock。
+
+不得使用黑色代码块表达：
+
+- 架构职责；
+- 规模参数；
+- KPI；
+- P0/P1/P2；
+- 普通流程文本。
+
+---
+
+## 17. Technical Diagram
+
+Diagram 是 Secondary Learning Aid。
+
+先问：
+
+> 不画图，能否用一句短关系链更快讲完整？
+
+简单线性关系优先文本：
+
+```text
+Snapshot
+→ Manifest List
+→ N Manifest
+→ M Data Files
+```
+
+只有以下关系明显难以用文字追踪时使用图：
 
 ```text
 Non-linear Branch
@@ -366,305 +463,66 @@ Many-to-Many Dependency
 Complex Read / Write Path
 ```
 
-像 `Snapshot → Manifest List → N Manifest → M Data Files` 这种简单线性层级，优先直接用文字关系链，而不是大图。
+规则：
 
-### Mobile-first
+- Mobile-first 390px；
+- 真实 DOM Text；
+- No heavy shadow；
+- 不依赖颜色表达关系；
+- 一张图太高时拆图，不缩小文字。
 
-390px 下必须首先可读。
+---
 
-移动端默认：
+## 18. Motion
 
-```text
-纵向主链
-↓
-必要时双列分支
-↓
-节点下短说明
-```
+动效只表达状态，不做装饰。
 
-不得把桌面宽图整体缩小塞进手机。
-
-Desktop 可以增加横向空间和并列信息，但必须使用同一份 Diagram Data / Component，不维护两套内容。
-
-### Diagram Palette
-
-主 UI 仍保持 Signal Blue 单 Accent。
-
-Diagram 内允许独立的低饱和 Semantic Palette，用于区分不同“节点类型”，不是交互状态：
+允许：
 
 ```text
-Blue    external / catalog
-Green   table metadata
-Amber   snapshot / state
-Violet  list / index
-Rose    manifest / change
-Cyan    data file / storage object
+Continue Learning
+→ low-frequency signal border motion
 ```
 
 限制：
 
-- 只在技术图内部使用；
-- 低饱和浅底 + 深色文字；
-- 不作为按钮或导航颜色；
-- 不依赖颜色单独表达语义；
-- 节点必须有文字标签；
-- 禁止 Neon、强 Gradient、Heavy Shadow。
-
-### Diagram Anatomy
-
-```text
-DiagramFrame
-├─ Header
-├─ Canvas
-│  ├─ DiagramNode
-│  ├─ DiagramArrow
-│  └─ DiagramBranch
-└─ Caption
-```
-
-默认：
-
-- 1px Border；
-- 10px Radius；
+- 单色 Signal；
+- no outer glow；
 - no shadow；
-- 结构优先于装饰；
-- 文本使用系统字体，不生成图片文字。
+- no neon；
+- Reduced Motion 关闭。
 
-### Content-as-Code
+---
 
-Markdown 使用 Diagram Directive：
+## 19. Accessibility
 
-```text
-```diagram-iceberg-metadata-tree
-```
-```
+- Touch Target >= 44px；
+- Focus Visible；
+- Reduced Motion；
+- BottomSheet Focus Trap；
+- Reading Directory 使用 `aria-current`；
+- Progress 使用 `role=progressbar`；
+- 不能只靠颜色表达状态。
 
-Renderer 将 `diagram-*` fence 交给 TechnicalDiagram，而不是 CodeBlock。
+---
 
-这样 Diagram：
+## 20. V1.7 Freeze Rules
 
-- 与 Markdown 一起版本管理；
-- 可响应式；
-- 文字可搜索；
-- 可复制；
-- 不会像 PNG 一样缩放模糊；
-- 不依赖 Figma / AI 生图额度。
-
-### Accessibility
-
-- Diagram 内文字必须是真实 DOM Text；
-- 必须有 `figcaption` 或等价文字说明；
-- 关系不能只靠颜色；
-- 手机无需横向拖动才能理解主关系；
-- 关键图不得要求用户放大后才能读；
-- 后续复杂 SVG 需要 Text Fallback。
-
-### Diagram vs CodeBlock
-
-以下优先 Diagram：
-
-- Metadata Tree；
-- 读取路径；
-- 写入 / Commit 流程；
-- 一对多结构；
-- 状态转换。
-
-以下保持 CodeBlock：
-
-- SQL；
-- Python；
-- YAML / JSON；
-- Shell Command；
-- 真实配置；
-- 需要复制执行的代码。
-
-纯文本结构不再为了“像图”而塞进黑色 CodeBlock。
-
-
-
-### Mobile Density V1.1
-
-首轮 390px 实测后，单概念技术图应优先控制纵向密度：
-
-- 主节点高度约 52–56px；
-- Compact Node 约 48–52px；
-- 单段 Arrow Gap 约 30–34px；
-- Canvas Mobile Padding 约 12–14px；
-- 一张单概念图如果持续超过一个移动端内容视口，优先拆成两张图，而不是继续缩小文字；
-- 不为压缩高度把节点文字降到不可读。
-
-### Embedded Diagram
-
-当 Diagram 已经位于 Quick Answer / 30 秒理解等有 Surface 的容器中：
-
-- 不再增加完整外框；
-- 不制造 Card inside Card；
-- Header / Canvas / Caption 使用同一父 Surface；
-- 仅用 Hairline 分隔必要区域。
-
-Standalone Diagram 仍可保留轻量 1px 外框。
-
-### Header
-
-Diagram Header 只保留真正有内容价值的标题。
-
-删除：
+V1.7 冻结：
 
 ```text
-结构图
-流程图
-技术图
+Three-Tab Navigation
+Reading Directory
+Bottom Navigation Separation
+Secondary Metadata Grammar
+Detail Reading Hierarchy
+Same-Tab-before-Cross-Tab Priority
 ```
 
-等重复类型 Badge。标题本身已经表达内容，不额外解释“这是一张图”。
+后续 UI Review 可以调整具体 spacing，但不能重新引入：
 
-### Relation Grammar
-
-连接线必须表达关系，而不只是装饰：
-
-```text
-实线单箭头
-= 引用 / 调用 / 数据流 / 顺序
-
-实线分叉箭头
-= 一对多引用 / 分流
-
-虚线箭头
-= Retry / Rollback / Optional Path
-
-无箭头括线 / Group
-= 纯分组 / 包含
-```
-
-Directional Relationship 必须有 Arrow Head。
-
-例如：
-
-```text
-Manifest List
-↙             ↘
-Manifest A     Manifest B
-```
-
-表示“Manifest List 引用多个 Manifest”，不能只画一个没有方向的 T 型括线。
-
-### Caption over Callout
-
-图后的关键关系说明优先进入 `figcaption`。
-
-避免：
-
-```text
-Diagram
-↓
-关键关系 Card
-↓
-正文
-```
-
-形成重复 Surface。
-
-只有需要特别警告、失败语义或用户操作时，才在 Diagram Canvas 之外增加额外 Callout。
-
-### Semantic Color Stability
-
-同一技术域内，同一种语义节点跨图保持同一颜色。
-
-Iceberg V1：
-
-```text
-Catalog / External       Blue
-Table Metadata           Green
-Snapshot / State         Amber
-Manifest List / Index    Violet
-Manifest / Change        Rose
-Data / Storage Object    Cyan
-```
-
-不要为了“每个节点颜色不同”继续无限扩充 Palette。
-
-
-## 20. Dynamic Numbers
-
-动态计算：
-
-- Stage Count；
-- Knowledge Count；
-- Current Learning Position；
-- Interview Total / Filtered Count；
-- Current Rank；
-- Evidence Count；
-- Company Count；
-- Company Record Count。
-
-`30 秒回答`、L1–L5 和 Scale Scenario 的固定约束不是库存数字。
-
-## 21. BottomSheet
-
-- mobile max-height 82vh；
-- top radius 14px；
-- tap outside；
-- close button；
-- Escape；
-- focus trap；
-- restore focus。
-
-## 22. Project Truthfulness
-
-Project Case 继续区分：
-
-```text
-Actual
-Boundary
-Knowledge Mapping
-Interview Mapping
-Scale Extension
-```
-
-Production Pattern / Scale / Curated Extension 不得自动变成真实项目经历。
-
-## 23. Change Policy
-
-以下变化继续要求版本化：
-
-- 顶级导航；
-- Color Architecture；
-- Typography Scale；
-- Core Component Anatomy；
-- Evidence Visibility Policy；
-- Project / Scale Truthfulness Boundary；
-- Interview Follow-up Semantics。
-
-- Metadata Grammar；
-- Current State Motion exception。
-
-- Technical Diagram System；
-- Diagram Semantic Palette。
-
-- Diagram Mobile Density；
-- Diagram Relation Grammar；
-- Embedded Diagram flattening。
-
-
-## 24. Learning Clarity over Visualization
-
-用户学习页面遵循：
-
-```text
-Correctness
-→ Knowledge Structure
-→ Reading Flow
-→ Visual Aid
-```
-
-规则：
-
-- 图不能成为理解某知识点的唯一入口；
-- 图不能遗漏正文中的关键限制条件；
-- 图如果需要大量解释才能读懂，应优先改回文字；
-- 简单层级关系优先一句话链路；
-- 复杂非线性关系才考虑 Diagram；
-- 删除不产生明显认知收益的图；
-- 视觉丰富度不是 Knowledge 页 KPI。
-
-当前 Iceberg `Metadata Tree` 与 `Manifest Tree` 两张图从前台正文移除，保留 Diagram 能力作为后续复杂场景的可选工具。
+- Projects 前台 Tab；
+- 横向 Quick Navigation 作为长文主目录；
+- 描述性 Metadata Chip 化；
+- Heavy Shadow；
+- Card Wall。

@@ -1,0 +1,46 @@
+version: 1.7
+status: active
+viewport_baseline:
+  width: 390
+  height: 844
+
+screens:
+- learn-home
+- knowledge-detail
+- interview-list
+- interview-detail
+- scale-list
+- scale-detail
+
+core_components:
+- app-shell
+- compact-top-bar
+- bottom-navigation
+- reading-directory
+- metadata-line
+- stage-row
+- question-row
+- quick-answer
+- reading-segment
+- evidence-summary
+- evidence-disclosure
+- bottom-sheet
+- code-block
+- technical-diagram
+- cross-tab-extension
+
+deprecated_frontstage_components:
+- quick-navigation
+- project-case
+- project-fact-state
+
+validated:
+  row_over_card: true
+  single_accent: true
+  default_shadow_none: true
+  mobile_first_390: true
+  evidence_visible: true
+  three_public_tabs_only: true
+  reading_directory_replaces_horizontal_quick_nav: true
+  same_tab_continuation_before_cross_tab: true
+  project_content_backstage_only: true

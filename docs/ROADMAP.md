@@ -41,70 +41,44 @@
 
 ## V0.6 First Vertical Slice
 
-### V0.6.0 Iceberg Knowledge Spine
-- [x] Iceberg L5 11-node chapter map
-- [x] Knowledge structure and correctness audit
-- [x] Previous / Next learning sequence
-- [x] Quick Navigation
-- [x] Three hypothetical Scale Scenario seeds
-- [x] Interview evidence boundary
+### V0.6.0 - V0.6.6 Iceberg Content Loop
+- [x] Iceberg Learn V1
+- [x] Scale V1
+- [x] Interview integration
+- [x] Three-tab cross navigation
+- [x] Vertical-slice content audit
+- [x] Freeze Iceberg V1 content loop
 
-### V0.6.1 Four-Tab Content Contract
-- [x] Historical contract completed
-- [x] Superseded by V0.6.2.1 Three-Tab Product Reset
+### V0.6.7 UI Review & Polish
 
-### V0.6.2 Project Case Fact Boundary
-- [x] Historical asset retained as backstage context
-- [x] Removed from public vertical-slice criteria
+#### V0.6.7.1 Reading & Navigation Foundation
+- [x] Replace horizontal Quick Navigation with Reading Directory
+- [x] Reading progress + current section + H2/H3 hierarchy
+- [x] Fixed directory action in reading TopBar
+- [x] Learn same-tab continuation before cross-tab extensions
+- [x] Convert descriptive Knowledge badges to metadata line
+- [x] Use same metadata grammar in Scale detail
+- [x] Separate Bottom Navigation surface from article content
+- [x] Sync public Design System to V1.7 three-tab semantics
+- [x] Deprecate Projects frontstage design rules
 
-### V0.6.2.1 Three-Tab Product Reset
-- [x] Public navigation = Learn / Interview / Scale
-- [x] Projects removed from public product
+#### Next: V0.6.7.2 Three-Tab Page Polish
+- [ ] Learn home hierarchy
+- [ ] Learn stage/list hierarchy
+- [ ] Interview discovery hierarchy
+- [ ] Interview detail density
+- [ ] Scale list hierarchy
+- [ ] Scale detail spacing
+- [ ] Cross-link visual priority
 
-### V0.6.3 Scale Lab Detail
-- [x] Scenario detail schema and routes
-- [x] Three Iceberg Scale details
-- [x] Explicit hypothetical boundary
-
-### V0.6.4 Interview Integration
-- [x] Learn -> evidence-backed Interview mapping
-- [x] Scale -> evidence-backed Interview mapping
-- [x] Show current Evidence counts instead of copied frequency claims
-- [x] Show curated / pending answer status
-- [x] Do not synthesize technology-specific frequency
-
-### V0.6.5 Three-Tab Cross Navigation
-- [x] Interview -> Knowledge
-- [x] Interview -> Scale
-- [x] Knowledge -> related Scale scenarios
-- [x] Scale -> related Knowledge nodes
-- [x] Derive reverse links instead of duplicating Scenario relationships
-- [x] Remove author-specific Project sections from public Interview rendering
-- [x] Complete Iceberg Learn / Interview / Scale graph
-
-### V0.6.6 Iceberg Vertical Slice Audit
-- [x] Audit cross-tab knowledge progression
-- [x] Move exact Delete applicability to the correct learning layer
-- [x] Audit duplicated / fragmented explanations
-- [x] Freeze single-owner cross-tab relationship policy
-- [x] Remove forced Large Dataset -> Troubleshooting direct mapping
-- [x] Audit mobile content density
-- [x] Add Scale quick navigation without reducing production depth
-- [x] Rename nested Interview reading modes to avoid top-level Tab confusion
-- [x] Audit truth / evidence boundaries
-- [x] Freeze Iceberg V1 product loop
-
-### Next: V0.6.7 UI Review & Polish
-- [ ] Audit Learn list / detail hierarchy
-- [ ] Audit Interview discovery / detail hierarchy
-- [ ] Audit Scale list / detail hierarchy
-- [ ] Audit three-tab navigation consistency
-- [ ] Audit mobile spacing and reading density
-- [ ] Audit cross-link interaction and visual priority
-- [ ] Sync Design System copy with final three-tab semantics
-- [ ] Remove or isolate remaining legacy Projects frontstage source files
+#### V0.6.7.3 UI Conformance & Freeze
+- [ ] 390px full-path review
+- [ ] iOS safe-area review
+- [ ] Touch target review
+- [ ] Typography / spacing token conformance
+- [ ] Remove remaining legacy Projects frontstage source
 - [ ] Freeze Iceberg V1 UI
 
 ### After UI Freeze
-- [ ] Select the next technology vertical slice
-- [ ] Reuse the frozen Learn / Scale / Interview contract
+- [ ] Select next technology vertical slice
+- [ ] Reuse frozen Learn / Interview / Scale contract
