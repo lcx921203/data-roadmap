@@ -70,14 +70,17 @@
 - [x] Keep UI unchanged
 - [x] Keep all article bodies unwritten
 
-### Next: V0.7.1 Trino Core Execution Model
-- [ ] 01 Trino Overview & System Mental Model
-- [ ] 02 Coordinator / Worker & Query Lifecycle
-- [ ] 03 Catalog / Connector / SPI Boundary
-- [ ] 04 SQL to Logical / Distributed Plan
-- [ ] 05 Stage / Task / Split / Driver / Operator
+### V0.7.1 Trino Core Execution Model
+- [x] 01 Trino Overview & System Mental Model
+- [x] 02 Coordinator / Worker & Query Lifecycle
+- [x] 03 Catalog / Connector / SPI Boundary
+- [x] 04 SQL to Logical / Distributed Plan
+- [x] 05 Stage / Task / Split / Driver / Operator
+- [x] Preserve Iceberg / Trino content boundary
+- [x] Keep Join / Memory / Concurrency / FTE out of the early layers
+- [x] Use Stage 04 orders 12-16 without changing UI sorting
 
-### V0.7.2 Trino Scan & Optimizer
+### Next: V0.7.2 Trino Scan & Optimizer
 - [ ] 06 Scan / Pushdown / Iceberg Read Boundary
 - [ ] 07 Statistics / CBO / Join / Dynamic Filtering
 
