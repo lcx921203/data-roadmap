@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '02'
 topic: spark
 learning_depth: L5
-status: scale_interview_integrated
+status: frozen_spark_v1
 technical_baseline:
   current_release_at_freeze: 4.2.0
   validation_date: '2026-09-11'
@@ -389,3 +389,13 @@ freeze:
   - sc-spark-skew-join-001
   - sc-spark-streaming-state-backlog-001
   interview_integration: evidence_backed_cross_navigation_v0.8.5
+  v1_frozen: true
+  frozen_at: 0.8.6
+  three_tab_closure_audit: passed_v0.8.6
+  multi_domain_mobile_audit: passed_v0.8.6
+  truth_boundary_audit: passed_v0.8.6
+  contextual_relation_anchor_audit: passed_14_of_14_v0.8.6
+  reopen_v1_only_for:
+  - verified_technical_error
+  - verified_usability_or_interaction_bug
+  - broken_cross_tab_relation

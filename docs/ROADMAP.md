@@ -201,13 +201,28 @@
 - [x] Do not invent Spark-specific frequency
 - [x] Keep scenarios hypothetical and separate from project facts
 
-### Next: V0.8.6 Spark Vertical Slice Freeze
-- [ ] Three-tab closure audit
-- [ ] Mobile reading audit
-- [ ] Freeze Spark V1
+### V0.8.6 Spark Vertical Slice Freeze
+- [x] Three-tab closure audit
+- [x] First real multi-domain Scale implementation audit
+- [x] 390px layout / touch-target / safe-area audit
+- [x] Validate all Spark contextual relation anchors resolve
+- [x] Truth-boundary / evidence / project-boundary audit
+- [x] Keep frozen V1.9 UI unchanged
+- [x] Freeze Spark V1
+
+## V0.9 Fourth Vertical Slice — Flink
+
+### Next: V0.9.0 Flink Knowledge Spine Freeze
+- [ ] Validate the current Flink release baseline
+- [ ] Freeze the causal Learn spine before writing article bodies
+- [ ] Freeze Spark / Flink / Kafka responsibility boundaries
+- [ ] Register only evidence-backed Interview seeds
+- [ ] Reuse the frozen Learn / Interview / Scale UI contract
+- [ ] Keep UI unchanged
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found
 - [x] Keep Trino frozen unless a verified bug is found
+- [x] Keep Spark frozen unless a verified bug is found
 - [x] Reuse frozen Learn / Interview / Scale UI contract
 - [x] Do not force every technology into the same node count
