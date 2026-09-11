@@ -3,26 +3,26 @@ id: kb-iceberg-maintenance-small-files-001
 type: knowledge
 title: Maintenance & Small Files
 title_cn: 维护与小文件治理
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 8
+order: 10
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Rewrite Data Files、Rewrite Manifests、Expire Snapshots、Remove Orphan Files 解决的是四类不同问题，不能把 Maintenance 简化成“定时合并小文件”。"
+summary: Rewrite Data Files、Rewrite Manifests、Expire Snapshots、Remove Orphan Files
+  解决的是四类不同问题，不能把 Maintenance 简化成“定时合并小文件”。
 prerequisites:
-  - kb-iceberg-commit-concurrency-001
+- kb-iceberg-commit-concurrency-001
 related:
-  - kb-iceberg-trino-read-path-001
+- kb-iceberg-production-troubleshooting-001
 scale_scenarios:
-  - sc-iceberg-streaming-small-files-001
+- sc-iceberg-streaming-small-files-001
 ---
-
 # Maintenance & Small Files
 
 ## 30 秒理解
@@ -99,6 +99,37 @@ Planning selectivity
 ```
 
 它不改变业务数据内容。
+
+## Manifest Merge：8 MB 和 100 到底是什么
+
+Manifest 写出后是不可变的，所以 Manifest Merge 不是“继续往旧 Manifest 里追加”，而是**重新生成新的 Manifest**。
+
+Apache Iceberg 当前默认配置中：
+
+- `commit.manifest-merge.enabled = true`：写入时允许自动合并 Manifest；
+- `commit.manifest.min-count-to-merge = 100`：累积到足够多 Manifest 后才值得自动合并；
+- `commit.manifest.target-size-bytes = 8 MB`：合并后的 Manifest 目标大小。
+
+最重要的是：
+
+> **8 MB 是 Merge Target，不是“Manifest 写到 8 MB 才新建下一个”的切分阈值。**
+
+因此完全可能看到很多小于 8 MB 的 Manifest。
+
+默认自动整理会按照文件被加入 Manifest 的顺序进行。如果写入顺序本身和常用过滤维度一致，例如按时间持续到达，那么 Manifest 的 Partition Summary 往往也更利于查询裁剪。
+
+如果写入模式和查询模式长期不一致，可以使用 `rewriteManifests` 重新组织 Manifest，让文件在 Metadata 层重新聚类。
+
+这也是为什么 Manifest 的“数量和布局”同时受以下因素影响：
+
+- Data / Delete File 数量；
+- Commit 频率；
+- Writer 并发；
+- 写入顺序；
+- 自动 Manifest Merge；
+- 显式 `rewriteManifests`。
+
+旧 Snapshot 仍可能继续引用旧 Manifest，因此 Rewrite 不等于原地修改历史元数据。
 
 ## Expire Snapshots
 
@@ -188,6 +219,9 @@ Trino Iceberg Connector 可以暴露 Metadata Tables，并提供部分表维护�
 - Maintenance Resource Pool；
 - Query SLO 保护。
 
+## 项目案例
+
+当前不宣称项目实际执行过哪种 Maintenance Procedure。该部分在 Project Fact Check 后再挂 Actual。
 
 ## 关联知识
 

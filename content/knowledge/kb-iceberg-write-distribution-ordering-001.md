@@ -3,25 +3,24 @@ id: kb-iceberg-write-distribution-ordering-001
 type: knowledge
 title: Write Distribution & Write Ordering
 title_cn: 写入分布与写入排序
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 6
+order: 8
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Distribution 决定数据先怎样分发到 Writer Task；Ordering 决定 Task 内或全局数据顺序。二者共同影响文件数、局部性、压缩与查询裁剪。"
+summary: Distribution 决定数据先怎样分发到 Writer Task；Ordering 决定 Task 内或全局数据顺序。二者共同影响文件数、局部性、压缩与查询裁剪。
 prerequisites:
-  - kb-iceberg-schema-evolution-001
+- kb-iceberg-trino-read-path-001
 related:
-  - kb-iceberg-commit-concurrency-001
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-commit-concurrency-001
+- kb-iceberg-maintenance-small-files-001
 ---
-
 # Write Distribution & Write Ordering
 
 ## 30 秒理解
@@ -106,6 +105,26 @@ Fanout writer
 
 影响。
 
+## 新 Data File 如何进入 Manifest
+
+Writer Task 先生成新的 Data File，随后这些新增文件需要被记录进新的 Manifest。
+
+这里最容易出现一个误解：
+
+**旧 Manifest 没达到 8 MB，也不会在下一次 Commit 被重新打开继续追加。**
+
+Manifest 一旦写出就是 Immutable（不可变）的。
+
+新一次写入会生成新的 Manifest；提交阶段可以：
+
+- 继续复用旧 Manifest；
+- 把新 Manifest 加进新的 Manifest List；
+- 根据 Commit 类型和 Manifest Merge 配置，把若干小 Manifest 重写成新的合并 Manifest。
+
+所以“一次 Commit 等于一个 Manifest”也不成立。一次 Commit 最终引用多少个新 Manifest，取决于写入规模、并发 Writer、操作类型以及是否发生 Metadata Merge。
+
+`8 MB` 是 Manifest Merge 的目标尺寸，不是 Writer 的“写满切文件阈值”。完整治理放到 Maintenance 章节。
+
 ## Production 调优顺序
 
 不要一遇到小文件就先 Compaction。
@@ -177,6 +196,9 @@ Lower latency
 
 所以低延迟目标必须和文件治理一起设计。
 
+## 项目案例
+
+Write Ordering / Distribution 是当前学习与面试重点，但具体项目是否配置过 `hash/range`、Sort Order、目标文件尺寸，目前不作为真实项目事实发布。
 
 ## 关联知识
 

@@ -3,24 +3,25 @@ id: kb-iceberg-trino-read-path-001
 type: knowledge
 title: Trino Read Path on Iceberg
 title_cn: Trino 读取 Iceberg 的路径
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 9
+order: 7
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Trino 先加载 Iceberg 表状态，再利用 Manifest/Partition/File Metrics 规划 Split，Worker 最后读取 Parquet/ORC/Avro；规划慢与扫描慢是不同问题。"
+summary: Trino 先加载 Iceberg 表状态，再利用 Manifest/Partition/File Metrics 规划 Split，Worker
+  最后读取 Parquet/ORC/Avro；规划慢与扫描慢是不同问题。
 prerequisites:
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-schema-evolution-001
 related:
-  - kb-iceberg-production-troubleshooting-001
+- kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-production-troubleshooting-001
 ---
-
 # Trino Read Path on Iceberg
 
 ## 30 秒理解
@@ -48,10 +49,11 @@ Manifest List
 Manifest
 ↓
 Candidate Data Files
++ applicable Delete Files / Deletion Vectors
 ↓
 Splits
 ↓
-Workers read Parquet/ORC/Avro
+Workers read and apply deletes
 ```
 
 所以 Query Performance 需要区分 **Planning（规划）** 与 **Execution（执行）**。
@@ -64,23 +66,17 @@ Coordinator / Iceberg Connector 需要：
 2. 确定 Snapshot；
 3. 根据 Predicate 做 Partition/Metadata Pruning；
 4. 读取需要的 Manifest；
-5. 从 File Metrics 进一步筛选文件；
-6. 生成可调度的 Split。
+5. 从 File Metrics 进一步筛选 Data File；
+6. 规划适用于这些 Data File 的 Delete File / Deletion Vector；
+7. 生成可调度的 Split。
 
 如果这里很慢，增加 Worker 数量通常帮助不大。
 
 ## Worker 执行阶段
 
-Worker 接收 Split 后读取对象存储里的文件，再利用：
+Worker 接收 Split 后读取对象存储里的 Data File，并把适用的 Position / Equality Delete 或 Deletion Vector 应用到扫描结果。
 
-```text
-Parquet statistics
-Predicate pushdown
-Column projection
-Dynamic filtering
-```
-
-减少实际读取。
+随后还可以利用 Parquet Statistics、Predicate Pushdown（谓词下推）、Column Projection（列裁剪）和 Dynamic Filtering（动态过滤）减少实际读取。
 
 如果 Planning 很快但 Scan 慢，才更多看文件尺寸、压缩、网络、列裁剪、Join、Spill 和 Worker 资源。
 
@@ -178,7 +174,10 @@ P95 / P99 monitoring
 
 否则离线写入不仅抢 CPU，还会通过 File/Manifest Explosion 影响 Trino Planning。
 
+## 项目案例
+
+项目是否真实以 Trino 查询 Iceberg、具体并发和延迟目标，目前必须经过事实核验后才进入 Actual。
 
 ## 关联知识
 
-最后一节把前面的知识收成 Production Troubleshooting Checklist（生产排障清单）。
+下一节回到写入侧，理解 Writer 怎样通过 Distribution、Ordering 和文件滚动产生新的 Data File 与 Manifest。

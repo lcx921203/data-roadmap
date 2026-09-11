@@ -154,12 +154,12 @@ for (const question of interviewBank.questions) {
 const spine = readYaml('content/knowledge/iceberg-spine-v0.6.0.yaml')
 
 if (
-  spine?.version !== '0.6.0' ||
+  spine?.version !== '0.6.1' ||
   spine?.topic !== 'iceberg' ||
   !Array.isArray(spine?.nodes) ||
-  spine.nodes.length !== 10
+  spine.nodes.length !== 11
 ) {
-  throw new Error('Iceberg V0.6.0 spine must contain exactly 10 ordered nodes')
+  throw new Error('Iceberg V0.6.1 spine must contain exactly 11 ordered nodes')
 }
 
 const knowledgeIds = new Set()
@@ -212,6 +212,77 @@ for (const node of spine.nodes) {
 
   knowledgeIds.add(node.id)
   orders.add(node.order)
+}
+
+
+const expectedIcebergSpine = [
+  'kb-iceberg-overview-001',
+  'kb-iceberg-metadata-snapshot-001',
+  'kb-iceberg-manifest-tree-001',
+  'kb-iceberg-row-level-changes-001',
+  'kb-iceberg-partition-evolution-001',
+  'kb-iceberg-schema-evolution-001',
+  'kb-iceberg-trino-read-path-001',
+  'kb-iceberg-write-distribution-ordering-001',
+  'kb-iceberg-commit-concurrency-001',
+  'kb-iceberg-maintenance-small-files-001',
+  'kb-iceberg-production-troubleshooting-001',
+]
+
+for (let index = 0; index < expectedIcebergSpine.length; index += 1) {
+  const node = spine.nodes[index]
+  if (
+    node?.order !== index + 1 ||
+    node?.id !== expectedIcebergSpine[index]
+  ) {
+    throw new Error(
+      `Iceberg V0.6.1 spine mismatch at order ${index + 1}`,
+    )
+  }
+}
+
+const manifestV061 = readFrontMatter(
+  'content/knowledge/kb-iceberg-manifest-tree-001.md',
+)
+for (const required of [
+  '要么是 Data Manifest，要么是 Delete Manifest',
+  '一个 Manifest 只对应一个 Partition Spec',
+  'Manifest 写出后就是不可变文件',
+]) {
+  if (!manifestV061.body.includes(required)) {
+    throw new Error(`Manifest P0 correctness rule missing: ${required}`)
+  }
+}
+
+const rowLevelV061 = readFrontMatter(
+  'content/knowledge/kb-iceberg-row-level-changes-001.md',
+)
+for (const required of [
+  'Position Delete',
+  'Equality Delete',
+  'Deletion Vector',
+  'Sequence Number',
+  'Data Manifest',
+  'Delete Manifest',
+]) {
+  if (!rowLevelV061.body.includes(required)) {
+    throw new Error(`Row-level chapter missing required concept: ${required}`)
+  }
+}
+
+const maintenanceV061 = readFrontMatter(
+  'content/knowledge/kb-iceberg-maintenance-small-files-001.md',
+)
+for (const required of [
+  'commit.manifest.target-size-bytes = 8 MB',
+  'commit.manifest.min-count-to-merge = 100',
+  'commit.manifest-merge.enabled = true',
+  '8 MB 是 Merge Target',
+  'rewriteManifests',
+]) {
+  if (!maintenanceV061.body.includes(required)) {
+    throw new Error(`Manifest maintenance rule missing: ${required}`)
+  }
 }
 
 const scenarioFiles = [

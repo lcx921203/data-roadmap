@@ -3,25 +3,24 @@ id: kb-iceberg-partition-evolution-001
 type: knowledge
 title: Hidden Partitioning & Partition Evolution
 title_cn: 隐藏分区与分区演进
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 4
+order: 5
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Iceberg 用 Partition Spec 和 Transform 描述逻辑分区；查询不必手写物理分区列，分区策略也能随表演进。"
+summary: Iceberg 用 Partition Spec 和 Transform 描述逻辑分区；查询不必手写物理分区列，分区策略也能随表演进。
 prerequisites:
-  - kb-iceberg-manifest-tree-001
+- kb-iceberg-row-level-changes-001
 related:
-  - kb-iceberg-schema-evolution-001
-  - kb-iceberg-trino-read-path-001
+- kb-iceberg-schema-evolution-001
+- kb-iceberg-trino-read-path-001
 ---
-
 # Hidden Partitioning & Partition Evolution
 
 ## 30 秒理解
@@ -64,6 +63,8 @@ Reader 读取时按每个文件对应的 Spec 正确解释。
 对象存储路径可以带分区可读信息，也可以使用其他布局策略。正确性不应依赖“路径字符串能不能看懂”。
 
 这和 Manifest 也一样：不要把逻辑分区设计退化成目录命名规范。
+
+再补一个和上一节直接相关的约束：**一个 Manifest 可以覆盖多个 Partition Value，但一个 Manifest 中的 Content Files 使用同一个 Partition Spec。** 当 Spec 演进时，新旧 Spec 会由不同 Manifest 正确记录。
 
 ## Production 选型
 
@@ -131,6 +132,9 @@ Query Engine 是否完成 Connector pushdown
 
 演进目标是改变**未来布局**，不是为了漂亮把所有历史文件强制重写。
 
+## 项目案例
+
+项目是否实际做过 Partition Evolution、采用什么 Transform，目前没有经过事实核验，不写进 Actual。
 
 ## 关联知识
 

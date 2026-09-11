@@ -3,24 +3,24 @@ id: kb-iceberg-schema-evolution-001
 type: knowledge
 title: Schema Evolution & Field ID
 title_cn: Schema 演进与 Field ID
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 5
+order: 6
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Iceberg 用稳定 Field ID 标识字段，使 rename、reorder 和兼容类型演进不依赖物理列位置；破坏性变更仍需要数据契约治理。"
+summary: Iceberg 用稳定 Field ID 标识字段，使 rename、reorder 和兼容类型演进不依赖物理列位置；破坏性变更仍需要数据契约治理。
 prerequisites:
-  - kb-iceberg-partition-evolution-001
+- kb-iceberg-partition-evolution-001
 related:
-  - kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-trino-read-path-001
+- kb-iceberg-write-distribution-ordering-001
 ---
-
 # Schema Evolution & Field ID
 
 ## 30 秒理解
@@ -140,6 +140,9 @@ Reader projection
 Downstream contract
 ```
 
+## 项目案例
+
+DataRoadmap 会把 Schema Evolution 作为北美项目的高相关能力，但具体是否处理过某个字段变更、采用何种兼容策略，需要 Project Fact Check 后才能写“我做过”。
 
 ## 大规模下会发生什么
 
@@ -149,4 +152,4 @@ Downstream contract
 
 ## 关联知识
 
-下一节进入 Write Distribution 与 Write Ordering：决定新文件怎样被组织出来。
+下一节先进入 Trino Read Path，把 Snapshot、Manifest、Data/Delete File、Partition 与 Schema 串成一次完整读取；再回到写入侧看新文件怎样产生。

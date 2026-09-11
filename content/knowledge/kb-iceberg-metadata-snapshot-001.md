@@ -3,25 +3,24 @@ id: kb-iceberg-metadata-snapshot-001
 type: knowledge
 title: Table Metadata & Snapshot
 title_cn: 表元数据与快照
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 2
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Table Metadata 记录 Schema、Partition Spec、Properties 与 Snapshot；Snapshot 则定义某一时刻表中有效文件的逻辑状态。"
+summary: Table Metadata 记录 Schema、Partition Spec、Properties 与 Snapshot；Snapshot 则定义某一时刻表中有效文件的逻辑状态。
 prerequisites:
-  - kb-iceberg-overview-001
+- kb-iceberg-overview-001
 related:
-  - kb-iceberg-manifest-tree-001
-  - kb-iceberg-commit-concurrency-001
+- kb-iceberg-manifest-tree-001
+- kb-iceberg-commit-concurrency-001
 ---
-
 # Table Metadata & Snapshot
 
 ## 30 秒理解
@@ -124,6 +123,9 @@ TableOperations
 
 不同 Catalog 的“原子切换”实现不同，但 Iceberg 的高层语义一致：**基于旧版本提交新版本，旧版本已变化时不能静默覆盖。**
 
+## 项目案例
+
+项目事实目前保持 `needs_fact_check`。后续若确认实际 Catalog、Snapshot 保留周期、回滚或重放策略，再放进 Project Case。
 
 ## 大规模下会发生什么
 

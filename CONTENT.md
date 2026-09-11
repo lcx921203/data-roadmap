@@ -109,7 +109,7 @@ Correctness
 Diagram 是辅助工具，不是默认内容形态。
 
 
-## 4. Learning Depth（学习深度）
+## 3. Learning Depth（学习深度）
 
 ### L1 — Awareness｜了解
 知道是什么、定位和基本用途。

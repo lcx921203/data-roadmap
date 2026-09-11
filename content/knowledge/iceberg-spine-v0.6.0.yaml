@@ -1,9 +1,9 @@
-version: 0.6.0
+version: 0.6.1
 type: knowledge_spine
 stage_id: '04'
 topic: iceberg
 learning_depth: L5
-status: spine_complete
+status: structure_revised
 nodes:
 - order: 1
   id: kb-iceberg-overview-001
@@ -15,26 +15,29 @@ nodes:
   id: kb-iceberg-manifest-tree-001
   focus: manifest list and manifest
 - order: 4
+  id: kb-iceberg-row-level-changes-001
+  focus: data files delete files and row-level changes
+- order: 5
   id: kb-iceberg-partition-evolution-001
   focus: hidden partitioning and evolution
-- order: 5
+- order: 6
   id: kb-iceberg-schema-evolution-001
   focus: schema evolution and field id
-- order: 6
-  id: kb-iceberg-write-distribution-ordering-001
-  focus: writer layout
 - order: 7
-  id: kb-iceberg-commit-concurrency-001
-  focus: optimistic commit and recovery
-- order: 8
-  id: kb-iceberg-maintenance-small-files-001
-  focus: maintenance
-- order: 9
   id: kb-iceberg-trino-read-path-001
-  focus: query planning and read path
+  focus: query planning pruning and read path
+- order: 8
+  id: kb-iceberg-write-distribution-ordering-001
+  focus: writer layout and manifest creation
+- order: 9
+  id: kb-iceberg-commit-concurrency-001
+  focus: optimistic commit conflict and recovery
 - order: 10
+  id: kb-iceberg-maintenance-small-files-001
+  focus: file and metadata maintenance
+- order: 11
   id: kb-iceberg-production-troubleshooting-001
-  focus: production troubleshooting
+  focus: production troubleshooting and capacity
 truthfulness:
   project_actual: fact_check_required
   production_pattern: publishable_as_knowledge

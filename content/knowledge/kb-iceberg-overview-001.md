@@ -10,11 +10,11 @@ order: 1
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
   - north-america
 project_fact_status: needs_fact_check
-summary: "先建立总图：Iceberg 是开放表格式，用 Metadata、Snapshot、Manifest 和原子提交把对象存储上的文件组织成可事务、可演进的逻辑表。"
+summary: "先建立主线：Iceberg 用 Metadata、Snapshot、Manifest 和原子提交，把对象存储上的文件组织成可事务、可演进的逻辑表。"
 prerequisites:
   - kb-storage-file-formats
 related:
@@ -69,11 +69,12 @@ Iceberg 的读写与运维可以沿下面这条链理解：
 表状态
 → Table Metadata / Snapshot
 → Manifest List / Manifest
+→ Data File / Delete File
 → Partition / Schema
+→ Trino Read Path / Pruning
 → Write Distribution / Ordering
 → Commit
 → Maintenance
-→ Trino Read Path
 → Production Troubleshooting
 ```
 

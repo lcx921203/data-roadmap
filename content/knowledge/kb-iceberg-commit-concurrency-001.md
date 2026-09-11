@@ -3,26 +3,25 @@ id: kb-iceberg-commit-concurrency-001
 type: knowledge
 title: Optimistic Commit, Conflict & Recovery
 title_cn: 乐观提交、冲突与恢复
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
-order: 7
+order: 9
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.0_spine
+content_status: v0.6.1_spine
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Iceberg 以 Metadata Pointer 的原子替换实现乐观并发；冲突后是否能安全重试，取决于操作类型和 Validation 条件。"
+summary: Iceberg 以 Metadata Pointer 的原子替换实现乐观并发；冲突后是否能安全重试，取决于操作类型和 Validation 条件。
 prerequisites:
-  - kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-write-distribution-ordering-001
 related:
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-maintenance-small-files-001
 scale_scenarios:
-  - sc-iceberg-concurrent-commit-001
+- sc-iceberg-concurrent-commit-001
 ---
-
 # Optimistic Commit, Conflict & Recovery
 
 ## 30 秒理解
@@ -165,6 +164,9 @@ Retry storm
 
 解决方案可能包括更合理的微批窗口、Writer 聚合、Branch/WAP、任务隔离或表拆分，而不是简单扩大 Spark Executor。
 
+## 项目案例
+
+目前没有把“项目发生过 Commit Contention 或采用某种 Retry 参数”写成用户真实经历。后续 Project Fact Check 后再决定。
 
 ## 关联知识
 
