@@ -71,14 +71,24 @@
 - [x] Scale -> evidence-backed Interview mapping
 - [x] Show current Evidence counts instead of copied frequency claims
 - [x] Show curated / pending answer status
-- [x] Do not synthesize Iceberg-specific frequency
+- [x] Do not synthesize technology-specific frequency
 
-### Next: V0.6.5 Three-Tab Cross Navigation
-- [ ] Interview -> Knowledge
-- [ ] Interview -> Scale
-- [ ] Knowledge -> related Scale scenarios
-- [ ] Scale -> related Knowledge nodes
-- [ ] Complete Iceberg Learn / Interview / Scale graph
+### V0.6.5 Three-Tab Cross Navigation
+- [x] Interview -> Knowledge
+- [x] Interview -> Scale
+- [x] Knowledge -> related Scale scenarios
+- [x] Scale -> related Knowledge nodes
+- [x] Derive reverse links instead of duplicating Scenario relationships
+- [x] Remove author-specific Project sections from public Interview rendering
+- [x] Complete Iceberg Learn / Interview / Scale graph
+
+### Next: V0.6.6 Iceberg Vertical Slice Audit
+- [ ] Audit cross-tab knowledge progression
+- [ ] Audit duplicated or fragmented explanations
+- [ ] Audit mapping precision
+- [ ] Audit mobile content density
+- [ ] Audit truth / evidence boundaries
+- [ ] Freeze Iceberg V1 product loop
 
 ### Later: UI Review
 - [ ] Review information hierarchy with complete Iceberg content

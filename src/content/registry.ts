@@ -38,9 +38,26 @@ interface CanonicalFrequencyFile {
   questions: CanonicalFrequencyRecord[]
 }
 
+interface InterviewKnowledgeMapping {
+  interview: string
+  knowledge: string[]
+}
+
+interface IcebergCrossNavigationFile {
+  version: string
+  topic: string
+  cross_navigation?: {
+    interview_to_knowledge?: InterviewKnowledgeMapping[]
+  }
+}
+
 export const taxonomy = loadYaml<TaxonomyFile>('content/taxonomy.yaml')
 export const projectMapping = loadYaml<ProjectMappingFile>(
   'content/project-mapping.yaml',
+)
+
+const icebergCrossNavigation = loadYaml<IcebergCrossNavigationFile>(
+  'content/mappings/iceberg-v0.6.0.yaml',
 )
 
 const firstInterviewBank = loadYaml<InterviewBankFile>(
@@ -195,6 +212,63 @@ export function getKnowledgeNeighbors(id: string): {
         ? stageArticles[index + 1]
         : null,
   }
+}
+
+export function getScalesForKnowledge(
+  knowledgeId: string,
+): ScaleScenario[] {
+  const article = getKnowledgeById(knowledgeId)
+  const explicitIds = new Set(article?.meta.scale_scenarios ?? [])
+
+  return scaleScenarios.filter(
+    (scenario) =>
+      explicitIds.has(scenario.id) ||
+      scenario.knowledge?.includes(knowledgeId),
+  )
+}
+
+export function getInterviewIdsForKnowledge(
+  knowledgeId: string,
+): string[] {
+  const article = getKnowledgeById(knowledgeId)
+  const ids = new Set(article?.meta.interview_relevance ?? [])
+
+  for (
+    const mapping of
+      icebergCrossNavigation.cross_navigation?.interview_to_knowledge ?? []
+  ) {
+    if (mapping.knowledge.includes(knowledgeId)) {
+      ids.add(mapping.interview)
+    }
+  }
+
+  return Array.from(ids)
+}
+
+export function getKnowledgeForInterview(
+  interviewId: string,
+): MarkdownDocument<KnowledgeFrontMatter>[] {
+  const configuredIds = new Set(
+    (
+      icebergCrossNavigation.cross_navigation?.interview_to_knowledge ?? []
+    ).flatMap((mapping) =>
+      mapping.interview === interviewId ? mapping.knowledge : [],
+    ),
+  )
+
+  return knowledgeArticles.filter(
+    (article) =>
+      configuredIds.has(article.meta.id) ||
+      article.meta.interview_relevance?.includes(interviewId),
+  )
+}
+
+export function getScalesForInterview(
+  interviewId: string,
+): ScaleScenario[] {
+  return scaleScenarios.filter((scenario) =>
+    scenario.interviews?.includes(interviewId),
+  )
 }
 
 export function getQuestionFrequencyRecord(

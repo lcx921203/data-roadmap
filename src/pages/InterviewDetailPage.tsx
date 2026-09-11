@@ -4,6 +4,8 @@ import { FollowUpDisclosure } from '../components/FollowUpDisclosure'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
 import { MarkdownSections } from '../components/MarkdownSections'
 import { ReadingSegment } from '../components/ReadingSegment'
+import { RelatedKnowledgeSection } from '../components/RelatedKnowledgeSection'
+import { RelatedScaleSection } from '../components/RelatedScaleSection'
 import { ScaleFollowUpSection } from '../components/ScaleFollowUpSection'
 import { TopBar } from '../components/TopBar'
 import {
@@ -14,7 +16,9 @@ import {
 import { getCuratedFollowUps } from '../content/followups'
 import {
   appRegistry,
+  getKnowledgeForInterview,
   getQuestionEvidence,
+  getScalesForInterview,
 } from '../content/registry'
 import type {
   InterviewAnswerFrontMatter,
@@ -38,7 +42,6 @@ const interviewSectionTitles = new Set([
   'Checkpoint 变慢怎么排查',
   '指标突然不准：标准排查路径',
   '常见错误回答',
-  '项目怎么结合',
 ])
 
 function isScale(section: MarkdownSection): boolean {
@@ -54,7 +57,10 @@ function selectCoreSections(
   mode: ReadingMode,
 ): MarkdownSection[] {
   const candidates = sections.filter(
-    (section) => !isScale(section) && !isFollowUp(section),
+    (section) =>
+      !isScale(section) &&
+      !isFollowUp(section) &&
+      section.title !== '项目怎么结合',
   )
 
   if (mode === 'interview') {
@@ -66,8 +72,7 @@ function selectCoreSections(
   return candidates.filter(
     (section) =>
       section.title !== '这道题在考什么' &&
-      section.title !== '常见错误回答' &&
-      section.title !== '项目怎么结合',
+      section.title !== '常见错误回答',
   )
 }
 
@@ -108,6 +113,8 @@ export function InterviewDetailPage({
   )
   const followUps = getCuratedFollowUps(id)
   const evidence = getQuestionEvidence(id)
+  const relatedKnowledge = getKnowledgeForInterview(id)
+  const relatedScales = getScalesForInterview(id)
 
   if (!question) {
     return (
@@ -141,7 +148,7 @@ export function InterviewDetailPage({
         ) : (
           <section className="answer-pending">
             <h2>答案整理中</h2>
-            <p>可以先查看这道题的面经依据。</p>
+            <p>可以先查看这道题的面经依据和关联学习内容。</p>
           </section>
         )}
 
@@ -164,14 +171,20 @@ export function InterviewDetailPage({
               />
             )}
 
-            {coreSections.length === 0 &&
-              mode === 'learn' && (
-                <p className="empty-note">
-                  这个阅读模式下暂时没有更多内容。
-                </p>
-              )}
+            {coreSections.length === 0 && mode === 'learn' && (
+              <p className="empty-note">
+                这个阅读模式下暂时没有更多内容。
+              </p>
+            )}
           </>
         )}
+
+        <RelatedKnowledgeSection
+          ids={relatedKnowledge.map((article) => article.meta.id)}
+        />
+        <RelatedScaleSection
+          ids={relatedScales.map((scenario) => scenario.id)}
+        />
       </article>
     </>
   )

@@ -26,7 +26,7 @@ export function RelatedInterviewSection({
       <div className="related-interviews__heading">
         <h2>真实面试关联</h2>
         <p>
-          来自已有面试证据。这里表示内容相关，不代表 Iceberg 专项频率。
+          来自已有面试证据。内容关联不等于某个技术的专项高频。
         </p>
       </div>
 

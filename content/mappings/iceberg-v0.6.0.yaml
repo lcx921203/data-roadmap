@@ -1,7 +1,8 @@
-version: 0.6.2
+version: 0.6.5
 topic: iceberg
 
 project:
+  status: backstage_only
   north-america:
     relevance: high
     project_case_id: pj-north-america-iceberg-001
@@ -24,3 +25,24 @@ scale_lab:
     - sc-iceberg-10b-backfill-001
     - sc-iceberg-streaming-small-files-001
     - sc-iceberg-concurrent-commit-001
+
+cross_navigation:
+  interview_to_knowledge:
+    - interview: iq-lake-vs-warehouse-001
+      knowledge:
+        - kb-iceberg-overview-001
+
+    - interview: iq-large-dataset-tech-selection-001
+      knowledge:
+        - kb-iceberg-production-troubleshooting-001
+
+    - interview: iq-system-concurrency-fault-tolerance-001
+      knowledge:
+        - kb-iceberg-commit-concurrency-001
+
+  policy:
+    knowledge_to_scale: derived_from_scale_scenario_knowledge
+    scale_to_knowledge: scale_scenario_owns_knowledge_ids
+    interview_to_scale: derived_from_scale_scenario_interviews
+    scale_to_interview: scale_scenario_owns_interview_ids
+    reverse_links: derived_not_duplicated

@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
 import { MarkdownBlocks } from '../components/MarkdownBlocks'
 import { RelatedInterviewSection } from '../components/RelatedInterviewSection'
+import { RelatedScaleSection } from '../components/RelatedScaleSection'
 import { TopBar } from '../components/TopBar'
 import {
+  getInterviewIdsForKnowledge,
   getKnowledgeById,
   getKnowledgeNeighbors,
+  getScalesForKnowledge,
 } from '../content/registry'
 import { splitH2Sections } from '../content/loaders'
 import { recordKnowledgeVisit } from '../utils/learningProgress'
@@ -36,6 +39,8 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
   const quick = sections.find((section) => section.title === '30 秒理解')
   const rest = sections.filter((section) => section.title !== '30 秒理解')
   const neighbors = getKnowledgeNeighbors(id)
+  const relatedScales = getScalesForKnowledge(id)
+  const interviewIds = getInterviewIdsForKnowledge(id)
   const topicLabel =
     article.meta.topic === 'iceberg'
       ? 'Iceberg'
@@ -113,7 +118,10 @@ export function KnowledgeDetailPage({ id }: KnowledgeDetailPageProps) {
           ))}
         </div>
 
-        <RelatedInterviewSection ids={article.meta.interview_relevance} />
+        <RelatedScaleSection
+          ids={relatedScales.map((scenario) => scenario.id)}
+        />
+        <RelatedInterviewSection ids={interviewIds} />
 
         <nav className="knowledge-sequence" aria-label="学习顺序">
           {neighbors.previous ? (
