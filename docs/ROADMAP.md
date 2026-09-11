@@ -210,15 +210,56 @@
 - [x] Keep frozen V1.9 UI unchanged
 - [x] Freeze Spark V1
 
-## V0.9 Fourth Vertical Slice — Flink
+## V0.9 Fourth Vertical Slice — dbt
 
-### Next: V0.9.0 Flink Knowledge Spine Freeze
-- [ ] Validate the current Flink release baseline
-- [ ] Freeze the causal Learn spine before writing article bodies
-- [ ] Freeze Spark / Flink / Kafka responsibility boundaries
-- [ ] Register only evidence-backed Interview seeds
-- [ ] Reuse the frozen Learn / Interview / Scale UI contract
-- [ ] Keep UI unchanged
+### V0.9.0 dbt Knowledge Spine Freeze
+- [x] Keep dbt in Stage 05 / L5 Core
+- [x] Freeze a 12-node causal knowledge spine
+- [x] Freeze responsibilities, prerequisites and handoffs
+- [x] Freeze explicit must-not-cover boundaries
+- [x] Freeze dbt / Dimensional Modeling / Semantic Layer / Dagster / DataHub boundaries
+- [x] Use dbt Core v1.12.2 as the stable production baseline
+- [x] Track dbt Core v2.0 beta as version-sensitive next-generation context
+- [x] Register only existing evidence-backed Interview seeds
+- [x] Explicitly record that no dbt-specific verified Interview question exists yet
+- [x] Keep UI unchanged
+- [x] Keep all dbt article bodies unwritten
+
+### Next: V0.9.1 dbt Project & DAG
+- [ ] 01 dbt Overview & Transformation Mental Model
+- [ ] 02 Project / Target / Adapter / Command Lifecycle
+- [ ] 03 Sources / Models / ref / source / Dependency Graph
+- [ ] 04 Jinja / Macros / Packages / Adapter Abstraction
+
+### V0.9.2 dbt Materialization & Stateful Modeling
+- [ ] 05 Materializations & Physical Persistence
+- [ ] 06 Incremental Models / Unique Key / Strategies / Backfill
+- [ ] 07 Snapshots / Source History / SCD2 Implementation
+
+### V0.9.3 dbt Quality, Contracts & Metadata
+- [ ] 08 Data Tests / Unit Tests / Freshness / Reconciliation
+- [ ] 09 Model Contracts / Versions / Change Safety
+- [ ] 10 Docs / Artifacts / Lineage / Metadata Integration
+
+### V0.9.4 dbt CI & Production Closure
+- [ ] 11 Selection / State / Defer / CI
+- [ ] 12 Production Troubleshooting / Cost / Orchestration Boundary
+- [ ] Knowledge progression audit
+- [ ] Technical correctness audit
+
+### V0.9.5 dbt Scale & Interview Integration
+- [ ] Create only justified hypothetical dbt Scale scenarios
+- [ ] Map only existing evidence-backed Interview questions
+- [ ] Do not invent dbt-specific frequency
+- [ ] Add contextual cross-tab relations
+
+### V0.9.6 dbt Vertical Slice Freeze
+- [ ] Three-tab closure audit
+- [ ] Mobile reading audit
+- [ ] Freeze dbt V1
+
+### Deferred vertical
+- [ ] Flink — resume after the dbt slice unless priorities change
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found

@@ -1,0 +1,383 @@
+version: 0.9.0
+type: knowledge_spine
+stage_id: '05'
+topic: dbt
+learning_depth: L5
+status: frozen_structure_no_body
+technical_baseline:
+  validation_date: '2026-09-11'
+  stable_production_track: dbt Core v1.12.2
+  next_generation_track: dbt Core v2.0 beta
+  baseline_rule: Teach stable dbt framework semantics as the production learning baseline. Treat v2/Fusion-era parser, packaging,
+    artifact-format and runtime changes as version-sensitive until revalidated before article publication.
+product_boundary:
+  dbt_owns:
+  - analytics_engineering_transformation_project
+  - resource_graph_and_dependency_declaration
+  - sql_jinja_compilation
+  - model_materialization
+  - incremental_modeling
+  - snapshot_resource
+  - data_tests_unit_tests_and_freshness
+  - model_contracts_and_versions
+  - documentation_and_runtime_artifacts
+  - state_selection_defer_and_ci_workflow
+  - transformation_level_production_diagnostics
+  dimensional_modeling_boundary:
+    stage_03_owns:
+    - grain_design
+    - fact_dimension_design
+    - star_snowflake_schema
+    - scd_business_modeling
+    - business_key_and_dimensional_semantics
+    dbt_rule: dbt teaches how modeling decisions are implemented and validated as code. It must not reteach dimensional-modeling
+      theory as if dbt invented it.
+  semantic_layer_boundary:
+    stage_06_owns:
+    - semantic_model
+    - entity_dimension_measure
+    - metric_types
+    - join_graph
+    - metricflow_semantics
+    - semantic_query_and_serving
+    dbt_rule: dbt may expose the handoff from tested models to semantic resources, but MetricFlow and metric semantics remain
+      Stage 06.
+  orchestration_boundary:
+    dagster_owns_later:
+    - cross_system_asset_orchestration
+    - schedule_sensor_automation
+    - partitioned_backfill_orchestration
+    - cross_asset_retry_and_run_coordination
+    dbt_rule: dbt Core owns transformation build semantics, not general cross-system orchestration. A dbt deployment platform
+      may schedule dbt jobs, but that does not replace the orchestration taxonomy.
+  governance_boundary:
+    datahub_owns_later:
+    - enterprise_catalog
+    - cross_platform_lineage
+    - ownership_governance
+    - metadata_search_and_discovery
+    dbt_rule: dbt owns model/docs/artifact metadata for its project. DataHub owns enterprise metadata ingestion and governance
+      across systems.
+  execution_engine_boundary:
+    warehouse_or_engine_owns:
+    - physical_sql_execution_plan
+    - join_algorithm_runtime
+    - scan_shuffle_memory_runtime
+    - database_transaction_and_storage_internals
+    dbt_rule: dbt compiles and submits transformation SQL through an adapter. It does not replace the target engine's optimizer
+      or runtime.
+content_principles:
+  progression: causal
+  content_first_continuity: true
+  modern_dbt_only: true
+  stable_first_v2_aware: true
+  avoid_cli_encyclopedia: true
+  avoid_yaml_encyclopedia: true
+  code_examples_required_in_article_bodies: true
+  production_first: true
+  project_actual: backstage_only
+  production_pattern: publishable_as_knowledge
+  scale_lab: hypothetical_only
+  interview_frequency: evidence_only
+interview_seed_ids:
+- iq-warehouse-layering-001
+- iq-data-quality-diagnosis-001
+- iq-dimensional-partial-late-data-001
+- iq-scd1-vs-scd2-001
+- iq-data-product-system-design-001
+interview_policy:
+  no_verified_dbt_specific_question_yet: true
+  mapping_means_relevance_not_dbt_frequency: true
+  do_not_create_fake_dbt_specific_frequency: true
+  dimensional_and_quality_questions_keep_original_ownership: true
+nodes:
+- order: 1
+  id: kb-dbt-overview-001
+  title: dbt Overview & Transformation Mental Model
+  title_cn: dbt 总览与 Transformation 心智模型
+  responsibility: 建立 dbt 是 Analytics Engineering / Transformation Framework 的核心模型：它把仓库内转换逻辑工程化为可版本控制、可依赖、可测试、可文档化的资源图，但不负责数据接入，也不替代底层计算引擎。
+  prerequisites: []
+  must_explain:
+  - what_dbt_is_and_is_not
+  - transform_in_warehouse_or_data_platform
+  - analytics_engineering_positioning
+  - sql_jinja_to_database_relation_high_level
+  - dbt_core_vs_dbt_platform_boundary
+  - dbt_vs_etl_tool_boundary
+  must_not_cover:
+  - materialization_details
+  - incremental_logic
+  - metricflow_semantics
+  - dagster_orchestration_details
+  - warehouse_optimizer_internals
+  handoff_to: kb-dbt-project-runtime-001
+- order: 2
+  id: kb-dbt-project-runtime-001
+  title: Project, Target, Adapter & Command Lifecycle
+  title_cn: Project、Target、Adapter 与 Command Lifecycle
+  responsibility: 解释 dbt Project 如何被发现、解析、编译并通过 Adapter 在目标数据平台执行，建立 dbt_project、profile/target、parse/compile/run/build 的运行骨架。
+  prerequisites:
+  - kb-dbt-overview-001
+  must_explain:
+  - dbt_project_resource_discovery
+  - profile_target_credentials_concept
+  - adapter_abstraction_high_level
+  - parse_vs_compile_vs_execute
+  - run_vs_build_high_level
+  - target_environment_boundary
+  - compiled_sql_as_debugging_surface
+  must_not_cover:
+  - adapter_installation_matrix
+  - every_cli_command
+  - model_dag_details
+  - macro_dispatch_details
+  - orchestrator_scheduling
+  handoff_to: kb-dbt-sources-models-dag-001
+- order: 3
+  id: kb-dbt-sources-models-dag-001
+  title: Sources, Models, ref(), source() & Dependency Graph
+  title_cn: Sources、Models、ref()/source() 与 Dependency Graph
+  responsibility: 解释 Source 和 Model 如何成为 dbt 资源，ref()/source() 如何同时解决关系解析与依赖声明，以及 DAG 如何决定构建顺序、血缘和下游影响范围。
+  prerequisites:
+  - kb-dbt-project-runtime-001
+  must_explain:
+  - source_declaration
+  - model_as_select_logic
+  - ref_resolution
+  - source_resolution
+  - dependency_graph
+  - topological_build_order
+  - lineage_and_impact_analysis
+  - direct_table_name_vs_ref_tradeoff
+  must_not_cover:
+  - state_selection_ci
+  - materialization_cost
+  - semantic_join_graph
+  - enterprise_lineage
+  handoff_to: kb-dbt-jinja-macros-adapters-001
+- order: 4
+  id: kb-dbt-jinja-macros-adapters-001
+  title: Jinja, Macros, Packages & Adapter Abstraction
+  title_cn: Jinja、Macros、Packages 与 Adapter Abstraction
+  responsibility: 解释 dbt 如何在执行 SQL 之前通过 Jinja/Macro 生成最终 SQL，怎样抽取可复用逻辑，并通过 Adapter/dispatch 隔离部分数据平台差异。
+  prerequisites:
+  - kb-dbt-sources-models-dag-001
+  must_explain:
+  - jinja_compile_time_model
+  - macro_as_sql_code_generation
+  - config_and_context_high_level
+  - package_dependency_reuse
+  - adapter_dispatch_boundary
+  - compiled_sql_debugging
+  - dry_vs_over_abstraction_tradeoff
+  must_not_cover:
+  - jinja_language_encyclopedia
+  - custom_materialization_deep_dive
+  - warehouse_specific_macro_catalog
+  - semantic_layer_macros
+  handoff_to: kb-dbt-materializations-001
+- order: 5
+  id: kb-dbt-materializations-001
+  title: Materializations & Physical Persistence
+  title_cn: Materializations 与物理持久化
+  responsibility: 解释同一个 Model SELECT 如何通过不同 Materialization 变成不同数据库对象，以及 View、Table、Incremental、Ephemeral、Materialized View
+    的性能、成本、可调试性和刷新语义差异。
+  prerequisites:
+  - kb-dbt-jinja-macros-adapters-001
+  must_explain:
+  - materialization_as_persistence_strategy
+  - view
+  - table
+  - incremental_positioning
+  - ephemeral_cte_compilation
+  - materialized_view_current_positioning
+  - adapter_support_boundary
+  - materialization_selection_tradeoffs
+  must_not_cover:
+  - incremental_state_machine_details
+  - snapshot_scd2
+  - database_materialized_view_engine_internals
+  - assume_all_adapters_support_same_types
+  handoff_to: kb-dbt-incremental-models-001
+- order: 6
+  id: kb-dbt-incremental-models-001
+  title: Incremental Models, Unique Key, Strategies & Backfill
+  title_cn: Incremental Models、Unique Key、Strategies 与 Backfill
+  responsibility: 解释 Incremental Model 为什么从无状态 SELECT 变成依赖已有目标表的增量更新逻辑，如何用 is_incremental()/this、过滤窗口、unique_key 和 adapter-specific
+    strategy 处理新增、更新、迟到、重跑与回填。
+  prerequisites:
+  - kb-dbt-materializations-001
+  must_explain:
+  - first_run_vs_incremental_run
+  - is_incremental_and_this
+  - incremental_filter
+  - unique_key_semantics
+  - append_merge_delete_insert_overwrite_strategy_concepts
+  - adapter_specific_strategy_support
+  - late_arriving_lookback_window
+  - idempotency_and_duplicate_risk
+  - full_refresh_boundary
+  - backfill_strategy
+  - on_schema_change_concept
+  - microbatch_incremental_strategy_boundary
+  must_not_cover:
+  - treat_incremental_as_streaming_engine
+  - assume_unique_key_is_database_constraint
+  - universal_incremental_strategy
+  - snapshot_history_model
+  - exact_adapter_config_defaults
+  handoff_to: kb-dbt-snapshots-history-001
+- order: 7
+  id: kb-dbt-snapshots-history-001
+  title: Snapshots, Source History & SCD2 Implementation
+  title_cn: Snapshots、Source History 与 SCD2 实现
+  responsibility: 解释 dbt Snapshot 如何记录可变 Source 的历史版本，区分 Incremental Model 与 Snapshot 的目标，并把 SCD Type 2 的实现责任与 Stage 03 的维度建模理论明确分开。
+  prerequisites:
+  - kb-dbt-incremental-models-001
+  must_explain:
+  - snapshot_resource_purpose
+  - scd2_implementation_boundary
+  - unique_key_requirement
+  - timestamp_strategy
+  - check_strategy
+  - hard_delete_handling_concept
+  - snapshot_vs_incremental
+  - snapshot_state_growth
+  must_not_cover:
+  - reteach_scd_business_theory
+  - treat_snapshot_as_backup_system
+  - assume_source_history_is_already_immutable
+  - exact_version_specific_config_names_without_revalidation
+  handoff_to: kb-dbt-tests-freshness-reconciliation-001
+- order: 8
+  id: kb-dbt-tests-freshness-reconciliation-001
+  title: Data Tests, Unit Tests, Freshness & Reconciliation
+  title_cn: Data Tests、Unit Tests、Freshness 与 Reconciliation
+  responsibility: 把数据质量从运行后人工发现变成 DAG 内的可执行验证：区分 Data Test、Unit Test、Source Freshness 与业务 Reconciliation，理解不同测试分别验证数据结果、SQL
+    逻辑和上游时效。
+  prerequisites:
+  - kb-dbt-snapshots-history-001
+  must_explain:
+  - generic_data_tests
+  - singular_data_tests
+  - not_null_unique_relationships_accepted_values
+  - custom_data_tests
+  - unit_tests_with_static_inputs
+  - source_freshness
+  - reconciliation
+  - test_failure_severity_and_pipeline_effect_high_level
+  - where_each_test_type_fits
+  must_not_cover:
+  - claim_tests_guarantee_all_data_correctness
+  - full_data_quality_platform
+  - datahub_quality_governance
+  - warehouse_constraint_equivalence
+  handoff_to: kb-dbt-contracts-versions-001
+- order: 9
+  id: kb-dbt-contracts-versions-001
+  title: Model Contracts, Versions & Change Safety
+  title_cn: Model Contracts、Versions 与变更安全
+  responsibility: 解释测试回答“数据现在对不对”，Contract/Versioning 回答“下游可以依赖什么接口”，建立 Column Name/Type、Breaking Change、模型版本和消费者迁移的工程边界。
+  prerequisites:
+  - kb-dbt-tests-freshness-reconciliation-001
+  must_explain:
+  - model_contract_purpose
+  - column_name_and_data_type_contract
+  - constraints_adapter_boundary
+  - contract_vs_data_test
+  - breaking_change
+  - model_versions
+  - latest_version_and_consumer_migration_concept
+  - schema_change_vs_interface_change
+  must_not_cover:
+  - assume_contract_is_database_constraint
+  - assume_all_materializations_support_contract_equally
+  - metric_versioning
+  - enterprise_data_contract_platform
+  handoff_to: kb-dbt-artifacts-lineage-metadata-001
+- order: 10
+  id: kb-dbt-artifacts-lineage-metadata-001
+  title: Docs, Artifacts, Lineage & Metadata Integration
+  title_cn: Docs、Artifacts、Lineage 与 Metadata Integration
+  responsibility: 解释 dbt 如何把项目资源图、运行结果和文档暴露为机器可读 Artifact，以及这些元数据如何支撑 Docs、CI、影响分析和 DataHub 等外部治理系统。
+  prerequisites:
+  - kb-dbt-contracts-versions-001
+  must_explain:
+  - project_docs_and_descriptions
+  - manifest_as_project_graph_artifact_concept
+  - run_results_as_execution_artifact_concept
+  - catalog_and_source_artifact_concepts
+  - artifact_versioning_boundary
+  - column_and_model_lineage_metadata_boundary
+  - datahub_ingestion_handoff
+  - v1_json_vs_v2_artifact_format_version_sensitivity
+  must_not_cover:
+  - datahub_enterprise_catalog_internals
+  - freeze_artifact_schema_forever
+  - claim_dbt_has_cross_platform_complete_lineage
+  - metricflow_semantic_graph
+  handoff_to: kb-dbt-state-defer-ci-001
+- order: 11
+  id: kb-dbt-state-defer-ci-001
+  title: Selection, State, Defer & CI
+  title_cn: Selection、State、Defer 与 CI
+  responsibility: 解释 dbt 如何利用 DAG 和前一次 Artifact 做 Change-aware Build：从基础 Node Selection 到 state:modified、defer 和隔离环境验证，理解
+    Slim/State-aware CI 为什么能减少无关重建但仍有状态一致性边界。
+  prerequisites:
+  - kb-dbt-artifacts-lineage-metadata-001
+  must_explain:
+  - node_selection_basics
+  - graph_operators_high_level
+  - state_comparison
+  - state_modified_concept
+  - defer_resolution_concept
+  - isolated_ci_schema
+  - change_impact_testing
+  - state_artifact_freshness_boundary
+  - ci_cost_vs_coverage_tradeoff
+  must_not_cover:
+  - every_selector_syntax
+  - dbt_state_product_preview_as_core_invariant
+  - orchestrator_ci_pipeline_details
+  - assume_state_selection_proves_data_correctness
+  handoff_to: kb-dbt-production-troubleshooting-001
+- order: 12
+  id: kb-dbt-production-troubleshooting-001
+  title: Production Troubleshooting, Cost & Orchestration Boundary
+  title_cn: 生产排障、成本与 Orchestration Boundary
+  responsibility: 把前 11 节收束成生产运行模型：从 Parse/Compile/Execute、DAG、Materialization、Incremental State、Tests、Artifacts 与 CI 判断失败层级，处理重跑、Full
+    Refresh、仓库成本和调度边界，并明确 dbt 与 Dagster/底层计算引擎的责任。
+  prerequisites:
+  - kb-dbt-state-defer-ci-001
+  must_explain:
+  - parse_compile_database_execution_failure_domains
+  - compiled_sql_and_logs_for_diagnosis
+  - run_results_and_artifacts_for_observability
+  - incremental_drift_and_rebuild_decision
+  - test_failure_and_freshness_incident
+  - idempotent_rerun_boundary
+  - threads_and_database_concurrency_high_level
+  - warehouse_compute_cost
+  - full_refresh_risk
+  - dbt_core_vs_scheduler_orchestrator_boundary
+  - dagster_handoff
+  - production_deployment_and_environment_separation
+  must_not_cover:
+  - introduce_new_core_dbt_resource
+  - generic_cli_checklist
+  - claim_dbt_core_is_general_purpose_orchestrator
+  - claim_dbt_platform_has_no_orchestration_features
+  - reteach_warehouse_execution_engine
+  - claim_demo_scale_as_project_production_evidence
+  handoff_to: scale_and_interview_integration
+freeze:
+  body_written: false
+  ui_changes: false
+  scale_scenarios_written: false
+  interview_answers_written: false
+  structure_frozen: true
+  node_count: 12
+  reopen_structure_only_for:
+  - verified_technical_error
+  - proven_progression_break
+  - major_stable_dbt_v2_semantic_change_before_body_publication
