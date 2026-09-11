@@ -355,14 +355,27 @@
 - [x] Make Dark-mode flow stronger than Light without outer glow / shadow
 - [x] Preserve Reduced Motion behavior
 
-### Next: V1.0.2 MetricFlow Metrics & Semantic Graph
-- [ ] 05 Simple Metrics / Aggregation / Additivity
-- [ ] 06 Semantic Graph / Join Logic / Fan-out Safety
-- [ ] 07 Ratio / Derived Metrics
-- [ ] 08 Time Spine / Cumulative Metrics
-- [ ] 09 Conversion Metrics
+### V1.0.2 MetricFlow Metrics & Semantic Graph
+- [x] 05 Simple Metrics / Aggregation / Additivity
+- [x] 06 Semantic Graph / Join Logic / Fan-out Safety
+- [x] 07 Ratio / Derived Metrics
+- [x] 08 Time Spine / Cumulative Metrics
+- [x] 09 Conversion Metrics
+- [x] Use Simple Metric as the current primitive aggregation object
+- [x] Keep deprecated Measure syntax as migration context only
+- [x] Connect Grain -> Aggregation -> Additivity correctness
+- [x] Treat Entity Type as semantic cardinality metadata for safe joins
+- [x] Explain Fan-out and Chasm as correctness failures, not SQL syntax failures
+- [x] Keep current two-hop multi-hop limit explicitly version-sensitive
+- [x] Separate semantic join path from physical join algorithm
+- [x] Teach Ratio as aggregation-aligned numerator / denominator composition
+- [x] Teach Derived as metric-level expressions with filter / alias / offset
+- [x] Freeze Time Dimension vs Time Spine distinction
+- [x] Freeze Window vs Grain-to-date distinction
+- [x] Teach Conversion as pre-aggregation Entity-Time matching, not ordinary Ratio
+- [x] Keep UI / Dark Theme frozen after V1.0.1.2
 
-### V1.0.3 MetricFlow Query & Consumption
+### Next: V1.0.3 MetricFlow Query & Consumption
 - [ ] 10 Metric Query Generation / Commands / Validation
 - [ ] 11 Saved Queries / Exports / Cache / Consumption
 

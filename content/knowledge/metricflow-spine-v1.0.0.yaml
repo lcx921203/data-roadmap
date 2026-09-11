@@ -4,7 +4,7 @@ stage_id: '06'
 topic: metricflow
 title: MetricFlow / Semantic Layer
 learning_depth: L5
-status: semantic_foundation_partial
+status: metrics_semantic_graph_partial
 technical_baseline:
   validation_date: '2026-09-12'
   current_semantic_spec: dbt v1.12+ latest semantic model / metric YAML spec
@@ -390,10 +390,10 @@ nodes:
 freeze:
   structure_frozen: true
   article_bodies_written: false
-  published_nodes: 4
-  remaining_nodes: 8
-  body_status: partial_4_of_12
-  next_milestone: V1.0.2 MetricFlow Metrics & Semantic Graph
+  published_nodes: 9
+  remaining_nodes: 3
+  body_status: partial_9_of_12
+  next_milestone: V1.0.3 MetricFlow Query & Consumption
   reopen_spine_only_for:
   - verified_technical_error
   - causal_progression_gap
