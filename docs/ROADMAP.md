@@ -279,13 +279,20 @@
 - [x] Technical correctness audit
 - [x] Freeze dbt Learn V1 at 12 / 12
 
-### Next: V0.9.5 dbt Scale & Interview Integration
-- [ ] Create only justified hypothetical dbt Scale scenarios
-- [ ] Map only existing evidence-backed Interview questions
-- [ ] Do not invent dbt-specific frequency
-- [ ] Add contextual cross-tab relations
+### V0.9.5 dbt Scale & Interview Integration
+- [x] Create 3 hypothetical dbt Scale scenarios
+- [x] Add Modeling Engineering as the third Scale domain
+- [x] Add Incremental Drift / Late Data / Backfill scenario
+- [x] Add Contract / Model Version / Breaking Change migration scenario
+- [x] Add State / Defer / Slim CI cost scenario
+- [x] Map only existing evidence-backed Interview questions
+- [x] Add direct Interview -> dbt Knowledge mappings
+- [x] Add contextual Learn / Scale / Interview section relations
+- [x] Preserve every Interview question's existing evidence strength
+- [x] Explicitly keep no dbt-specific verified frequency claim
+- [x] Keep every Scale scenario hypothetical and separate from project facts
 
-### V0.9.6 dbt Vertical Slice Freeze
+### Next: V0.9.6 dbt Vertical Slice Freeze
 - [ ] Three-tab closure audit
 - [ ] Mobile reading audit
 - [ ] Freeze dbt V1

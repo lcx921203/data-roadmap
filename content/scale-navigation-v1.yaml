@@ -1,4 +1,4 @@
-version: '1.2'
+version: '1.3'
 domains:
   - id: lakehouse
     title_cn: 湖仓
@@ -72,3 +72,29 @@ domains:
         order: 30
         scenarios:
           - sc-spark-streaming-state-backlog-001
+
+  - id: modeling
+    title_cn: 建模工程
+    title_en: Modeling Engineering
+    order: 30
+    themes:
+      - id: dbt-incremental-reliability
+        title_cn: 增量一致性与历史修复
+        title_en: Incremental Reliability & Historical Repair
+        order: 10
+        scenarios:
+          - sc-dbt-incremental-drift-backfill-001
+
+      - id: dbt-contract-change-safety
+        title_cn: 契约与变更安全
+        title_en: Contracts & Change Safety
+        order: 20
+        scenarios:
+          - sc-dbt-contract-breaking-change-001
+
+      - id: dbt-ci-state-cost
+        title_cn: CI、状态与构建成本
+        title_en: CI, State & Build Cost
+        order: 30
+        scenarios:
+          - sc-dbt-slim-ci-cost-001

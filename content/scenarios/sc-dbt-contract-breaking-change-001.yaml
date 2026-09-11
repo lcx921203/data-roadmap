@@ -1,0 +1,151 @@
+id: sc-dbt-contract-breaking-change-001
+type: scenario
+title: Migrate 40 downstream consumers through a breaking shared-model change
+title_cn: 核心 Shared Model Breaking Change，40 个下游怎样平滑迁移
+domain: modeling
+scenario_type:
+  - contract
+  - change_management
+  - system_design
+  - reliability
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - consumers
+  - compatibility
+  - reliability
+  - migration
+  - cost
+status: scale_detail_v1
+order: 11
+
+summary: 一个核心 dim_customer 被 40 个 Model、BI 和语义层消费者复用。团队必须把 customer_id 从旧语义迁移到新的统一标识，同时改变部分 Column Type，不能一次上线把所有消费者打坏。
+
+display_tags:
+  - Contract
+  - Model Version
+  - Lineage
+  - Migration
+
+quick_answer: >-
+  先把变化分类成真正 Breaking Change，而不是直接改现有 Model。
+  用 Contract 固定 V1 / V2 的结构接口，同时发布新 Version，
+  通过 Artifact / Lineage 找出消费者并分批迁移。V2 验证完成后再切 latest_version，
+  给 V1 设置明确 Deprecation Deadline，最后在所有消费者迁移完成后删除旧版本。
+
+parameters:
+  - label: Shared Model
+    value: dim_customer
+  - label: Downstream
+    value: 40 个直接/间接消费者，含 BI 与 Semantic Layer
+  - label: Breaking Change
+    value: customer_id 语义与数据类型发生变化
+  - label: SLA
+    value: 迁移期间现有 Dashboard 与核心指标不能中断
+  - label: 迁移窗口
+    value: 4 周
+
+constraints:
+  - title: Producer Build Success 不等于 Consumer Safe
+    body: >-
+      新 dim_customer 可以成功构建，但旧下游仍可能因为 Column Type、Name 或语义变化而失败。
+  - title: Contract 无法检测所有业务语义变化
+    body: >-
+      Column 名称和 Type 不变时，业务含义仍可能发生 Breaking Change，
+      因此接口治理不能只靠结构检查。
+  - title: 同时维护双版本有真实成本
+    body: >-
+      V1 / V2 并存会增加 Build、Storage、Test、Documentation 和支持成本，
+      迁移窗口必须有明确退出条件。
+
+failure_bottlenecks:
+  - title: 直接修改 V1 会制造一次性爆炸
+    body: >-
+      40 个消费者无法在同一个发布时刻同步迁移，
+      一次替换会让问题扩散到 BI、Semantic Layer 和下游 Mart。
+  - title: Consumer Inventory 不完整导致隐藏依赖
+    body: >-
+      只知道直接 ref() 下游还不够，
+      BI / Semantic Layer / 外部消费者可能通过其他 Metadata 系统依赖该 Model。
+  - title: Contract 通过但业务指标仍可能改变
+    body: >-
+      customer_id 的语义若从本地 ID 改成全局 ID，
+      即使 Column 仍存在，Distinct Count 与 Join Cardinality 都可能变化。
+
+design:
+  - title: 先定义 V2 的明确 Consumer Contract
+    body: >-
+      在新 Version 中声明 Column Name、Data Type 和必要约束，
+      并记录 customer_id 新语义、迁移规则和兼容性说明。
+  - title: 保留 V1 并发布 V2
+    body: >-
+      不直接覆盖现有消费者，而是让 V1 继续稳定服务，
+      新消费者和迁移中的下游显式选择 V2。
+  - title: 用 Manifest / Lineage 建立迁移清单
+    body: >-
+      先找 dbt DAG 中所有受影响下游，再结合 Semantic Layer / DataHub 等外部 Metadata，
+      补齐跨系统消费者。
+  - title: 分批迁移并验证结果一致性
+    body: >-
+      每批消费者迁移后运行 Contract / Data Test / Reconciliation，
+      特别验证 Join Cardinality、Customer Count 与关键指标是否发生非预期变化。
+  - title: 最后切 latest_version 并进入 Deprecation
+    body: >-
+      当新消费者默认应使用 V2 时再修改 latest_version，
+      同时给 V1 设定清晰的删除日期和剩余消费者清单。
+
+tradeoffs:
+  - title: 双版本降低切换风险，但增加平台复杂度
+    body: >-
+      并行维护两个 Model 让消费者有迁移窗口，
+      但会增加 Warehouse Cost、Tests 和认知负担。
+  - title: 更严格 Contract 提高稳定性，也提高变更摩擦
+    body: >-
+      对核心公共模型值得，但不需要给每个内部临时 Staging Model 使用同等治理强度。
+  - title: 更长迁移窗口更安全，但会延长旧接口维护成本
+    body: >-
+      迁移周期需要同时考虑消费者数量、业务关键性与双版本成本。
+
+observability:
+  - title: 维护 Consumer Migration Dashboard
+    body: >-
+      记录已迁移 / 未迁移消费者、V1 / V2 Build 状态、Contract/Test 结果和 Deprecation Deadline。
+  - title: 监控 V1 仍然存在的真实使用量
+    body: >-
+      如果外部平台可以提供 Query / Lineage Usage，
+      应确认没有隐藏消费者仍在使用 V1 后再删除。
+  - title: 对比 V1 / V2 关键业务指标
+    body: >-
+      迁移期间并行计算核心 Count / Amount / Join Coverage，
+      区分“预期语义变化”和“实现错误”。
+
+cost:
+  - title: 双版本是显式兼容性成本
+    body: >-
+      同时构建、测试和存储 V1 / V2 是为了换取更低的消费者中断风险。
+  - title: 提前治理比事故后全量修复便宜
+    body: >-
+      Contract / Version / Lineage 维护有持续成本，
+      但比一次 Breaking Change 导致 40 个下游同时故障更可控。
+
+recovery:
+  - title: V2 出现严重问题时保留 V1 作为稳定回退面
+    body: >-
+      迁移阶段不要过早删除 V1，
+      让尚未迁移或需要回滚的消费者仍有稳定接口。
+  - title: 不把 latest_version 切换当作不可逆动作
+    body: >-
+      latest_version 改变默认引用，但已有显式 Version Consumer 仍可以继续工作，
+      这给迁移和回退保留空间。
+  - title: 删除 V1 前必须完成依赖闭环
+    body: >-
+      只有消费者清单归零、关键指标验证完成、Deprecation Deadline 到达后，
+      才进入旧版本移除。
+
+knowledge:
+  - kb-dbt-contracts-versions-001
+  - kb-dbt-artifacts-lineage-metadata-001
+  - kb-dbt-production-troubleshooting-001
+
+interviews:
+  - iq-data-product-system-design-001

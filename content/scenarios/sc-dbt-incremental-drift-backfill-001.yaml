@@ -1,0 +1,159 @@
+id: sc-dbt-incremental-drift-backfill-001
+type: scenario
+title: Repair incremental drift after late updates were missed for 45 days
+title_cn: 45 天 Late Data 导致 Incremental Drift，怎样修复
+domain: modeling
+scenario_type:
+  - incremental
+  - reliability
+  - backfill
+  - troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - volume
+  - correctness
+  - latency
+  - cost
+  - recovery
+status: scale_detail_v1
+order: 10
+
+summary: 一个 12 TB Incremental Fact 连续 45 天使用过窄的高水位过滤，部分迟到更新没有进入目标表。每日 Job 全部成功，但财务对账发现历史金额持续偏低。
+
+display_tags:
+  - Incremental
+  - Late Data
+  - Reconciliation
+  - Backfill
+
+quick_answer: >-
+  不要直接 Full Refresh 12 TB。先用 Reconciliation 定位受影响日期与业务 Slice，
+  再证明 Incremental Boundary 为什么漏数据。修正 Lookback / Update Detection 后，
+  对受影响历史范围做可重复的 Targeted Backfill，并在恢复后验证目标表与可信基准重新收敛。
+  如果 Grain / unique_key 本身错误，才升级为更大范围重建。
+
+parameters:
+  - label: Target Table
+    value: 约 12 TB，日增约 180 GB
+  - label: 历史窗口
+    value: 45 天
+  - label: 当前增量条件
+    value: event_time > target max(event_time)
+  - label: 真实迟到分布
+    value: P99 约 72 小时，极端可到 10 天
+  - label: 业务现象
+    value: 每日 dbt Job Success，但历史 Revenue 比财务基准低约 0.6%
+  - label: 目标
+    value: 修复历史差异，同时不做无必要的全表 12 TB 重建
+
+constraints:
+  - title: Green Pipeline 不代表数据正确
+    body: >-
+      Model 每天都成功只能证明 SQL / Materialization 完成，
+      不能证明增量边界覆盖了所有迟到更新。
+  - title: Full Refresh 成本高且失败半径大
+    body: >-
+      12 TB 全刷会放大 Warehouse Compute、写入、下游延迟与失败恢复窗口，
+      因此必须先证明全量重建确实必要。
+  - title: Late Data 是分布而不是固定常数
+    body: >-
+      “回看 3 天”只有在真实迟到分布支持时才成立。
+      需要用 P95 / P99 与极端迟到情况校准，而不是复制固定模板。
+
+failure_bottlenecks:
+  - title: 高水位只看 event_time 导致迟到更新永久漏掉
+    body: >-
+      当旧业务事件在更晚时间发生修正，但 event_time 没有超过目标最大值时，
+      本次 Incremental Filter 根本不会重新选择这些记录。
+  - title: unique_key 或 Grain 不一致会让修复进一步失真
+    body: >-
+      如果目标 Grain 是 order_id + item_id，却只用 order_id 做 matching，
+      Backfill 可能产生错误覆盖或重复。
+  - title: 对账只看全表总金额会隐藏局部错误
+    body: >-
+      总体 0.6% 差异可能集中在少量日期、Tenant 或状态。
+      不切 Slice 会把历史修复范围放大到不必要程度。
+
+design:
+  - title: 先用 Reconciliation 缩小受影响历史范围
+    body: >-
+      按日期、Tenant、业务状态比较 Source / Trusted Baseline 与 Target 的 Row Count 和 Amount，
+      找到最早出现偏差的时间与主要业务 Slice。
+  - title: 重新定义真正的 Incremental Boundary
+    body: >-
+      如果 Source 有可靠 updated_at，应优先基于变化时间而不是纯 event_time 捕捉更新；
+      如果只能依赖事件时间，则根据真实迟到分布设计 Lookback Window。
+  - title: 验证 unique_key 与 Model Grain 一致
+    body: >-
+      在历史修复前先确认逻辑唯一键能够唯一定位一条目标记录，
+      并用 Data Test 验证 Source / Target 是否存在重复 Key。
+  - title: 对受影响 Slice 做 Targeted Backfill
+    body: >-
+      将 45 天拆成可独立重跑的日期 / 业务区间，
+      每个单元采用可重复写入策略，避免一次重跑整张 12 TB Table。
+  - title: 修复后做双层验证
+    body: >-
+      第一层检查 Incremental Model 的 Data Test；
+      第二层重新做业务 Reconciliation，确认 Revenue 与可信基准真正收敛。
+
+tradeoffs:
+  - title: 更长 Lookback 提高完整性但增加日常 Compute
+    body: >-
+      每次回看越久，迟到数据覆盖越高，但重复扫描 / Merge 的历史数据也越多。
+      需要用业务迟到分布校准。
+  - title: Targeted Backfill 更便宜，但要求 Model 能安全重跑历史 Slice
+    body: >-
+      如果模型的增量逻辑和写入 Strategy 无法对历史区间幂等重算，
+      局部修复会变得困难，可能被迫扩大重建范围。
+  - title: Full Refresh 最简单但风险最高
+    body: >-
+      全量重建减少增量状态推理，但会显著增加成本、运行时间与生产影响。
+      它应该是经过范围判断后的选择，而不是默认恢复动作。
+
+observability:
+  - title: 监控增量选中行数与历史回看量
+    body: >-
+      记录每次 Incremental Build 实际处理的 Source Rows、目标更新行数与 Lookback 范围，
+      发现突然归零或异常放大的增量行为。
+  - title: 把 Reconciliation 变成持续信号
+    body: >-
+      对核心金额 / Row Count 建立日期级差异趋势，
+      避免等到 45 天后才发现累计 Drift。
+  - title: 区分 Build Success 与 Data Health
+    body: >-
+      同时保留 run_results、Data Test、Freshness 和业务对账指标，
+      不用单一 Job Success 代表数据产品健康。
+
+cost:
+  - title: 日常 Lookback 是持续成本
+    body: >-
+      增量边界越宽，每天都会支付重复计算成本；
+      但过窄会把成本推迟成更昂贵的历史事故修复。
+  - title: Reconciliation 也要控制扫描范围
+    body: >-
+      大表对账可以按 Date / Partition / Aggregate 逐级缩小，
+      不必每次都做全表明细 Compare。
+
+recovery:
+  - title: 先暂停错误增量继续扩大 Drift
+    body: >-
+      如果当前逻辑仍在漏数据，继续正常 Schedule 只会扩大差异。
+      应先修复边界或临时阻断受影响模型。
+  - title: Backfill 单元必须可重复执行
+    body: >-
+      每个历史 Slice 需要明确输入边界与写入语义，
+      失败后可以重跑同一 Slice 而不制造重复结果。
+  - title: 最终以业务对账收敛作为恢复完成标准
+    body: >-
+      “dbt run 成功”不是事故结束。
+      只有 Target 与可信基准在允许容差内重新一致，才算恢复完成。
+
+knowledge:
+  - kb-dbt-incremental-models-001
+  - kb-dbt-tests-freshness-reconciliation-001
+  - kb-dbt-production-troubleshooting-001
+
+interviews:
+  - iq-dimensional-partial-late-data-001
+  - iq-data-quality-diagnosis-001

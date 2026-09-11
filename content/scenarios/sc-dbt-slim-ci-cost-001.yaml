@@ -1,0 +1,159 @@
+id: sc-dbt-slim-ci-cost-001
+type: scenario
+title: Cut a 90-minute 800-model dbt PR pipeline without losing change coverage
+title_cn: 800 个 Model 的 PR CI 要跑 90 分钟，怎样降成本又不漏影响范围
+domain: modeling
+scenario_type:
+  - ci
+  - state
+  - cost
+  - reliability
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - models
+  - concurrency
+  - cost
+  - feedback_time
+  - correctness
+status: scale_detail_v1
+order: 12
+
+summary: 一个 800-Model dbt Project 的每个 PR 都全量 dbt build，CI 平均 90 分钟，Warehouse 成本不断上升。团队希望引入 state:modified + defer，但不能因为优化成本漏掉真正受影响的下游。
+
+display_tags:
+  - State
+  - Defer
+  - Slim CI
+  - Cost
+
+quick_answer: >-
+  用 Production Manifest 作为受治理的比较基线，通过 state:modified 找真正变化的 Node，
+  再沿 DAG 扩展需要验证的下游。PR Schema 只构建被选中的节点，
+  未选中上游通过 defer 解析到稳定环境已有 Relation。
+  同时保留 Unit Test、关键 Data Test 和周期性 Full Build，
+  因为 State-aware CI 优化的是 Cost / Feedback Time，不是完整正确性的数学证明。
+
+parameters:
+  - label: Project Size
+    value: 800 Models
+  - label: PR Frequency
+    value: 工作日约 35 个 PR
+  - label: 当前 CI
+    value: 每个 PR 全量 dbt build，平均 90 分钟
+  - label: 目标
+    value: 大多数普通 PR 在 15 分钟内得到有效反馈
+  - label: 基线
+    value: 最近一次稳定 Production Manifest
+
+constraints:
+  - title: 不能简单只跑 Git 改过的 SQL 文件
+    body: >-
+      Macro、Config、Contract 或上游 Dependency 的变化可能影响没有直接修改文件的 Model。
+  - title: Production Manifest 不是永远正确的 Truth
+    body: >-
+      如果 Artifact 太旧、来自错误环境或没有对应当前 Production Applied State，
+      state comparison 会产生错误的选择范围。
+  - title: Defer 会制造混合环境依赖
+    body: >-
+      PR Model 可能读取 Production Parent，
+      Tests 也可能跨 Dev / Prod 数据，因此必须明确这种数据语义是否可接受。
+
+failure_bottlenecks:
+  - title: 全量 Build 把 Feedback Time 和成本线性放大
+    body: >-
+      绝大多数 PR 只修改少量节点，却每次扫描和重建 800 个 Model，
+      导致 Warehouse Compute 与队列竞争持续增加。
+  - title: 过窄 Selection 会漏掉真正受影响下游
+    body: >-
+      只选 state:modified 本身可能不足以验证所有消费者，
+      还需要按 DAG 风险扩展必要的 Children。
+  - title: CI Schema 不隔离会让并行 PR 相互覆盖
+    body: >-
+      35 个日常 PR 若共享同一个开发 Schema，
+      不同分支构建相同 Relation 名称时会产生污染和非确定性测试结果。
+
+design:
+  - title: 把 Production Manifest 当成受治理的 CI Input
+    body: >-
+      在稳定 Production Build 后保存 Manifest，
+      并记录对应 Commit / Environment，避免 PR 使用不明来源的旧 Artifact。
+  - title: 用 state:modified 找语义变化而不是纯 Git Diff
+    body: >-
+      让 dbt 比较 Model Body、Config、Contract、Macro 等 Project State，
+      识别真正发生变化的资源。
+  - title: 沿 DAG 扩展风险相关下游
+    body: >-
+      对普通 Model Change 选择 Modified + 必要 Children；
+      对高影响公共 Macro / Contract Change 可以采用更宽的验证范围。
+  - title: 未选中上游使用 defer
+    body: >-
+      PR Schema 不重建全部稳定 Parent，
+      让 ref() 对未选中的上游回退到稳定 State Environment 已存在的 Relation。
+  - title: 每个 PR 使用隔离 Schema
+    body: >-
+      以 PR / Developer 维度生成独立 Relation Namespace，
+      防止并行 CI 互相覆盖。
+  - title: 保留周期性 Full Build 与关键 Reconciliation
+    body: >-
+      State-aware CI 主要验证代码变化影响。
+      对 Source Data Change、外部平台行为和隐藏状态风险，仍需要周期性完整验证补足覆盖率。
+
+tradeoffs:
+  - title: 更窄 Selection 更快，但 Coverage 更低
+    body: >-
+      CI 目标不是把 Node 数压到最少，而是在合理 Feedback Time 内覆盖真正高风险影响面。
+  - title: Defer 节省构建成本，但牺牲纯隔离环境
+    body: >-
+      PR 下游可能读取 Production Parent，
+      因此某些跨环境 Test 和敏感数据场景需要额外规则。
+  - title: Full Build 更完整，但不适合每个 PR
+    body: >-
+      可以把高成本全量验证放到合并后、夜间或关键发布门禁，
+      与快速 PR CI 形成分层验证。
+
+observability:
+  - title: 记录每个 PR 的 Selected Node 数与原因
+    body: >-
+      对比 state:modified、Graph Expansion 和最终 Build Node，
+      发现选择范围异常过大或过小时及时调整策略。
+  - title: 监控 CI P50 / P95 和 Warehouse Cost
+    body: >-
+      不只看平均时长，关注长尾 PR、并发队列和每次变更的计算成本。
+  - title: 追踪 CI 逃逸缺陷
+    body: >-
+      如果某类生产事故经常未被 Slim CI 捕获，
+      应调整 Selector、增加关键 Integration / Reconciliation，而不是只追求更快。
+
+cost:
+  - title: Manifest / Artifact 管理成本远小于重复全量 Build
+    body: >-
+      保存和治理 State Artifact 会增加流程复杂度，
+      但可显著减少每天几十次 PR 的重复 Warehouse Compute。
+  - title: 更高 threads 不一定降低总成本
+    body: >-
+      当 Warehouse 已经并发饱和时，
+      继续提高 dbt 并发可能只增加 Queue 与资源竞争。
+
+recovery:
+  - title: State Artifact 可疑时退回更宽验证
+    body: >-
+      如果 Production Manifest 缺失、过旧或来源不明，
+      应扩大 Selection 或执行 Full Build，而不是继续依赖不可信 State。
+  - title: Defer 产生数据语义问题时显式构建该上游
+    body: >-
+      对必须使用 PR 数据一起验证的 Parent，
+      将它加入 Selection，而不是继续引用 Production Relation。
+  - title: CI 优化失效不能破坏发布门禁
+    body: >-
+      快速路径出现异常时应允许切回更保守的验证策略，
+      保证 Cost Optimization 不成为跳过质量检查的理由。
+
+knowledge:
+  - kb-dbt-sources-models-dag-001
+  - kb-dbt-artifacts-lineage-metadata-001
+  - kb-dbt-state-defer-ci-001
+  - kb-dbt-production-troubleshooting-001
+
+interviews:
+  - iq-data-product-system-design-001

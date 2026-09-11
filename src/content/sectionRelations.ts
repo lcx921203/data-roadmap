@@ -31,6 +31,9 @@ const sectionRelationRegistries = [
   loadYaml<SectionRelationRegistry>(
     'content/mappings/spark-section-relations-v0.8.5.yaml',
   ),
+  loadYaml<SectionRelationRegistry>(
+    'content/mappings/dbt-section-relations-v0.9.5.yaml',
+  ),
 ]
 
 const sectionRelations = sectionRelationRegistries.flatMap(

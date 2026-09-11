@@ -1,0 +1,52 @@
+version: 0.9.5
+topic: dbt
+
+interview:
+  evidence_policy: direct_evidence_only
+  mapped_existing_questions:
+    - iq-warehouse-layering-001
+    - iq-data-quality-diagnosis-001
+    - iq-dimensional-partial-late-data-001
+    - iq-scd1-vs-scd2-001
+    - iq-data-product-system-design-001
+  dbt_specific_frequency: preserve_existing_evidence_only
+  no_verified_dbt_specific_question: true
+
+cross_navigation:
+  interview_to_knowledge:
+    - interview: iq-warehouse-layering-001
+      knowledge:
+        - kb-dbt-overview-001
+        - kb-dbt-sources-models-dag-001
+        - kb-dbt-materializations-001
+
+    - interview: iq-data-quality-diagnosis-001
+      knowledge:
+        - kb-dbt-tests-freshness-reconciliation-001
+        - kb-dbt-artifacts-lineage-metadata-001
+        - kb-dbt-production-troubleshooting-001
+
+    - interview: iq-dimensional-partial-late-data-001
+      knowledge:
+        - kb-dbt-incremental-models-001
+
+    - interview: iq-scd1-vs-scd2-001
+      knowledge:
+        - kb-dbt-snapshots-history-001
+
+    - interview: iq-data-product-system-design-001
+      knowledge:
+        - kb-dbt-overview-001
+        - kb-dbt-contracts-versions-001
+        - kb-dbt-production-troubleshooting-001
+
+  policy:
+    interview_to_knowledge: explicit_curated_mapping
+    knowledge_to_interview: derived_from_interview_to_knowledge
+    knowledge_to_scale: derived_from_scale_scenario_knowledge
+    scale_to_knowledge: scale_scenario_owns_knowledge_ids
+    interview_to_scale: derived_from_scale_scenario_interviews
+    scale_to_interview: scale_scenario_owns_interview_ids
+    reverse_links: derived_not_duplicated
+    mapping_precision: do_not_force_direct_links_for_graph_completeness
+    relation_is_not_frequency_claim: true

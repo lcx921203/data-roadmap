@@ -1,0 +1,126 @@
+version: '0.9.5'
+type: section_relation_registry
+topic: dbt
+
+policy:
+  relation_scope: contextual_reading
+  source_anchor: visible_section_or_item_title
+  relation_is_not_frequency_claim: true
+  relation_is_not_project_fact: true
+  prefer_local_context_over_end_of_article_blocks: true
+  do_not_force_relationships_for_graph_completeness: true
+
+relations:
+  - source_type: knowledge
+    source_id: kb-dbt-sources-models-dag-001
+    anchor: DAG 和数仓 ODS/DWD/DWS 是什么关系
+    targets:
+      - type: interview
+        id: iq-warehouse-layering-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-incremental-models-001
+    anchor: Late-arriving Data 为什么是 Incremental 的核心问题
+    targets:
+      - type: scale
+        id: sc-dbt-incremental-drift-backfill-001
+      - type: interview
+        id: iq-dimensional-partial-late-data-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-incremental-models-001
+    anchor: 为什么 Incremental 会产生 Drift
+    targets:
+      - type: scale
+        id: sc-dbt-incremental-drift-backfill-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-snapshots-history-001
+    anchor: Snapshot 和 SCD2 的边界
+    targets:
+      - type: interview
+        id: iq-scd1-vs-scd2-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-tests-freshness-reconciliation-001
+    anchor: 为什么 `unique/not_null` 全绿仍然可能算错
+    targets:
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-contracts-versions-001
+    anchor: Version 真正解决的是迁移窗口
+    targets:
+      - type: scale
+        id: sc-dbt-contract-breaking-change-001
+      - type: interview
+        id: iq-data-product-system-design-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-state-defer-ci-001
+    anchor: Slim CI 的完整链
+    targets:
+      - type: scale
+        id: sc-dbt-slim-ci-cost-001
+
+  - source_type: knowledge
+    source_id: kb-dbt-production-troubleshooting-001
+    anchor: 第六层：Incremental State Drift
+    targets:
+      - type: scale
+        id: sc-dbt-incremental-drift-backfill-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: scale
+    source_id: sc-dbt-incremental-drift-backfill-001
+    anchor: 重新定义真正的 Incremental Boundary
+    targets:
+      - type: knowledge
+        id: kb-dbt-incremental-models-001
+      - type: interview
+        id: iq-dimensional-partial-late-data-001
+
+  - source_type: scale
+    source_id: sc-dbt-incremental-drift-backfill-001
+    anchor: 修复后做双层验证
+    targets:
+      - type: knowledge
+        id: kb-dbt-tests-freshness-reconciliation-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: scale
+    source_id: sc-dbt-contract-breaking-change-001
+    anchor: 保留 V1 并发布 V2
+    targets:
+      - type: knowledge
+        id: kb-dbt-contracts-versions-001
+      - type: interview
+        id: iq-data-product-system-design-001
+
+  - source_type: scale
+    source_id: sc-dbt-contract-breaking-change-001
+    anchor: 用 Manifest / Lineage 建立迁移清单
+    targets:
+      - type: knowledge
+        id: kb-dbt-artifacts-lineage-metadata-001
+
+  - source_type: scale
+    source_id: sc-dbt-slim-ci-cost-001
+    anchor: 用 state:modified 找语义变化而不是纯 Git Diff
+    targets:
+      - type: knowledge
+        id: kb-dbt-state-defer-ci-001
+
+  - source_type: scale
+    source_id: sc-dbt-slim-ci-cost-001
+    anchor: 未选中上游使用 defer
+    targets:
+      - type: knowledge
+        id: kb-dbt-state-defer-ci-001
+      - type: interview
+        id: iq-data-product-system-design-001

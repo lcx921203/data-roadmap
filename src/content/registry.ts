@@ -66,6 +66,9 @@ const crossNavigationRegistries = [
   loadYaml<CrossNavigationFile>(
     'content/mappings/spark-v0.8.5.yaml',
   ),
+  loadYaml<CrossNavigationFile>(
+    'content/mappings/dbt-v0.9.5.yaml',
+  ),
 ]
 
 const interviewKnowledgeMappings = crossNavigationRegistries.flatMap(
