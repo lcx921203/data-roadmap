@@ -1,100 +1,112 @@
-version: '1.3'
+version: '1.4'
 domains:
-  - id: lakehouse
-    title_cn: 湖仓
-    title_en: Lakehouse
+- id: lakehouse
+  title_cn: 湖仓
+  title_en: Lakehouse
+  order: 10
+  themes:
+  - id: capacity-backfill
+    title_cn: 容量与回填
+    title_en: Capacity & Backfill
     order: 10
-    themes:
-      - id: capacity-backfill
-        title_cn: 容量与回填
-        title_en: Capacity & Backfill
-        order: 10
-        scenarios:
-          - sc-iceberg-10b-backfill-001
-
-      - id: continuous-write-health
-        title_cn: 持续写入与表健康
-        title_en: Continuous Write & Table Health
-        order: 20
-        scenarios:
-          - sc-iceberg-streaming-small-files-001
-
-      - id: commit-concurrency-recovery
-        title_cn: 并发提交与恢复
-        title_en: Commit Concurrency & Recovery
-        order: 30
-        scenarios:
-          - sc-iceberg-concurrent-commit-001
-
-      - id: interactive-workload-isolation
-        title_cn: 交互查询与负载隔离
-        title_en: Interactive Query & Workload Isolation
-        order: 40
-        scenarios:
-          - sc-trino-interactive-concurrency-001
-
-      - id: large-query-runtime-pressure
-        title_cn: 大查询与运行时压力
-        title_en: Large Query & Runtime Pressure
-        order: 50
-        scenarios:
-          - sc-trino-heavy-join-pressure-001
-
-      - id: fault-tolerant-batch-recovery
-        title_cn: 容错执行与恢复
-        title_en: Fault-Tolerant Execution & Recovery
-        order: 60
-        scenarios:
-          - sc-trino-fte-batch-recovery-001
-
-  - id: compute
-    title_cn: 计算引擎
-    title_en: Compute Engines
+    scenarios:
+    - sc-iceberg-10b-backfill-001
+  - id: continuous-write-health
+    title_cn: 持续写入与表健康
+    title_en: Continuous Write & Table Health
     order: 20
-    themes:
-      - id: spark-backfill-capacity
-        title_cn: 大规模回填与容量
-        title_en: Backfill & Capacity
-        order: 10
-        scenarios:
-          - sc-spark-30tb-backfill-capacity-001
-
-      - id: spark-skew-runtime-pressure
-        title_cn: Shuffle、倾斜与运行时压力
-        title_en: Shuffle, Skew & Runtime Pressure
-        order: 20
-        scenarios:
-          - sc-spark-skew-join-001
-
-      - id: spark-streaming-state-reliability
-        title_cn: 流状态与可靠性
-        title_en: Streaming State & Reliability
-        order: 30
-        scenarios:
-          - sc-spark-streaming-state-backlog-001
-
-  - id: modeling
-    title_cn: 建模工程
-    title_en: Modeling Engineering
+    scenarios:
+    - sc-iceberg-streaming-small-files-001
+  - id: commit-concurrency-recovery
+    title_cn: 并发提交与恢复
+    title_en: Commit Concurrency & Recovery
     order: 30
-    themes:
-      - id: dbt-incremental-reliability
-        title_cn: 增量一致性与历史修复
-        title_en: Incremental Reliability & Historical Repair
-        order: 10
-        scenarios:
-          - sc-dbt-incremental-drift-backfill-001
-
-      - id: dbt-contract-change-safety
-        title_cn: 契约与变更安全
-        title_en: Contracts & Change Safety
-        order: 20
-        scenarios:
-          - sc-dbt-contract-breaking-change-001
-
-      - id: dbt-ci-state-cost
-        title_cn: CI、状态与构建成本
-        title_en: CI, State & Build Cost
-        order: 30
-        scenarios:
-          - sc-dbt-slim-ci-cost-001
+    scenarios:
+    - sc-iceberg-concurrent-commit-001
+  - id: interactive-workload-isolation
+    title_cn: 交互查询与负载隔离
+    title_en: Interactive Query & Workload Isolation
+    order: 40
+    scenarios:
+    - sc-trino-interactive-concurrency-001
+  - id: large-query-runtime-pressure
+    title_cn: 大查询与运行时压力
+    title_en: Large Query & Runtime Pressure
+    order: 50
+    scenarios:
+    - sc-trino-heavy-join-pressure-001
+  - id: fault-tolerant-batch-recovery
+    title_cn: 容错执行与恢复
+    title_en: Fault-Tolerant Execution & Recovery
+    order: 60
+    scenarios:
+    - sc-trino-fte-batch-recovery-001
+- id: compute
+  title_cn: 计算引擎
+  title_en: Compute Engines
+  order: 20
+  themes:
+  - id: spark-backfill-capacity
+    title_cn: 大规模回填与容量
+    title_en: Backfill & Capacity
+    order: 10
+    scenarios:
+    - sc-spark-30tb-backfill-capacity-001
+  - id: spark-skew-runtime-pressure
+    title_cn: Shuffle、倾斜与运行时压力
+    title_en: Shuffle, Skew & Runtime Pressure
+    order: 20
+    scenarios:
+    - sc-spark-skew-join-001
+  - id: spark-streaming-state-reliability
+    title_cn: 流状态与可靠性
+    title_en: Streaming State & Reliability
+    order: 30
+    scenarios:
+    - sc-spark-streaming-state-backlog-001
+- id: modeling
+  title_cn: 建模工程
+  title_en: Modeling Engineering
+  order: 30
+  themes:
+  - id: dbt-incremental-reliability
+    title_cn: 增量一致性与历史修复
+    title_en: Incremental Reliability & Historical Repair
+    order: 10
+    scenarios:
+    - sc-dbt-incremental-drift-backfill-001
+  - id: dbt-contract-change-safety
+    title_cn: 契约与变更安全
+    title_en: Contracts & Change Safety
+    order: 20
+    scenarios:
+    - sc-dbt-contract-breaking-change-001
+  - id: dbt-ci-state-cost
+    title_cn: CI、状态与构建成本
+    title_en: CI, State & Build Cost
+    order: 30
+    scenarios:
+    - sc-dbt-slim-ci-cost-001
+- id: semantic
+  title_cn: 语义层
+  title_en: Semantic Layer
+  order: 40
+  themes:
+  - id: metric-correctness-reconciliation
+    title_cn: 指标正确性与对账
+    title_en: Metric Correctness & Reconciliation
+    order: 10
+    scenarios:
+    - sc-metricflow-kpi-drift-reconciliation-001
+  - id: semantic-graph-safety
+    title_cn: 语义图与 Join 安全
+    title_en: Semantic Graph & Join Safety
+    order: 20
+    scenarios:
+    - sc-metricflow-fanout-graph-001
+  - id: semantic-serving-consumption
+    title_cn: 语义服务与消费
+    title_en: Semantic Serving & Consumption
+    order: 30
+    scenarios:
+    - sc-metricflow-bi-agent-serving-001

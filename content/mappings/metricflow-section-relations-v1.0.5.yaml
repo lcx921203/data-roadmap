@@ -1,0 +1,147 @@
+version: '1.0.5'
+type: section_relation_registry
+topic: metricflow
+
+policy:
+  relation_scope: contextual_reading
+  source_anchor: visible_section_or_item_title
+  relation_is_not_frequency_claim: true
+  relation_is_not_project_fact: true
+  prefer_local_context_over_end_of_article_blocks: true
+  do_not_force_relationships_for_graph_completeness: true
+
+relations:
+  - source_type: knowledge
+    source_id: kb-metricflow-entities-grain-001
+    anchor: 为什么 Grain 错会直接把 Metric 算错
+    targets:
+      - type: scale
+        id: sc-metricflow-fanout-graph-001
+      - type: interview
+        id: iq-dimensional-fact-dimension-design-001
+      - type: interview
+        id: iq-dimensional-primary-key-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-semantic-graph-joins-001
+    anchor: Fan-out 是什么
+    targets:
+      - type: scale
+        id: sc-metricflow-fanout-graph-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-dimensions-time-001
+    anchor: 为什么 Time Dimension 不等于 Load Time
+    targets:
+      - type: scale
+        id: sc-metricflow-kpi-drift-reconciliation-001
+      - type: interview
+        id: iq-realtime-offline-consistency-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-query-validation-001
+    anchor: Validation 不是业务 Reconciliation
+    targets:
+      - type: scale
+        id: sc-metricflow-kpi-drift-reconciliation-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-saved-queries-serving-001
+    anchor: Agent 怎么消费
+    targets:
+      - type: scale
+        id: sc-metricflow-bi-agent-serving-001
+      - type: interview
+        id: iq-data-product-system-design-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-saved-queries-serving-001
+    anchor: Cache 怎么选
+    targets:
+      - type: scale
+        id: sc-metricflow-bi-agent-serving-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-production-closure-001
+    anchor: 第九层：Reconciliation 才是业务正确性的最终证据
+    targets:
+      - type: scale
+        id: sc-metricflow-kpi-drift-reconciliation-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-production-closure-001
+    anchor: 当前 Declarative Cache 还有一个重要安全边界
+    targets:
+      - type: scale
+        id: sc-metricflow-bi-agent-serving-001
+      - type: interview
+        id: iq-data-governance-framework-001
+
+  - source_type: knowledge
+    source_id: kb-metricflow-overview-001
+    anchor: Semantic Layer 和 DataHub 也不是一回事
+    targets:
+      - type: interview
+        id: iq-data-governance-framework-001
+
+  - source_type: scale
+    source_id: sc-metricflow-kpi-drift-reconciliation-001
+    anchor: 先建立可重复的 Metric Reconciliation 基线
+    targets:
+      - type: knowledge
+        id: kb-metricflow-production-closure-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: scale
+    source_id: sc-metricflow-kpi-drift-reconciliation-001
+    anchor: 把 Metric Definition 变更当成版本化发布
+    targets:
+      - type: knowledge
+        id: kb-metricflow-production-closure-001
+      - type: interview
+        id: iq-data-product-system-design-001
+
+  - source_type: scale
+    source_id: sc-metricflow-fanout-graph-001
+    anchor: 先证明真实 Grain 再修 Entity Type
+    targets:
+      - type: knowledge
+        id: kb-metricflow-entities-grain-001
+      - type: interview
+        id: iq-dimensional-fact-dimension-design-001
+      - type: interview
+        id: iq-dimensional-primary-key-001
+
+  - source_type: scale
+    source_id: sc-metricflow-fanout-graph-001
+    anchor: 用 Generated SQL 与 Join Coverage 验证修复
+    targets:
+      - type: knowledge
+        id: kb-metricflow-query-validation-001
+      - type: interview
+        id: iq-data-quality-diagnosis-001
+
+  - source_type: scale
+    source_id: sc-metricflow-bi-agent-serving-001
+    anchor: 按查询形态分层：动态 Query / Saved Query / Export
+    targets:
+      - type: knowledge
+        id: kb-metricflow-saved-queries-serving-001
+      - type: interview
+        id: iq-data-product-system-design-001
+
+  - source_type: scale
+    source_id: sc-metricflow-bi-agent-serving-001
+    anchor: 把 Agent 限制在 Governed Semantic Query Surface
+    targets:
+      - type: knowledge
+        id: kb-metricflow-saved-queries-serving-001
+      - type: interview
+        id: iq-data-governance-framework-001

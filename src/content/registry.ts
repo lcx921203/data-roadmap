@@ -69,6 +69,9 @@ const crossNavigationRegistries = [
   loadYaml<CrossNavigationFile>(
     'content/mappings/dbt-v0.9.5.yaml',
   ),
+  loadYaml<CrossNavigationFile>(
+    'content/mappings/metricflow-v1.0.5.yaml',
+  ),
 ]
 
 const interviewKnowledgeMappings = crossNavigationRegistries.flatMap(

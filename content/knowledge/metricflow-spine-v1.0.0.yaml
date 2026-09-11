@@ -4,7 +4,7 @@ stage_id: '06'
 topic: metricflow
 title: MetricFlow / Semantic Layer
 learning_depth: L5
-status: learn_v1_complete
+status: scale_interview_integrated
 technical_baseline:
   validation_date: '2026-09-12'
   current_semantic_spec: dbt v1.12+ latest semantic model / metric YAML spec
@@ -393,7 +393,7 @@ freeze:
   published_nodes: 12
   remaining_nodes: 0
   body_status: complete_12_of_12
-  next_milestone: V1.0.5 MetricFlow Scale & Interview Integration
+  next_milestone: V1.0.6 MetricFlow Vertical Slice Freeze
   reopen_spine_only_for:
   - verified_technical_error
   - causal_progression_gap
@@ -401,3 +401,10 @@ freeze:
   learn_v1_complete: true
   knowledge_progression_audit: passed_v1.0.4
   technical_correctness_audit: passed_v1.0.4
+  scale_scenarios_written: true
+  scale_scenario_ids:
+  - sc-metricflow-kpi-drift-reconciliation-001
+  - sc-metricflow-fanout-graph-001
+  - sc-metricflow-bi-agent-serving-001
+  interview_integration: evidence_backed_cross_navigation_v1.0.5
+  interview_answers_written: false

@@ -1,0 +1,157 @@
+id: sc-metricflow-fanout-graph-001
+type: scenario
+title: A new customer-segment dimension makes revenue 3.1x larger through the semantic graph
+title_cn: 新增 Customer Segment 维度后 Revenue 被放大 3.1 倍，怎样修 Semantic Graph
+domain: semantic
+scenario_type:
+  - semantic_graph
+  - join_safety
+  - grain
+  - troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - semantic_models
+  - metrics
+  - dimensions
+  - correctness
+  - graph_complexity
+status: scale_detail_v1
+order: 14
+
+summary: Semantic Layer 已有 35 个 Semantic Models、140 个 Metrics 和 70 个 Dimensions。新增 customer__segment 后，Revenue 单独查询正确，但 Revenue by customer__segment 被放大约 3.1 倍。Generated SQL 可以执行，真正问题来自历史 Segment 表的 Grain 与 Entity Type 声明不一致。
+
+display_tags:
+  - Semantic Graph
+  - Fan-out
+  - Entity
+  - Grain
+
+quick_answer: >-
+  先把问题定性成“加 Dimension 后才错”，优先检查 Grain / Entity / Join，而不是 Metric Formula。
+  验证 Segment Model 一行究竟代表 Current Customer、Customer-Version 还是 Customer-Segment Membership，
+  再检查 customer Entity 是否真的满足 Primary / Unique 语义。
+  用 Row Count、Join Coverage 和 Generated SQL 证明 Fan-out 路径，
+  最后通过修正上游 Grain、拆分 Semantic Model 或调整合法 Entity Path 消除重复，而不是在 Revenue 上加 DISTINCT 盖住问题。
+
+parameters:
+  - label: Semantic Models
+    value: 35
+  - label: Governed Metrics
+    value: 140
+  - label: Dimensions
+    value: 70
+  - label: 新能力
+    value: Revenue by customer__segment
+  - label: 故障现象
+    value: Revenue 单独正确，按 Segment 分组后约放大 3.1 倍
+  - label: 目标
+    value: 在不破坏已有 Customer / Region 查询的情况下修复 Join Safety
+
+constraints:
+  - title: SQL 可执行不能证明 Cardinality 安全
+    body: >-
+      Fan-out SQL 完全可能语法正确、执行成功并返回看似合理的数字，
+      因此 Data Platform Validation 无法替代 Grain / Entity 正确性。
+  - title: 一个业务对象可能同时存在 Current 与 Historical Grain
+    body: >-
+      Customer Current Dimension 与 Customer Segment History 可能都包含 customer_id，
+      但后者一位 Customer 可以有多条历史记录，不能都声明成同样的 Primary 语义。
+  - title: 为了兼容旧查询不能随意删除公共 Entity
+    body: >-
+      Semantic Graph 已被大量 Metric / Dashboard 使用，
+      修复需要考虑既有路径和 Consumer 影响。
+
+failure_bottlenecks:
+  - title: 错把 customer_id 的业务键当成当前行唯一键
+    body: >-
+      在 SCD / History Grain 上 customer_id 可以重复，
+      如果声明成 Primary / Unique，MetricFlow 会基于错误 Cardinality Metadata 推断路径安全。
+  - title: 用 DISTINCT Revenue 掩盖 Fan-out
+    body: >-
+      DISTINCT 可能碰巧让某个金额恢复，但会破坏重复金额、Count、其他 Metric，
+      并隐藏真正的模型关系错误。
+  - title: 只看最终数字看不见哪条 Path 扩行
+    body: >-
+      Semantic Graph 规模增大以后，需要结合 Dataflow / Generated SQL 与 Join 前后 Row Count
+      定位到底在哪个关系节点发生扩张。
+
+design:
+  - title: 先证明真实 Grain 再修 Entity Type
+    body: >-
+      对 Orders、Customers、Customer Segment History 分别写清“一行代表什么”，
+      再验证 Primary / Unique / Foreign 是否符合真实唯一性和可重复性。
+  - title: 把 Current Dimension 与 Historical Relationship 分开建模
+    body: >-
+      如果一个 Model 同时承担 Current Customer 和 Segment History 两种 Grain，
+      应优先在上游 dbt Model 或 Semantic Model 边界上拆清，而不是让 Join Graph 猜。
+  - title: 只暴露业务含义明确的 Join Path
+    body: >-
+      如果 customer__segment 需要特定时间语义或历史匹配，
+      不要为了“能查到”而把任意多跳路径都开放成公共 Dimension。
+  - title: 用 Generated SQL 与 Join Coverage 验证修复
+    body: >-
+      比较修复前后 Join 前后 Row Count、Distinct Order、Distinct Customer 和 Revenue，
+      确认没有通过丢记录换取“数字看起来对”。
+  - title: 给核心 Entity 加上数据质量保护
+    body: >-
+      对宣称 Primary / Unique 的物理 Key 增加 dbt uniqueness / not-null 等验证，
+      让 Semantic Cardinality Contract 有数据层证据支撑。
+
+tradeoffs:
+  - title: 更严格的 Graph 减少错误自由度，也会减少临时分析灵活性
+    body: >-
+      Semantic Layer 应优先保证 Governed Metric 正确，
+      极少数复杂探索可以下沉到更自由的 SQL / Analyst Workflow。
+  - title: 拆 Model 提高语义清晰度，但增加上游 dbt 资源
+    body: >-
+      生产系统应在“少建一张模型”和“让 Grain / Join 可解释”之间优先选择后者。
+  - title: 更短 Join Path 更可控，但可能需要增加中间模型
+    body: >-
+      为了避免 Ambiguous / Historical Path，
+      有时需要用明确中间模型换取更稳定的语义图。
+
+observability:
+  - title: 监控关键查询的 Join Expansion Ratio
+    body: >-
+      对核心 Metric + 常用 Dimension 记录 Join 前后 Row Count 或 Distinct Entity 差异，
+      及时发现新维度引入的异常扩行。
+  - title: 追踪 Semantic Graph 变更
+    body: >-
+      Entity Type、Semantic Model 和跨模型 Dimension Path 都应进入 Change Review，
+      因为它们影响的不只是一个 Metric。
+  - title: 保存错误 Query 的 Generated SQL / Dataflow Plan
+    body: >-
+      把它作为事故证据，帮助区分 Semantic Planning 与 Target Engine Runtime。
+
+cost:
+  - title: 多跳 Graph 不只是正确性成本，也会增加执行成本
+    body: >-
+      即使 Cardinality 安全，更多 Join 和更复杂聚合仍会让 Generated SQL 更重。
+  - title: 预先构建清晰的中间模型可能降低长期查询成本
+    body: >-
+      通过 dbt 把复杂 Grain 先规整，有时比让每次 Semantic Query 重复处理复杂关系更便宜。
+
+recovery:
+  - title: 暂停暴露出错 Dimension 而不是停掉全部 Semantic Layer
+    body: >-
+      如果 Revenue 本身正确，可以临时隐藏 / 回滚 customer__segment 关系，
+      降低事故半径。
+  - title: 修复后重跑受影响 Query Matrix
+    body: >-
+      至少验证 Revenue、Order Count、Customer Count 与已有 Region / Segment 组合，
+      防止只修复一个案例。
+  - title: 用业务 Reconciliation 收尾
+    body: >-
+      Join Coverage 与 Row Count 正常后，仍需确认最终 Metric 与可信基准一致。
+
+knowledge:
+  - kb-metricflow-entities-grain-001
+  - kb-metricflow-semantic-graph-joins-001
+  - kb-metricflow-query-validation-001
+  - kb-metricflow-production-closure-001
+
+interviews:
+  - iq-dimensional-fact-dimension-design-001
+  - iq-dimensional-primary-key-001
+  - iq-data-quality-diagnosis-001

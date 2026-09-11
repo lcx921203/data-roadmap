@@ -34,6 +34,9 @@ const sectionRelationRegistries = [
   loadYaml<SectionRelationRegistry>(
     'content/mappings/dbt-section-relations-v0.9.5.yaml',
   ),
+  loadYaml<SectionRelationRegistry>(
+    'content/mappings/metricflow-section-relations-v1.0.5.yaml',
+  ),
 ]
 
 const sectionRelations = sectionRelationRegistries.flatMap(

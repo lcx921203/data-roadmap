@@ -1,0 +1,60 @@
+version: 1.0.5
+topic: metricflow
+
+interview:
+  evidence_policy: direct_evidence_only
+  mapped_existing_questions:
+    - iq-data-quality-diagnosis-001
+    - iq-realtime-offline-consistency-001
+    - iq-dimensional-fact-dimension-design-001
+    - iq-dimensional-primary-key-001
+    - iq-data-product-system-design-001
+    - iq-data-governance-framework-001
+  metricflow_specific_frequency: preserve_existing_evidence_only
+  no_verified_metricflow_specific_question: true
+
+cross_navigation:
+  interview_to_knowledge:
+    - interview: iq-data-quality-diagnosis-001
+      knowledge:
+        - kb-metricflow-semantic-graph-joins-001
+        - kb-metricflow-query-validation-001
+        - kb-metricflow-production-closure-001
+
+    - interview: iq-realtime-offline-consistency-001
+      knowledge:
+        - kb-metricflow-dimensions-time-001
+        - kb-metricflow-time-spine-cumulative-001
+        - kb-metricflow-production-closure-001
+
+    - interview: iq-dimensional-fact-dimension-design-001
+      knowledge:
+        - kb-metricflow-entities-grain-001
+        - kb-metricflow-semantic-graph-joins-001
+
+    - interview: iq-dimensional-primary-key-001
+      knowledge:
+        - kb-metricflow-entities-grain-001
+
+    - interview: iq-data-product-system-design-001
+      knowledge:
+        - kb-metricflow-overview-001
+        - kb-metricflow-saved-queries-serving-001
+        - kb-metricflow-production-closure-001
+
+    - interview: iq-data-governance-framework-001
+      knowledge:
+        - kb-metricflow-overview-001
+        - kb-metricflow-saved-queries-serving-001
+        - kb-metricflow-production-closure-001
+
+  policy:
+    interview_to_knowledge: explicit_curated_mapping
+    knowledge_to_interview: derived_from_interview_to_knowledge
+    knowledge_to_scale: derived_from_scale_scenario_knowledge
+    scale_to_knowledge: scale_scenario_owns_knowledge_ids
+    interview_to_scale: derived_from_scale_scenario_interviews
+    scale_to_interview: scale_scenario_owns_interview_ids
+    reverse_links: derived_not_duplicated
+    mapping_precision: do_not_force_direct_links_for_graph_completeness
+    relation_is_not_frequency_claim: true

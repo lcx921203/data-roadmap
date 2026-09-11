@@ -413,13 +413,22 @@
 - [x] Freeze MetricFlow Learn V1 at 12 / 12
 - [x] Keep UI / green Light-Dark palette frozen
 
-### Next: V1.0.5 MetricFlow Scale & Interview Integration
-- [ ] Add only justified hypothetical Semantic Layer Scale scenarios
-- [ ] Map only existing evidence-backed Interview questions
-- [ ] Do not invent MetricFlow-specific frequency
-- [ ] Add contextual cross-tab relations
+### V1.0.5 MetricFlow Scale & Interview Integration
+- [x] Add 3 justified hypothetical Semantic Layer Scale scenarios
+- [x] Add Semantic Layer as the fourth Scale domain
+- [x] Add Metric Drift / Reconciliation / Change Safety scenario
+- [x] Add Semantic Graph / Fan-out / Grain scenario
+- [x] Add BI + App + Agent Semantic Serving scenario
+- [x] Map only existing evidence-backed Interview questions
+- [x] Add direct Interview -> MetricFlow Knowledge mappings
+- [x] Add contextual Learn / Scale / Interview section relations
+- [x] Preserve every Interview question's existing evidence strength
+- [x] Explicitly keep no MetricFlow-specific verified frequency claim
+- [x] Keep every Scale scenario hypothetical and separate from project facts
+- [x] Keep current platform / cache product behavior version-sensitive
+- [x] Keep UI / green Light-Dark palette unchanged
 
-### V1.0.6 MetricFlow Vertical Slice Freeze
+### Next: V1.0.6 MetricFlow Vertical Slice Freeze
 - [ ] Three-tab closure audit
 - [ ] Light / Dark reading audit for Semantic Layer content
 - [ ] Truth / evidence / platform-support audit

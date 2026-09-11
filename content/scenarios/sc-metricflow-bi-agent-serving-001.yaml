@@ -1,0 +1,161 @@
+id: sc-metricflow-bi-agent-serving-001
+type: scenario
+title: Serve 220 dashboards and an AI agent from one governed semantic layer
+title_cn: 220 个 Dashboard + AI Agent 共用一个 Semantic Layer，怎样平衡延迟、成本、Freshness 与权限
+domain: semantic
+scenario_type:
+  - semantic_serving
+  - cache
+  - api
+  - governance
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - consumers
+  - concurrency
+  - latency
+  - freshness
+  - cost
+  - access_control
+status: scale_detail_v1
+order: 15
+
+summary: 一个 Semantic Layer 同时服务 220 个 BI Dashboard、6 个内部应用和 1 个 AI Agent。大部分查询集中在 25 个核心 Metrics，但维度组合很多。业务希望常用页面秒级返回、核心数据 15 分钟内新鲜，同时不能让 Agent 获得不必要的敏感维度权限。
+
+display_tags:
+  - Saved Query
+  - Export
+  - Cache
+  - Agent
+
+quick_answer: >-
+  不要把所有请求都强制实时 Query，也不要把所有 Metric 都预计算。
+  先按查询形态分层：高复用固定切片使用 Saved Query + Export / Cache，
+  灵活 BI 和 Agent 保留 Governed Dynamic Query。
+  再用 Freshness、Query Cost、P95 Latency、Cache Hit 与 Consumer 权限决定哪些查询值得预热。
+  Agent 只获得允许的 Metric / Dimension Tool Schema，不直接暴露任意 SQL 或底层敏感表。
+
+parameters:
+  - label: BI
+    value: 220 个 Dashboard
+  - label: Applications
+    value: 6 个内部应用
+  - label: Agent
+    value: 1 个 Governed Semantic Query Tool
+  - label: Hot Metrics
+    value: 25 个核心 Metric 占大部分请求
+  - label: Freshness
+    value: 核心经营数据目标 15 分钟内可见
+  - label: Latency
+    value: 常用交互式查询目标 P95 约 3 秒
+  - label: 安全要求
+    value: Agent 不允许访问部分财务 / PII Dimension
+
+constraints:
+  - title: 查询模式同时存在固定与高度动态两类
+    body: >-
+      Dashboard 常见 Query 组合稳定，Agent / Analyst 的 Group By 和 Filter 更动态，
+      一个 Serving Strategy 无法同时最优。
+  - title: 预计算会用 Freshness 和 Storage 换 Latency
+    body: >-
+      Export / Declarative Cache 越多，运行成本、存储和失效管理越复杂。
+  - title: Semantic Access 不等于底层 Security 自动继承
+    body: >-
+      当前 managed cache 等产品能力有独立安全边界，
+      不能假设底层 Table 的所有 Security Context 会无条件传播到每个 Cache / Consumer。
+
+failure_bottlenecks:
+  - title: 所有请求都走动态 Semantic Query 导致 Warehouse 重复扫描
+    body: >-
+      220 个 Dashboard 反复查询相同 25 个 Metric 时，
+      即使语义正确，也可能把相同 Generated SQL 重复提交到底层平台。
+  - title: 所有 Query 都 Export 会让维度组合爆炸
+    body: >-
+      Agent 和 Analyst 的组合空间很大，
+      为每种 Dimension / Filter 建物化结果不可持续。
+  - title: Agent 直接拿超级账号会放大数据治理风险
+    body: >-
+      Semantic Layer 能减少 Join / Formula 自由度，
+      但如果 Tool Token 能访问所有 Metric / Dimension，仍然可能越权读取敏感数据。
+
+design:
+  - title: 按查询形态分层：动态 Query / Saved Query / Export
+    body: >-
+      高频固定 Dashboard 先固化 Saved Query；
+      需要普通 Relation 的下游使用 Export；
+      维度组合变化大的 BI / Agent 保留 Dynamic Semantic Query。
+  - title: 先利用 Result Cache，再选择性启用 Declarative Cache
+    body: >-
+      对完全重复的 Generated SQL 先观察目标平台 Cache 命中，
+      只有高成本、高复用 Query 才值得声明式预热，避免 Cache 泛滥。
+  - title: 用 Freshness Budget 约束预计算周期
+    body: >-
+      15 分钟 Freshness 目标决定 Export / Cache 刷新频率，
+      不为追求低延迟而无限拉长缓存有效期。
+  - title: 把 Agent 限制在 Governed Semantic Query Surface
+    body: >-
+      Tool Schema 只暴露允许的 Metric、Dimension、Filter 和时间范围，
+      Planner / Router 不直接获得任意 SQL Execution 权限。
+  - title: 把权限策略放在 Consumer 与 Semantic Access 层一起审计
+    body: >-
+      对 BI、App、Agent 分配最小权限，
+      并单独验证 Cache / Export Relation 的访问边界，而不是假设 Source Permission 自动继承。
+
+tradeoffs:
+  - title: Dynamic Query 最灵活，但把延迟和成本留在请求时
+    body: >-
+      它适合 Agent / Ad-hoc Analysis，
+      但高复用 Dashboard 可能更适合预计算。
+  - title: Export 简化下游消费，但引入 Freshness Lag
+    body: >-
+      下游得到普通 Table / View 的便利，同时需要接受 Schedule、Storage 与变更管理。
+  - title: Cache 提高命中性能，但增加失效与安全复杂度
+    body: >-
+      特别是敏感 Metric，必须把 Cache Storage / Access 作为独立治理面审计。
+
+observability:
+  - title: 统一看 P50 / P95 Latency、Query Cost 与 Cache Hit
+    body: >-
+      只看平均延迟无法判断是否少量重查询拖垮系统，也无法证明 Cache 真正省了多少 Compute。
+  - title: 按 Consumer 类型拆 Query Profile
+    body: >-
+      Dashboard、Application、Agent 的 Query Shape 不同，
+      应分别观察常用 Metric、Dimension 数量、错误率和成本。
+  - title: 监控 Freshness 与 Semantic Correctness 两条线
+    body: >-
+      快速返回旧 Export 并不算成功，
+      必须同时知道结果是否新鲜、是否通过核心 Reconciliation。
+
+cost:
+  - title: 用高复用度而不是“重要性”决定是否预计算
+    body: >-
+      一个重要但每天只查一次的 Metric 未必值得专门 Cache；
+      高频且昂贵的稳定 Query 才能更容易回收预计算成本。
+  - title: Agent 自由度会直接转化成 Query Cost
+    body: >-
+      允许无限 Dimension / 时间范围组合会产生极重查询，
+      Tool Guardrail 应同时保护成本和数据正确性。
+
+recovery:
+  - title: Cache / Export 异常时允许回退到受治理动态 Query
+    body: >-
+      预计算层不可用时保留正确性优先的查询路径，
+      避免为了低延迟继续服务已知过期数据。
+  - title: Agent 权限异常时优先收缩 Tool Surface
+    body: >-
+      可以临时禁用敏感 Dimension / Metric，
+      而不是停掉所有 BI / Semantic Layer。
+  - title: 性能事故后重新校准 Hot Query 集合
+    body: >-
+      根据真实请求分布调整 Saved Query / Cache，
+      不把一次事故期间的临时热点永久固化成架构。
+
+knowledge:
+  - kb-metricflow-overview-001
+  - kb-metricflow-saved-queries-serving-001
+  - kb-metricflow-query-validation-001
+  - kb-metricflow-production-closure-001
+
+interviews:
+  - iq-data-product-system-design-001
+  - iq-data-governance-framework-001

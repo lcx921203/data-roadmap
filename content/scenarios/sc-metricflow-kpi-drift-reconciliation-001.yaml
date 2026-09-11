@@ -1,0 +1,158 @@
+id: sc-metricflow-kpi-drift-reconciliation-001
+type: scenario
+title: A semantic metric release makes BI, API and Agent revenue drift by 1.8%
+title_cn: 语义指标发布后 BI、API、Agent 的 Revenue 同时漂移 1.8%，怎样定位
+domain: semantic
+scenario_type:
+  - metric_correctness
+  - reconciliation
+  - change_management
+  - troubleshooting
+difficulty: senior
+hypothetical: true
+scale_dimensions:
+  - metrics
+  - consumers
+  - correctness
+  - change_safety
+  - recovery
+status: scale_detail_v1
+order: 13
+
+summary: 一个包含 160 个 Governed Metrics 的 Semantic Layer 发布了 Revenue 口径变更。24 个 Dashboard、4 个内部 API 和 1 个 Agent Tool 都开始返回比财务基准高约 1.8% 的 Revenue，但所有 dbt Build、Semantic Validation 和 Query 都是 Success。
+
+display_tags:
+  - Metric Drift
+  - Reconciliation
+  - Metric Time
+  - Change Safety
+
+quick_answer: >-
+  不要先改 Formula，也不要因为 Validation 全绿就认为 Metric 正确。
+  先冻结变更版本，用旧/新定义对同一历史窗口做双跑 Reconciliation，
+  再按 Date、Region、Order Status、Currency 等 Slice 缩小差异。
+  依次排查上游 dbt 数据、Metric Filter、Entity / Join、Metric Time、Generated SQL 和 Consumer 二次加工。
+  只有明确这是数据事故还是业务口径变更之后，才决定回滚、修复或正式迁移消费者。
+
+parameters:
+  - label: Semantic Catalog
+    value: 约 160 个 Governed Metrics
+  - label: Consumers
+    value: 24 个 BI Dashboard、4 个内部 API、1 个 Agent Semantic Query Tool
+  - label: 变更
+    value: Revenue 的 Filter 与默认 Aggregation Time 同一次发布发生调整
+  - label: 现象
+    value: Semantic Layer 比财务可信基准高约 1.8%
+  - label: 系统状态
+    value: dbt Build、Semantic Validation、Data Platform Validation 全部 Success
+  - label: 目标
+    value: 判断是数据错误、语义定义变更还是 Consumer 差异，并在不中断全部消费者的情况下恢复可信口径
+
+constraints:
+  - title: Validation PASS 不代表业务数字正确
+    body: >-
+      Parsing、Semantic、Data Platform Validation 能证明配置和 SQL 可解析、可执行，
+      但不能证明 Revenue 与 Finance Ledger 的业务口径一致。
+  - title: 多类 Consumer 同时受影响会放大变更半径
+    body: >-
+      Dashboard、API 和 Agent 共用一个 Governed Metric 时，
+      一次语义定义变化会同步传播，必须有受影响消费者清单与迁移策略。
+  - title: 时间口径变化可能看起来像数据丢失或重复
+    body: >-
+      从 created_at 切到 paid_at 之类的 Aggregation Time 变化，
+      会把历史金额重新分配到不同日期，即使总金额接近也可能造成日级大幅漂移。
+
+failure_bottlenecks:
+  - title: 把 Semantic Change 误判成上游数据事故
+    body: >-
+      如果团队只看到 Dashboard 数字变化就开始重跑 dbt，
+      会增加成本却无法解释由 Filter / Metric Time 引起的口径变化。
+  - title: 只看全局总额无法定位差异来源
+    body: >-
+      1.8% 总体差异可能集中在某个 Currency、Region、Payment Status 或特定日期，
+      不做 Slice Reconciliation 很难缩小根因。
+  - title: Consumer 二次计算会让同一个 Governed Metric 再次分叉
+    body: >-
+      BI 可能平均 Daily Ratio，App 可能做本地 Cache，Agent 可能选择不同 Filter，
+      Semantic API 返回正确也不代表最终展示层完全一致。
+
+design:
+  - title: 先建立可重复的 Metric Reconciliation 基线
+    body: >-
+      选定可信 Finance / Payment 基准，对同一历史窗口比较 Row Count、Distinct Entity、
+      Revenue Sum、Currency / Status 分布，并把差异切到日期和业务 Slice。
+  - title: 对旧版和新版 Semantic Definition 做双跑
+    body: >-
+      固定相同上游数据和查询窗口，仅切换 Metric Definition，
+      判断差异是由 Semantic Change 引入还是原本就存在于 Source / dbt Model。
+  - title: 按生产排障链逐层缩小
+    body: >-
+      Upstream dbt Model → Filter / Aggregation → Entity / Join → Metric Time →
+      Generated SQL → Target Engine → Cache / Export → Consumer，避免跨层猜测。
+  - title: 把 Metric Definition 变更当成版本化发布
+    body: >-
+      对会改变历史值或 Consumer 解释的变更，记录 Owner、旧/新定义、影响范围、迁移窗口与回滚条件，
+      而不是把它当成普通 YAML 小改动。
+  - title: 以业务对账重新收敛作为恢复完成条件
+    body: >-
+      Build Success 或 Query Success 都不是事故结束。
+      新口径如果是预期变更，应有业务批准；如果是缺陷，则需恢复到可信基准允许的容差范围。
+
+tradeoffs:
+  - title: 双跑提高变更安全，但会增加查询和治理成本
+    body: >-
+      关键 Metric 值得在迁移窗口维护旧/新两套结果，
+      但不应对所有低风险内部指标永久双跑。
+  - title: 更细 Slice 对账定位更快，但扫描成本更高
+    body: >-
+      可以先从 Date / Region 等粗粒度开始，
+      只有发现异常区域后再下钻到订单级明细。
+  - title: 立即回滚最保守，但可能撤销真实业务定义升级
+    body: >-
+      如果差异来自经过批准的新口径，正确动作应该是 Consumer Migration，
+      而不是机械恢复旧数字。
+
+observability:
+  - title: 同时监控系统成功率和 Metric Health
+    body: >-
+      保留 dbt Run、Semantic Validation、Query Error 等工程信号，
+      同时维护核心 Metric 的 Reconciliation Delta，避免 Green Pipeline 掩盖业务漂移。
+  - title: 给关键 Metric 维护变更日志与消费者清单
+    body: >-
+      每次 Filter、Entity、Time、Formula 变化都应能追到变更人、版本和直接 Consumer。
+  - title: 观察差异开始时间而不是只看当前值
+    body: >-
+      Reconciliation Trend 能帮助确认问题是否从某次 Semantic Release、
+      Source Change 或 Consumer 发布开始。
+
+cost:
+  - title: 全量历史重算不是默认排障手段
+    body: >-
+      先通过 Semantic Query 和聚合级 Reconciliation 缩小窗口，
+      避免为了一个定义问题重算整个 Warehouse。
+  - title: 关键 Metric 的持续对账是显式可靠性成本
+    body: >-
+      它会增加 Compute，但可以把指标错误从“用户发现”提前到“平台主动发现”。
+
+recovery:
+  - title: 首先阻止错误定义继续扩散
+    body: >-
+      对高风险 Metric 可以暂停 Export / Cache 刷新或固定旧版本，
+      防止新的 Consumer 继续读取未确认口径。
+  - title: 区分回滚与迁移
+    body: >-
+      缺陷使用回滚或 Forward Fix；真实业务口径升级则使用明确迁移窗口与 Consumer 验证。
+  - title: 恢复后重新验证所有主要消费路径
+    body: >-
+      至少检查 BI、API、Agent 三类 Consumer，
+      确认没有本地二次逻辑继续保留旧错误。
+
+knowledge:
+  - kb-metricflow-dimensions-time-001
+  - kb-metricflow-query-validation-001
+  - kb-metricflow-production-closure-001
+
+interviews:
+  - iq-data-quality-diagnosis-001
+  - iq-realtime-offline-consistency-001
+  - iq-data-product-system-design-001
