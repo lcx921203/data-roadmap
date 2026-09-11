@@ -3,60 +3,55 @@ type: knowledge_spine
 stage_id: '02'
 topic: spark
 learning_depth: L5
-status: frozen_structure_no_body
-
+status: core_execution_model_partial
 technical_baseline:
   current_release_at_freeze: 4.2.0
   validation_date: '2026-09-11'
   rule: Revalidate version-sensitive behavior before publishing exact defaults or support matrices.
-
 product_boundary:
   spark_owns:
-    - application_runtime
-    - driver_executor_cluster_manager
-    - lazy_evaluation_and_execution_graph
-    - job_stage_task_and_shuffle
-    - partition_and_parallelism
-    - spark_sql_planning
-    - catalyst_and_physical_plan
-    - join_strategy_and_aqe
-    - skew_shuffle_and_stragglers
-    - memory_cache_persist_and_spill
-    - structured_streaming_execution
-    - streaming_state_watermark_checkpoint
-    - production_observability_and_capacity
-
+  - application_runtime
+  - driver_executor_cluster_manager
+  - lazy_evaluation_and_execution_graph
+  - job_stage_task_and_shuffle
+  - partition_and_parallelism
+  - spark_sql_planning
+  - catalyst_and_physical_plan
+  - join_strategy_and_aqe
+  - skew_shuffle_and_stragglers
+  - memory_cache_persist_and_spill
+  - structured_streaming_execution
+  - streaming_state_watermark_checkpoint
+  - production_observability_and_capacity
   iceberg_boundary:
     iceberg_owns:
-      - table_metadata
-      - snapshot_and_manifest_tree
-      - table_format_commit_semantics
-      - delete_applicability
+    - table_metadata
+    - snapshot_and_manifest_tree
+    - table_format_commit_semantics
+    - delete_applicability
     spark_may_reference:
-      - writer_partitioning
-      - repartition_and_distribution_before_write
-      - task_to_file_relationship
-      - backfill_compute_pressure
+    - writer_partitioning
+    - repartition_and_distribution_before_write
+    - task_to_file_relationship
+    - backfill_compute_pressure
     rule: Spark may explain compute-side write behavior but must not reteach Iceberg metadata and commit internals.
-
   trino_boundary:
     trino_owns:
-      - federated_query_engine_runtime
-      - coordinator_worker_query_lifecycle
-      - connector_runtime
-      - resource_groups_and_trino_fte
-    spark_rule: Spark SQL planning is taught from Spark application and Catalyst execution semantics, not by copying the Trino vertical.
-
+    - federated_query_engine_runtime
+    - coordinator_worker_query_lifecycle
+    - connector_runtime
+    - resource_groups_and_trino_fte
+    spark_rule: Spark SQL planning is taught from Spark application and Catalyst execution semantics, not by copying the Trino
+      vertical.
   flink_boundary:
     flink_owns_later:
-      - native_stream_runtime_architecture
-      - jobmanager_taskmanager
-      - operator_chain
-      - flink_state_backend
-      - checkpoint_barrier_alignment
-      - flink_specific_exactly_once
+    - native_stream_runtime_architecture
+    - jobmanager_taskmanager
+    - operator_chain
+    - flink_state_backend
+    - checkpoint_barrier_alignment
+    - flink_specific_exactly_once
     spark_rule: Spark may compare streaming execution modes, but must not pre-teach Flink internals.
-
 content_principles:
   progression: causal
   content_first_continuity: true
@@ -68,327 +63,311 @@ content_principles:
   production_pattern: publishable_as_knowledge
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
-
 interview_seed_ids:
-  - iq-spark-job-stage-task-001
-  - iq-spark-repartition-vs-coalesce-001
-  - iq-spark-broadcast-join-001
-  - iq-spark-data-skew-salting-001
-  - iq-spark-cache-persist-001
-  - iq-etl-join-slowdown-001
-  - iq-spark-large-scale-limited-resource-001
-  - iq-large-dataset-tech-selection-001
-
+- iq-spark-job-stage-task-001
+- iq-spark-repartition-vs-coalesce-001
+- iq-spark-broadcast-join-001
+- iq-spark-data-skew-salting-001
+- iq-spark-cache-persist-001
+- iq-etl-join-slowdown-001
+- iq-spark-large-scale-limited-resource-001
+- iq-large-dataset-tech-selection-001
 interview_policy:
   mapping_means_relevance_not_spark_frequency: true
   do_not_create_fake_spark_specific_frequency: true
   broad_architecture_questions_require_precision_review: true
-
 nodes:
-  - order: 1
-    id: kb-spark-overview-001
-    title: Spark Overview & System Mental Model
-    title_cn: Spark 总览与核心心智模型
-    responsibility: >
-      建立 Spark 是通用分布式计算引擎而不是存储系统的核心模型，
-      理解 Batch、Spark SQL 与 Structured Streaming 为什么能够共享同一执行基础。
-    prerequisites: []
-    must_explain:
-      - what_spark_is_and_is_not
-      - distributed_compute_engine_positioning
-      - batch_sql_streaming_unified_positioning
-      - spark_vs_storage_system_boundary
-      - high_level_application_to_result_chain
-    must_not_cover:
-      - driver_executor_runtime_details
-      - catalyst_rules
-      - shuffle_internals
-      - iceberg_metadata
-      - flink_runtime_internals
-    handoff_to: kb-spark-application-runtime-001
+- order: 1
+  id: kb-spark-overview-001
+  title: Spark Overview & System Mental Model
+  title_cn: Spark 总览与核心心智模型
+  responsibility: '建立 Spark 是通用分布式计算引擎而不是存储系统的核心模型， 理解 Batch、Spark SQL 与 Structured Streaming 为什么能够共享同一执行基础。
 
-  - order: 2
-    id: kb-spark-application-runtime-001
-    title: Driver, Executor, Cluster Manager & Application Lifecycle
-    title_cn: Driver、Executor、Cluster Manager 与 Application Lifecycle
-    responsibility: >
-      解释 Spark Application 如何获得资源并运行，
-      明确 Driver、Executor、Cluster Manager 的职责以及 Application 生命周期。
-    prerequisites:
-      - kb-spark-overview-001
-    must_explain:
-      - driver_responsibility
-      - executor_responsibility
-      - cluster_manager_role
-      - application_process_model
-      - resource_allocation_high_level
-      - client_vs_cluster_deploy_mode_at_concept_level
-    must_not_cover:
-      - job_stage_task_deep_dive
-      - catalyst
-      - executor_memory_tuning
-      - yarn_or_kubernetes_platform_deep_dive
-    handoff_to: kb-spark-dataframe-lazy-dag-001
+    '
+  prerequisites: []
+  must_explain:
+  - what_spark_is_and_is_not
+  - distributed_compute_engine_positioning
+  - batch_sql_streaming_unified_positioning
+  - spark_vs_storage_system_boundary
+  - high_level_application_to_result_chain
+  must_not_cover:
+  - driver_executor_runtime_details
+  - catalyst_rules
+  - shuffle_internals
+  - iceberg_metadata
+  - flink_runtime_internals
+  handoff_to: kb-spark-application-runtime-001
+- order: 2
+  id: kb-spark-application-runtime-001
+  title: Driver, Executor, Cluster Manager & Application Lifecycle
+  title_cn: Driver、Executor、Cluster Manager 与 Application Lifecycle
+  responsibility: '解释 Spark Application 如何获得资源并运行， 明确 Driver、Executor、Cluster Manager 的职责以及 Application 生命周期。
 
-  - order: 3
-    id: kb-spark-dataframe-lazy-dag-001
-    title: DataFrame, Dataset, Lazy Evaluation & DAG
-    title_cn: DataFrame、Dataset、Lazy Evaluation 与 DAG
-    responsibility: >
-      解释 Transformation 为什么通常不会立即执行，
-      Action 如何触发真正计算，以及逻辑依赖怎样形成可被调度的执行图。
-    prerequisites:
-      - kb-spark-application-runtime-001
-    must_explain:
-      - dataframe_dataset_as_primary_structured_api
-      - transformation_vs_action
-      - lazy_evaluation
-      - lineage_and_dag
-      - why_lazy_evaluation_enables_optimization
-      - rdd_as_foundational_execution_abstraction_without_api_deep_dive
-    must_not_cover:
-      - full_rdd_api
-      - stage_boundary_details
-      - catalyst_physical_planning
-      - streaming_state
-    handoff_to: kb-spark-job-stage-task-shuffle-001
+    '
+  prerequisites:
+  - kb-spark-overview-001
+  must_explain:
+  - driver_responsibility
+  - executor_responsibility
+  - cluster_manager_role
+  - application_process_model
+  - resource_allocation_high_level
+  - client_vs_cluster_deploy_mode_at_concept_level
+  must_not_cover:
+  - job_stage_task_deep_dive
+  - catalyst
+  - executor_memory_tuning
+  - yarn_or_kubernetes_platform_deep_dive
+  handoff_to: kb-spark-dataframe-lazy-dag-001
+- order: 3
+  id: kb-spark-dataframe-lazy-dag-001
+  title: DataFrame, Dataset, Lazy Evaluation & DAG
+  title_cn: DataFrame、Dataset、Lazy Evaluation 与 DAG
+  responsibility: '解释 Transformation 为什么通常不会立即执行， Action 如何触发真正计算，以及逻辑依赖怎样形成可被调度的执行图。
 
-  - order: 4
-    id: kb-spark-job-stage-task-shuffle-001
-    title: Job, Stage, Task, Narrow/Wide Dependency & Shuffle
-    title_cn: Job、Stage、Task、Narrow/Wide Dependency 与 Shuffle
-    responsibility: >
-      把 Lazy DAG 落到真正执行层级，解释 Action 如何形成 Job，
-      Shuffle 为什么形成 Stage Boundary，以及 Task 为什么与 Partition 对应。
-    prerequisites:
-      - kb-spark-dataframe-lazy-dag-001
-    must_explain:
-      - action_to_job
-      - job_to_stage
-      - stage_to_task
-      - narrow_dependency
-      - wide_dependency
-      - shuffle_as_stage_boundary
-      - task_retry_basics
-    must_not_cover:
-      - join_strategy_selection
-      - shuffle_performance_tuning
-      - executor_memory_model
-      - speculation_deep_dive
-    handoff_to: kb-spark-partition-parallelism-001
+    '
+  prerequisites:
+  - kb-spark-application-runtime-001
+  must_explain:
+  - dataframe_dataset_as_primary_structured_api
+  - transformation_vs_action
+  - lazy_evaluation
+  - lineage_and_dag
+  - why_lazy_evaluation_enables_optimization
+  - rdd_as_foundational_execution_abstraction_without_api_deep_dive
+  must_not_cover:
+  - full_rdd_api
+  - stage_boundary_details
+  - catalyst_physical_planning
+  - streaming_state
+  handoff_to: kb-spark-job-stage-task-shuffle-001
+- order: 4
+  id: kb-spark-job-stage-task-shuffle-001
+  title: Job, Stage, Task, Narrow/Wide Dependency & Shuffle
+  title_cn: Job、Stage、Task、Narrow/Wide Dependency 与 Shuffle
+  responsibility: '把 Lazy DAG 落到真正执行层级，解释 Action 如何形成 Job， Shuffle 为什么形成 Stage Boundary，以及 Task 为什么与 Partition 对应。
 
-  - order: 5
-    id: kb-spark-partition-parallelism-001
-    title: Partition, Parallelism, Repartition & Coalesce
-    title_cn: Partition、Parallelism、Repartition 与 Coalesce
-    responsibility: >
-      解释 Partition 如何决定 Task 级并行，
-      Repartition / Coalesce 怎样改变分区与 Shuffle，
-      以及分区过大、过小如何影响计算和输出文件。
-    prerequisites:
-      - kb-spark-job-stage-task-shuffle-001
-    must_explain:
-      - partition_as_parallel_work_unit
-      - input_partition_and_shuffle_partition
-      - task_count_relationship
-      - repartition
-      - coalesce
-      - partition_size_tradeoff
-      - output_file_count_connection
-    must_not_cover:
-      - iceberg_distribution_mode_deep_dive
-      - join_strategy
-      - aqe
-      - exact_executor_sizing_formula
-    handoff_to: kb-spark-sql-catalyst-planning-001
+    '
+  prerequisites:
+  - kb-spark-dataframe-lazy-dag-001
+  must_explain:
+  - action_to_job
+  - job_to_stage
+  - stage_to_task
+  - narrow_dependency
+  - wide_dependency
+  - shuffle_as_stage_boundary
+  - task_retry_basics
+  must_not_cover:
+  - join_strategy_selection
+  - shuffle_performance_tuning
+  - executor_memory_model
+  - speculation_deep_dive
+  handoff_to: kb-spark-partition-parallelism-001
+- order: 5
+  id: kb-spark-partition-parallelism-001
+  title: Partition, Parallelism, Repartition & Coalesce
+  title_cn: Partition、Parallelism、Repartition 与 Coalesce
+  responsibility: '解释 Partition 如何决定 Task 级并行， Repartition / Coalesce 怎样改变分区与 Shuffle， 以及分区过大、过小如何影响计算和输出文件。
 
-  - order: 6
-    id: kb-spark-sql-catalyst-planning-001
-    title: Spark SQL, Catalyst & Physical Planning
-    title_cn: Spark SQL、Catalyst 与 Physical Plan
-    responsibility: >
-      解释 SQL / DataFrame 怎样从未解析逻辑计划变成已分析、优化后的 Logical Plan，
-      再生成 Physical Plan，并建立 EXPLAIN 与 Statistics 的观察入口。
-    prerequisites:
-      - kb-spark-partition-parallelism-001
-    must_explain:
-      - unresolved_to_analyzed_logical_plan
-      - catalyst_optimizer_role
-      - optimized_logical_plan
-      - physical_planning
-      - data_source_pruning_and_pushdown_boundary
-      - explain
-      - statistics_as_planning_input
-    must_not_cover:
-      - enumerate_all_catalyst_rules
-      - join_strategy_deep_dive
-      - aqe_runtime_replanning
-      - trino_planner_comparison_as_primary_content
-    handoff_to: kb-spark-join-aqe-001
+    '
+  prerequisites:
+  - kb-spark-job-stage-task-shuffle-001
+  must_explain:
+  - partition_as_parallel_work_unit
+  - input_partition_and_shuffle_partition
+  - task_count_relationship
+  - repartition
+  - coalesce
+  - partition_size_tradeoff
+  - output_file_count_connection
+  must_not_cover:
+  - iceberg_distribution_mode_deep_dive
+  - join_strategy
+  - aqe
+  - exact_executor_sizing_formula
+  handoff_to: kb-spark-sql-catalyst-planning-001
+- order: 6
+  id: kb-spark-sql-catalyst-planning-001
+  title: Spark SQL, Catalyst & Physical Planning
+  title_cn: Spark SQL、Catalyst 与 Physical Plan
+  responsibility: '解释 SQL / DataFrame 怎样从未解析逻辑计划变成已分析、优化后的 Logical Plan， 再生成 Physical Plan，并建立 EXPLAIN 与 Statistics 的观察入口。
 
-  - order: 7
-    id: kb-spark-join-aqe-001
-    title: Join Strategy, Statistics & Adaptive Query Execution
-    title_cn: Join Strategy、Statistics 与 Adaptive Query Execution
-    responsibility: >
-      解释 Statistics 如何影响 Join Strategy，
-      Broadcast Hash Join / Sort Merge Join / Shuffled Hash Join 的主要成本差异，
-      以及 AQE 如何利用运行时统计重新优化计划。
-    prerequisites:
-      - kb-spark-sql-catalyst-planning-001
-    must_explain:
-      - join_build_and_probe_at_concept_level
-      - broadcast_hash_join
-      - sort_merge_join
-      - shuffled_hash_join
-      - statistics_and_cardinality_estimation
-      - join_hints_as_override_not_default_design
-      - aqe_runtime_statistics
-      - aqe_join_conversion
-      - aqe_post_shuffle_coalescing
-      - aqe_skew_optimization_introduction
-    must_not_cover:
-      - data_skew_full_diagnosis
-      - memory_tuning
-      - list_every_join_operator
-      - claim_aqe_repairs_all_bad_queries
-    handoff_to: kb-spark-skew-shuffle-pressure-001
+    '
+  prerequisites:
+  - kb-spark-partition-parallelism-001
+  must_explain:
+  - unresolved_to_analyzed_logical_plan
+  - catalyst_optimizer_role
+  - optimized_logical_plan
+  - physical_planning
+  - data_source_pruning_and_pushdown_boundary
+  - explain
+  - statistics_as_planning_input
+  must_not_cover:
+  - enumerate_all_catalyst_rules
+  - join_strategy_deep_dive
+  - aqe_runtime_replanning
+  - trino_planner_comparison_as_primary_content
+  handoff_to: kb-spark-join-aqe-001
+- order: 7
+  id: kb-spark-join-aqe-001
+  title: Join Strategy, Statistics & Adaptive Query Execution
+  title_cn: Join Strategy、Statistics 与 Adaptive Query Execution
+  responsibility: '解释 Statistics 如何影响 Join Strategy， Broadcast Hash Join / Sort Merge Join / Shuffled Hash Join 的主要成本差异， 以及
+    AQE 如何利用运行时统计重新优化计划。
 
-  - order: 8
-    id: kb-spark-skew-shuffle-pressure-001
-    title: Data Skew, Shuffle Pressure & Stragglers
-    title_cn: Data Skew、Shuffle Pressure 与 Straggler
-    responsibility: >
-      解释 Shuffle 如何形成 Network / Disk / Task Pressure，
-      Hot Key 为什么制造 Skew 与长尾 Task，以及 AQE、Salting、Repartition 等方法各自解决什么。
-    prerequisites:
-      - kb-spark-join-aqe-001
-    must_explain:
-      - shuffle_write_and_read_pressure
-      - skew_detection_from_task_distribution
-      - hot_key
-      - straggler
-      - aqe_skew_handling
-      - salting_when_and_why
-      - repartition_as_distribution_tool
-      - speculation_boundary
-    must_not_cover:
-      - treat_salting_as_default_solution
-      - executor_memory_model
-      - cache_persist
-      - exact_cluster_capacity
-    handoff_to: kb-spark-memory-cache-spill-001
+    '
+  prerequisites:
+  - kb-spark-sql-catalyst-planning-001
+  must_explain:
+  - join_build_and_probe_at_concept_level
+  - broadcast_hash_join
+  - sort_merge_join
+  - shuffled_hash_join
+  - statistics_and_cardinality_estimation
+  - join_hints_as_override_not_default_design
+  - aqe_runtime_statistics
+  - aqe_join_conversion
+  - aqe_post_shuffle_coalescing
+  - aqe_skew_optimization_introduction
+  must_not_cover:
+  - data_skew_full_diagnosis
+  - memory_tuning
+  - list_every_join_operator
+  - claim_aqe_repairs_all_bad_queries
+  handoff_to: kb-spark-skew-shuffle-pressure-001
+- order: 8
+  id: kb-spark-skew-shuffle-pressure-001
+  title: Data Skew, Shuffle Pressure & Stragglers
+  title_cn: Data Skew、Shuffle Pressure 与 Straggler
+  responsibility: '解释 Shuffle 如何形成 Network / Disk / Task Pressure， Hot Key 为什么制造 Skew 与长尾 Task，以及 AQE、Salting、Repartition
+    等方法各自解决什么。
 
-  - order: 9
-    id: kb-spark-memory-cache-spill-001
-    title: Memory, Cache/Persist, Serialization, Spill & OOM
-    title_cn: Memory、Cache/Persist、Serialization、Spill 与 OOM
-    responsibility: >
-      解释 Execution / Storage Memory 的核心边界，
-      Cache / Persist 的收益与代价，Serialization 与 Spill 如何影响性能，
-      以及 Task Working Set 为什么会导致 OOM。
-    prerequisites:
-      - kb-spark-skew-shuffle-pressure-001
-    must_explain:
-      - unified_memory_high_level
-      - execution_vs_storage_memory
-      - cache_vs_persist
-      - cache_eviction_and_recomputation
-      - serialization_cost
-      - spill_mechanism_and_cost
-      - task_working_set
-      - executor_oom_failure_modes
-      - gc_pressure_at_concept_level
-    must_not_cover:
-      - memorize_all_memory_defaults
-      - cache_every_reused_dataset
-      - treat_spill_as_free
-      - production_capacity_formula
-    handoff_to: kb-spark-structured-streaming-execution-001
+    '
+  prerequisites:
+  - kb-spark-join-aqe-001
+  must_explain:
+  - shuffle_write_and_read_pressure
+  - skew_detection_from_task_distribution
+  - hot_key
+  - straggler
+  - aqe_skew_handling
+  - salting_when_and_why
+  - repartition_as_distribution_tool
+  - speculation_boundary
+  must_not_cover:
+  - treat_salting_as_default_solution
+  - executor_memory_model
+  - cache_persist
+  - exact_cluster_capacity
+  handoff_to: kb-spark-memory-cache-spill-001
+- order: 9
+  id: kb-spark-memory-cache-spill-001
+  title: Memory, Cache/Persist, Serialization, Spill & OOM
+  title_cn: Memory、Cache/Persist、Serialization、Spill 与 OOM
+  responsibility: '解释 Execution / Storage Memory 的核心边界， Cache / Persist 的收益与代价，Serialization 与 Spill 如何影响性能， 以及 Task Working
+    Set 为什么会导致 OOM。
 
-  - order: 10
-    id: kb-spark-structured-streaming-execution-001
-    title: Structured Streaming Execution Model
-    title_cn: Structured Streaming 执行模型
-    responsibility: >
-      建立 Stream-as-Table 与 Incremental Query 心智模型，
-      解释默认 Micro-batch、Trigger、Offset / Progress，以及当前 4.x 的
-      Real-Time Mode 与 Continuous Processing 的语义边界。
-    prerequisites:
-      - kb-spark-memory-cache-spill-001
-    must_explain:
-      - stream_as_unbounded_table
-      - incremental_query
-      - source_offset_progress
-      - trigger
-      - micro_batch_default_model
-      - real_time_mode_current_boundary
-      - continuous_processing_boundary
-      - batch_and_streaming_shared_sql_engine
-    must_not_cover:
-      - call_all_structured_streaming_pure_streaming
-      - claim_real_time_mode_equals_flink_runtime
-      - state_store_deep_dive
-      - exactly_once_without_source_sink_boundary
-    handoff_to: kb-spark-streaming-state-reliability-001
+    '
+  prerequisites:
+  - kb-spark-skew-shuffle-pressure-001
+  must_explain:
+  - unified_memory_high_level
+  - execution_vs_storage_memory
+  - cache_vs_persist
+  - cache_eviction_and_recomputation
+  - serialization_cost
+  - spill_mechanism_and_cost
+  - task_working_set
+  - executor_oom_failure_modes
+  - gc_pressure_at_concept_level
+  must_not_cover:
+  - memorize_all_memory_defaults
+  - cache_every_reused_dataset
+  - treat_spill_as_free
+  - production_capacity_formula
+  handoff_to: kb-spark-structured-streaming-execution-001
+- order: 10
+  id: kb-spark-structured-streaming-execution-001
+  title: Structured Streaming Execution Model
+  title_cn: Structured Streaming 执行模型
+  responsibility: '建立 Stream-as-Table 与 Incremental Query 心智模型， 解释默认 Micro-batch、Trigger、Offset / Progress，以及当前 4.x 的 Real-Time
+    Mode 与 Continuous Processing 的语义边界。
 
-  - order: 11
-    id: kb-spark-streaming-state-reliability-001
-    title: State, Event Time, Watermark, Checkpoint & Exactly-once Boundary
-    title_cn: State、Event Time、Watermark、Checkpoint 与 Exactly-once 边界
-    responsibility: >
-      解释 Stateful Streaming 为什么需要 State Store，
-      Event Time / Watermark 如何控制迟到数据与状态清理，
-      Checkpoint 如何保存进度，以及 Exactly-once 为什么是端到端条件组合而不是单个开关。
-    prerequisites:
-      - kb-spark-structured-streaming-execution-001
-    must_explain:
-      - event_time_vs_processing_time
-      - watermark
-      - late_data
-      - state_store
-      - state_growth
-      - checkpoint_and_progress_recovery
-      - replayable_source
-      - idempotent_or_transactional_sink_boundary
-      - end_to_end_exactly_once_conditions
-      - transform_with_state_as_modern_stateful_api_context
-    must_not_cover:
-      - flink_checkpoint_barrier_internals
-      - claim_all_sinks_exactly_once
-      - claim_checkpoint_alone_guarantees_exactly_once
-      - streaming_connector_matrix
-    handoff_to: kb-spark-production-troubleshooting-001
+    '
+  prerequisites:
+  - kb-spark-memory-cache-spill-001
+  must_explain:
+  - stream_as_unbounded_table
+  - incremental_query
+  - source_offset_progress
+  - trigger
+  - micro_batch_default_model
+  - real_time_mode_current_boundary
+  - continuous_processing_boundary
+  - batch_and_streaming_shared_sql_engine
+  must_not_cover:
+  - call_all_structured_streaming_pure_streaming
+  - claim_real_time_mode_equals_flink_runtime
+  - state_store_deep_dive
+  - exactly_once_without_source_sink_boundary
+  handoff_to: kb-spark-streaming-state-reliability-001
+- order: 11
+  id: kb-spark-streaming-state-reliability-001
+  title: State, Event Time, Watermark, Checkpoint & Exactly-once Boundary
+  title_cn: State、Event Time、Watermark、Checkpoint 与 Exactly-once 边界
+  responsibility: '解释 Stateful Streaming 为什么需要 State Store， Event Time / Watermark 如何控制迟到数据与状态清理， Checkpoint 如何保存进度，以及 Exactly-once
+    为什么是端到端条件组合而不是单个开关。
 
-  - order: 12
-    id: kb-spark-production-troubleshooting-001
-    title: Failure, Observability, Backfill & Capacity
-    title_cn: Failure、Observability、Backfill 与 Capacity
-    responsibility: >
-      把前 11 节重新组织成生产诊断链，
-      从 Job / Stage / Task、Shuffle、Skew、Memory、Streaming State、
-      Retry 与资源竞争定位失败和性能问题，并建立 Backfill、隔离与容量规划思维。
-    prerequisites:
-      - kb-spark-streaming-state-reliability-001
-    must_explain:
-      - spark_ui_as_first_observation_surface
-      - job_stage_task_failure_classification
-      - failed_task_retry_and_stage_recovery
-      - executor_loss
-      - speculation_as_straggler_tool_not_correctness_tool
-      - batch_backfill_pressure
-      - streaming_backlog_and_state_pressure
-      - resource_isolation
-      - observability
-      - capacity_dimensions
-      - cost_tradeoffs
-    must_not_cover:
-      - introduce_new_core_execution_model
-      - generic_parameter_checklist
-      - claim_demo_scale_as_production_evidence
-      - preteach_flink_or_kafka_verticals
-    handoff_to: scale_and_interview_integration
+    '
+  prerequisites:
+  - kb-spark-structured-streaming-execution-001
+  must_explain:
+  - event_time_vs_processing_time
+  - watermark
+  - late_data
+  - state_store
+  - state_growth
+  - checkpoint_and_progress_recovery
+  - replayable_source
+  - idempotent_or_transactional_sink_boundary
+  - end_to_end_exactly_once_conditions
+  - transform_with_state_as_modern_stateful_api_context
+  must_not_cover:
+  - flink_checkpoint_barrier_internals
+  - claim_all_sinks_exactly_once
+  - claim_checkpoint_alone_guarantees_exactly_once
+  - streaming_connector_matrix
+  handoff_to: kb-spark-production-troubleshooting-001
+- order: 12
+  id: kb-spark-production-troubleshooting-001
+  title: Failure, Observability, Backfill & Capacity
+  title_cn: Failure、Observability、Backfill 与 Capacity
+  responsibility: '把前 11 节重新组织成生产诊断链， 从 Job / Stage / Task、Shuffle、Skew、Memory、Streaming State、 Retry 与资源竞争定位失败和性能问题，并建立 Backfill、隔离与容量规划思维。
 
+    '
+  prerequisites:
+  - kb-spark-streaming-state-reliability-001
+  must_explain:
+  - spark_ui_as_first_observation_surface
+  - job_stage_task_failure_classification
+  - failed_task_retry_and_stage_recovery
+  - executor_loss
+  - speculation_as_straggler_tool_not_correctness_tool
+  - batch_backfill_pressure
+  - streaming_backlog_and_state_pressure
+  - resource_isolation
+  - observability
+  - capacity_dimensions
+  - cost_tradeoffs
+  must_not_cover:
+  - introduce_new_core_execution_model
+  - generic_parameter_checklist
+  - claim_demo_scale_as_production_evidence
+  - preteach_flink_or_kafka_verticals
+  handoff_to: scale_and_interview_integration
 freeze:
   body_written: false
   ui_changes: false
@@ -397,5 +376,8 @@ freeze:
   structure_frozen: true
   node_count: 12
   reopen_structure_only_for:
-    - verified_technical_error
-    - proven_progression_break
+  - verified_technical_error
+  - proven_progression_break
+  body_status: partial_5_of_12
+  published_nodes: 5
+  remaining_nodes: 7

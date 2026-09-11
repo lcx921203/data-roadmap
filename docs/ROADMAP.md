@@ -141,14 +141,18 @@
 - [x] Keep UI unchanged
 - [x] Keep all Spark article bodies unwritten
 
-### Next: V0.8.1 Spark Core Execution Model
-- [ ] 01 Spark Overview & System Mental Model
-- [ ] 02 Driver / Executor / Cluster Manager & Application Lifecycle
-- [ ] 03 DataFrame / Dataset / Lazy Evaluation & DAG
-- [ ] 04 Job / Stage / Task / Narrow-Wide Dependency / Shuffle
-- [ ] 05 Partition / Parallelism / Repartition / Coalesce
+### V0.8.1 Spark Core Execution Model
+- [x] 01 Spark Overview & System Mental Model
+- [x] 02 Driver / Executor / Cluster Manager & Application Lifecycle
+- [x] 03 DataFrame / Dataset / Lazy Evaluation & DAG
+- [x] 04 Job / Stage / Task / Narrow-Wide Dependency / Shuffle
+- [x] 05 Partition / Parallelism / Repartition / Coalesce
+- [x] Keep Catalyst / AQE out of the core runtime layer
+- [x] Distinguish Spark Partition from table partition
+- [x] Distinguish Task Count from actual concurrent tasks
+- [x] Preserve Spark / Iceberg write-side boundary
 
-### V0.8.2 Spark SQL & Adaptive Execution
+### Next: V0.8.2 Spark SQL & Adaptive Execution
 - [ ] 06 Spark SQL / Catalyst / Physical Planning
 - [ ] 07 Join Strategy / Statistics / AQE
 - [ ] 08 Data Skew / Shuffle Pressure / Stragglers
