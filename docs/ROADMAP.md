@@ -152,12 +152,18 @@
 - [x] Distinguish Task Count from actual concurrent tasks
 - [x] Preserve Spark / Iceberg write-side boundary
 
-### Next: V0.8.2 Spark SQL & Adaptive Execution
-- [ ] 06 Spark SQL / Catalyst / Physical Planning
-- [ ] 07 Join Strategy / Statistics / AQE
-- [ ] 08 Data Skew / Shuffle Pressure / Stragglers
+### V0.8.2 Spark SQL & Adaptive Execution
+- [x] 06 Spark SQL / Catalyst / Physical Planning
+- [x] 07 Join Strategy / Statistics / AQE
+- [x] 08 Data Skew / Shuffle Pressure / Stragglers
+- [x] Separate logical optimization from physical planning
+- [x] Connect statistics directly to join strategy decisions
+- [x] Treat AQE as runtime re-optimization, not a magic tuning switch
+- [x] Separate overall shuffle pressure from true data skew
+- [x] Treat salting as a targeted hot-key technique, not a default answer
+- [x] Preserve memory internals for V0.8.3
 
-### V0.8.3 Spark Memory & Structured Streaming
+### Next: V0.8.3 Spark Memory & Structured Streaming
 - [ ] 09 Memory / Cache-Persist / Serialization / Spill / OOM
 - [ ] 10 Structured Streaming Execution Model
 - [ ] 11 State / Event Time / Watermark / Checkpoint / Exactly-once

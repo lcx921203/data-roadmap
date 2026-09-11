@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '02'
 topic: spark
 learning_depth: L5
-status: core_execution_model_partial
+status: sql_adaptive_execution_partial
 technical_baseline:
   current_release_at_freeze: 4.2.0
   validation_date: '2026-09-11'
@@ -378,6 +378,6 @@ freeze:
   reopen_structure_only_for:
   - verified_technical_error
   - proven_progression_break
-  body_status: partial_5_of_12
-  published_nodes: 5
-  remaining_nodes: 7
+  body_status: partial_8_of_12
+  published_nodes: 8
+  remaining_nodes: 4
