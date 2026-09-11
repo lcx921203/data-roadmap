@@ -127,11 +127,55 @@
 - [x] Truth-boundary and evidence audit
 - [x] Freeze Trino V1
 
-### Next Vertical Slice
-- [ ] Select the next technology from the existing roadmap / taxonomy
-- [ ] Reuse the frozen Learn / Interview / Scale architecture
-- [ ] Do not redesign the frozen UI without a verified issue
+## V0.8 Third Vertical Slice — Spark
+
+### V0.8.0 Spark Knowledge Spine Freeze
+- [x] Select Spark as the third vertical slice
+- [x] Keep Spark in Stage 02 / L5 Core
+- [x] Freeze a 12-node causal knowledge spine
+- [x] Freeze responsibilities, prerequisites and handoffs
+- [x] Freeze explicit must-not-cover boundaries
+- [x] Freeze Spark / Iceberg / Trino / Flink content boundaries
+- [x] Register current evidence-backed Spark Interview seeds
+- [x] Validate against current Spark 4.2.0 documentation
+- [x] Keep UI unchanged
+- [x] Keep all Spark article bodies unwritten
+
+### Next: V0.8.1 Spark Core Execution Model
+- [ ] 01 Spark Overview & System Mental Model
+- [ ] 02 Driver / Executor / Cluster Manager & Application Lifecycle
+- [ ] 03 DataFrame / Dataset / Lazy Evaluation & DAG
+- [ ] 04 Job / Stage / Task / Narrow-Wide Dependency / Shuffle
+- [ ] 05 Partition / Parallelism / Repartition / Coalesce
+
+### V0.8.2 Spark SQL & Adaptive Execution
+- [ ] 06 Spark SQL / Catalyst / Physical Planning
+- [ ] 07 Join Strategy / Statistics / AQE
+- [ ] 08 Data Skew / Shuffle Pressure / Stragglers
+
+### V0.8.3 Spark Memory & Structured Streaming
+- [ ] 09 Memory / Cache-Persist / Serialization / Spill / OOM
+- [ ] 10 Structured Streaming Execution Model
+- [ ] 11 State / Event Time / Watermark / Checkpoint / Exactly-once
+
+### V0.8.4 Spark Production Closure
+- [ ] 12 Failure / Observability / Backfill / Capacity
+- [ ] Knowledge progression audit
+- [ ] Technical correctness audit
+
+### V0.8.5 Spark Scale & Interview Integration
+- [ ] Create only justified hypothetical Spark Scale scenarios
+- [ ] Map existing evidence-backed Spark Interview questions
+- [ ] Do not invent Spark-specific frequency
+- [ ] Add contextual cross-tab relations
+
+### V0.8.6 Spark Vertical Slice Freeze
+- [ ] Three-tab closure audit
+- [ ] Mobile reading audit
+- [ ] Freeze Spark V1
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found
+- [x] Keep Trino frozen unless a verified bug is found
 - [x] Reuse frozen Learn / Interview / Scale UI contract
+- [x] Do not force every technology into the same node count
