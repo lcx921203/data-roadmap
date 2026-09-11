@@ -1,0 +1,77 @@
+version: '1.9'
+status: frozen
+frozen_scope: iceberg_v1_ui
+viewport_baseline:
+  width: 390
+  height: 844
+
+public_tabs:
+  - learn
+  - interview
+  - scale
+
+principles:
+  content_continuity_first: true
+  causal_model_first: true
+  ui_supports_positioning_only_when_needed: true
+  avoid_visual_over_encoding: true
+  calm_editorial: true
+  mobile_first: true
+  one_hand_friendly: true
+
+learn:
+  preserve_original_home_and_stage_presentation: true
+  continuity_via:
+    - continue_learning
+    - stage_order
+    - previous_next
+    - reading_directory
+
+interview:
+  preserve_original_discovery_presentation: true
+  continuity_via:
+    - search
+    - technology_filter
+    - advanced_filter
+  frequency_source: evidence_only
+
+scale:
+  hierarchy:
+    - domain
+    - training_theme
+    - scenario
+  navigation_source: content/scale-navigation-v1.yaml
+  domain_filter_only_when_multiple_domains: true
+  sticky_domain_only_when_multiple_domains: true
+
+reading_directory:
+  floating_edge: left
+  drag_axis: vertical
+  drawer_edge: right
+  item_dividers: false
+  footer_close_button: false
+  current_section:
+    signal_soft_background: true
+    signal_strong_text: true
+    text_label: 当前
+  close_methods:
+    - tap_backdrop
+    - swipe_right
+    - toggle_floating_control
+    - escape
+
+navigation:
+  bottom_mobile_columns: 3
+  desktop_labels:
+    - Learn
+    - Interview
+    - Scale
+
+backstage:
+  projects_page_publicly_routable: false
+  projects_in_navigation: false
+  legacy_source_may_remain_until_repo_cleanup: true
+
+reopen_only_for:
+  - verified_usability_issue
+  - verified_visual_or_interaction_bug

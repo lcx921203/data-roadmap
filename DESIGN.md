@@ -1,6 +1,6 @@
 # DataRoadmap Design System
 
-> Version: **1.8.1 / Reading Continuity Scope Correction**
+> Version: **1.9 / Iceberg V1 UI Freeze**
 >
 > Product character: **Technical Editorial Learning System（技术编辑型学习系统）**
 
@@ -47,7 +47,41 @@ Scale
 
 ---
 
-## 2. Color
+## 2. Core Reading Principle
+
+DataRoadmap 的连贯性首先来自**内容本身**：
+
+```text
+Prerequisite
+→ Mechanism
+→ Cause
+→ Consequence
+→ Design
+→ Trade-off
+→ Recovery
+```
+
+UI 不负责“制造”知识顺序。
+
+UI 只在用户真正容易丢失上下文时提供定位能力。
+
+必须同时保护：
+
+```text
+Continuity      连贯性
+Causal Model    因果模型
+Fast Positioning 快速定位
+Structure       结构性
+Truthfulness    准确性
+```
+
+原则：
+
+> 不要让用户依赖短期记忆来使用产品；也不要为了表达连贯性而过度增加视觉结构。
+
+---
+
+## 3. Color
 
 ```text
 Canvas          #FCFCFA
@@ -58,6 +92,7 @@ Surface Strong  #EEEDE8
 Ink             #171717
 Ink Soft        #5F5F5B
 Ink Muted       #8A8A84
+
 Hairline        #E4E4DE
 Hairline Strong #D2D2CB
 
@@ -71,47 +106,45 @@ Signal 只用于：
 - Active；
 - Link；
 - Focus；
-- Primary Action；
-- Current Reading / Learning State。
+- Current Reading / Learning State；
+- Primary Action。
 
 ---
 
-## 3. Typography
+## 4. Typography
 
 ```text
-Display       34 / 1.12 / 650
-H1            28 / 1.20 / 650
-H2            22 / 1.32 / 650
-H3            18 / 1.40 / 620
-Body          16 / 1.72 / 400
-Small         14 / 1.55 / 400
-Meta          12 / 1.45 / 500
-Mono          13 / 1.60 / 400
+Display  34 / 1.12 / 650
+H1       28 / 1.20 / 650
+H2       22 / 1.32 / 650
+H3       18 / 1.40 / 620
+Body     16 / 1.72 / 400
+Small    14 / 1.55 / 400
+Meta     12 / 1.45 / 500
+Mono     13 / 1.60 / 400
 ```
 
-原则：
+正文最低 16px。
 
-- 正文最低 16px；
-- 不通过缩小文字解决移动端密度；
-- 用层级、留白、目录和折叠解决长内容问题。
+不通过缩小正文解决移动端密度问题。
 
 ---
 
-## 4. Base Layout
+## 5. Base Layout
 
+- Mobile baseline = 390px；
 - Mobile page padding = 20px；
 - Touch Target >= 44×44；
 - Row / Section / Divider 优先于 Card；
-- Default Border = 1px Hairline；
 - Default Shadow = none；
 - iOS Safe Area 必须支持；
 - Reduced Motion 必须支持。
 
 ---
 
-## 5. Three-Tab Navigation
+## 6. Three-Tab Navigation
 
-公共一级导航：
+一级导航统一为：
 
 ```text
 Learn
@@ -119,147 +152,188 @@ Interview
 Scale
 ```
 
-### Bottom Navigation
+Mobile Bottom Navigation：
 
-Bottom Navigation 是独立的 App Navigation Surface（应用导航层）。
-
-必须：
-
-- 使用 `Surface Raised`；
-- 顶部使用 `Hairline Strong`；
-- 正文与底栏之间保留 breathing space；
-- Active 只使用 Signal Blue；
-- 允许 2px 安静 Active Indicator；
+- `Surface Raised`；
+- 顶部 `Hairline Strong`；
+- 三等分；
+- Safe Area 在导航内部；
+- Active 使用 Signal；
 - 不使用大 Pill；
-- 不使用大 Shadow；
-- Safe Area 在导航层内部计算。
+- 不使用重阴影。
+
+Desktop Navigation 使用与 Mobile 相同的命名：
+
+```text
+Learn
+Interview
+Scale
+```
 
 ---
 
-## 6. Top Bar
+## 7. Learn
 
-### List / Home
+Learn 回答：
 
-TopBar 承担：
+> 我应该理解什么？
 
-- Brand / Tab Context；
-- 必要的全局操作。
-
-### Reading Detail
-
-Detail TopBar 只保留：
+保留安静的：
 
 ```text
-Back
-Context
+Learn Home
+→ Stage List
+→ Knowledge List
+→ Knowledge Detail
 ```
 
-目录不再依赖 TopBar 右上角入口。
+连贯性由以下机制承担：
 
-原因：
+```text
+Continue Learning
+Stage order
+Previous / Next
+Reading Directory
+```
 
-- 右上角是单手操作最难触达区域之一；
-- 长文目录属于阅读辅助工具，不应该挤占固定顶部导航；
-- 目录必须在文章滚动过程中持续可达。
+Stage 页面不额外增加序号轨道、流程线或 Sticky Current State。
+
+知识的真正前后关系由内容结构表达。
 
 ---
 
-## 7. One-Hand Reading Directory
+## 8. Interview
 
-长文章使用：
+Interview 回答：
+
+> 企业会怎么问？我应该怎么回答？
+
+保留：
 
 ```text
-Right-edge Floating Control
-↓
-Right-side Reading Drawer
-Scale Domain Grouping
-Sticky Domain Context
-Ordered Knowledge Spine
-Sticky Interview Result Context
-├─ Reading Progress
-├─ Current Section
-└─ Full Section Tree
-   ├─ H2
-   └─ H3
+Search
+Technology Filter
+Advanced Filter
+Evidence-backed Question List
 ```
 
-### Floating Control
+不为了“连贯性”增加额外 Sticky Result Header。
+
+Frequency 必须来自 Interview Evidence。
+
+Reading Segment：
+
+```text
+面试回答 | 深入理解
+```
+
+---
+
+## 9. Scale
+
+Scale 回答：
+
+> 规模、并发、可靠性和成本约束扩大后，系统怎么设计？
+
+Scale List 的结构冻结为：
+
+```text
+Domain
+→ Training Theme
+→ Scenario
+```
+
+当前：
+
+```text
+湖仓 / Lakehouse
+├─ 容量与回填
+│  └─ 100 亿行历史回填
+├─ 持续写入与表健康
+│  └─ 10 秒级提交后的文件膨胀
+└─ 并发提交与恢复
+   └─ 100 个 Writer 并发提交
+```
 
 规则：
 
-- 默认吸附右侧中下区域；
-- 只允许上下拖动，不在正文中自由漂移；
-- 位置保存在本地；
-- 点击打开 / 收起目录；
-- 不使用 Heavy Shadow；
-- 不遮挡标题与主操作；
-- 最小触摸区域 >= 44px。
+- 只有一个 Domain 时，不显示领域筛选；
+- 只有一个 Domain 时，不使用 Sticky Domain Header；
+- 多个 Domain 真正出现后，才显示领域筛选；
+- 多个 Domain 真正出现后，才启用 Sticky Domain Context；
+- 不使用横向 Domain Tab；
+- Scenario 默认 `hypothetical: true`。
 
-### Side Drawer
-
-从右侧进入。
-
-移动端宽度约：
+Scale Navigation 的事实源：
 
 ```text
-86vw
+content/scale-navigation-v1.yaml
 ```
 
-必须保留左侧一小段 Scrim（遮罩区），让用户能感知“这是侧层，不是新页面”。
+---
+
+## 10. One-Hand Reading Directory
+
+长文章使用左侧悬浮目录控件。
+
+```text
+Left-edge Floating Control
+→ Right-side Reading Drawer
+```
+
+Floating Control：
+
+- 默认位于左侧中下区域；
+- 只允许上下拖动；
+- 位置保存在 Local Storage；
+- 点击打开 / 收起目录；
+- 最小触摸区域 >= 44px；
+- 不使用重阴影。
+
+Reading Drawer：
+
+- 从右侧滑入；
+- 保留左侧 Scrim（遮罩区域）；
+- 宽度约 86vw；
+- 不显示左侧脏边；
+- 不显示底部“收起目录”按钮。
 
 关闭方式：
 
 ```text
 点击左侧遮罩
 向右滑动
-再次点击悬浮目录
-底部“收起目录”
-Escape（键盘）
+再次点击左侧悬浮目录
+Escape
 ```
 
-不把“关闭”只放在右上角。
-
-### Directory Hierarchy
-
-目录项之间默认**不加横线**。
-
-层级通过：
+目录层级通过：
 
 ```text
-H2 weight
-H3 indentation
-spacing
-active soft-blue background
+H2 Weight
+H3 Indentation
+Spacing
+Current Section Soft Blue
 ```
 
 表达。
 
-当前章节：
+目录项之间默认不加 Divider。
+
+当前章节同时使用：
 
 - `Signal Soft` 背景；
 - `Signal Strong` 文字；
-- 保留“当前”文字提示；
-- 不依赖颜色作为唯一状态。
-
-### Progress
-
-Reading Progress 是位置感，不是 Completion Badge。
-
-当前使用章节位置估算进度。
+- “当前”文本。
 
 ---
 
-## 8. Reading Page Hierarchy
-
-统一阅读结构：
+## 11. Reading Page Hierarchy
 
 ```text
 TopBar
 ↓
 Article Header
-  Title
-  Summary
-  Secondary Metadata
 ↓
 Quick Understanding / Main Line
 ↓
@@ -269,48 +343,42 @@ Body
 Primary Continuation
 ```
 
-### Learn Detail
-
-优先：
+Learn Detail：
 
 ```text
 正文
 → 上一节 / 下一节
 ```
 
-跨 Tab 关联不再统一堆在文章最下面。
-
-如果某个 Scale / Interview 与具体小节直接相关，就放在该小节标题附近。
-
-### Scale Detail
-
-保持：
+Scale Detail：
 
 ```text
 Scenario
-Scale Parameters
-Constraints
-Failure / Bottleneck
-Design
-Trade-offs
-Observability
-Cost
-Recovery
+→ Parameters
+→ Constraints
+→ Failure / Bottleneck
+→ Design
+→ Trade-offs
+→ Observability
+→ Cost
+→ Recovery
 ```
 
-与 Learn / Interview 的关系放在对应 Detail Item 附近，而不是只在文章底部出现。
+Interview Detail：
 
-### Interview Detail
-
-Interview 与 Learn / Scale 的关联放在题目 Header / Evidence 之后，用户不需要读到底部才发现延伸内容。
+```text
+Question
+→ Evidence
+→ Answer / Deep Understanding
+```
 
 ---
 
-## 9. Contextual Relation Grammar
+## 12. Contextual Relations
 
-Cross-tab Relation（跨 Tab 关联）是一种 Navigation Action（导航动作），不是描述性 Metadata。
+跨 Tab 关联放在真正相关的 Section / Detail Item 附近。
 
-前台形式：
+形式：
 
 ```text
 Scale · 100 个 Writer 并发提交 →
@@ -320,39 +388,18 @@ Learn · 乐观提交、冲突与恢复 →
 
 规则：
 
-- 放在最相关的 H2 / H3 / Detail Item 附近；
-- 使用紧凑文本 Link，不做大 Card；
-- Type Label 可以使用 Signal；
-- Target Title 使用 Soft Ink；
-- 一次只展示明确关系；
-- 宁可没有，也不为了“知识图谱完整”强行关联。
-
-关系表示：
-
-```text
-useful together in this context
-```
-
-不表示：
-
-```text
-high interview frequency
-real project fact
-```
-
-Section-level Relationship 的事实源：
-
-```text
-content/mappings/*-section-relations-*.yaml
-```
-
-UI 不硬编码题目或场景名称。
+- 使用紧凑文本 Link；
+- 不做大 Card；
+- 不在文章 Footer 堆大块 Cross-link List；
+- 宁可没有，也不做牵强映射；
+- Relation ≠ Interview Frequency；
+- Relation ≠ Real Project Fact。
 
 ---
 
-## 10. Secondary Metadata Grammar
+## 13. Secondary Metadata
 
-描述性 Metadata 统一：
+描述性 Metadata 使用：
 
 ```text
 A · B · C
@@ -362,113 +409,32 @@ A · B · C
 
 ```text
 Iceberg · L5 · 深度掌握
-数据规模 · 资源隔离 · 查询 SLO · 成本
+并发 · Commit · 重试 · 可靠性
 ```
 
 非交互 Metadata 不做 Chip。
 
 ---
 
-## 11. Learn
+## 14. Bottom Sheet vs Reading Drawer
 
-Learn 回答：
-
-> 我应该理解什么？
-
-Learn 是连续学习路径，不是知识卡片墙。
-
-Detail 重点：
-
-- 30 秒理解；
-- 知识递进；
-- 章节级关系；
-- 上一节 / 下一节。
-
----
-
-## 12. Interview
-
-Interview 回答：
-
-> 企业会怎么问？我应该怎么回答？
-
-Evidence 频率只能来自真实 Evidence。
-
-Reading Segment：
-
-```text
-面试回答 | 深入理解
-```
-
-关联 Learn / Scale 放在问题上方阅读区域，不放成大块 Footer。
-
----
-
-## 13. Scale
-
-Scale 回答：
-
-> 规模、并发、可靠性、成本约束扩大后怎么设计？
-
-Scale Scenario 默认：
-
-```yaml
-hypothetical: true
-```
-
-它是生产训练，不是项目经历。
-
-章节 / Detail Item 可以直接挂对应 Learn / Interview Link。
-
----
-
-## 14. Quick Answer / Main Line
-
-Quick Answer 使用：
-
-- Signal Soft；
-- Signal Hairline；
-- 无 Shadow。
-
-它是阅读强调，不是 CTA。
-
----
-
-## 15. Bottom Sheet vs Side Drawer
-
-`BottomSheet` 继续用于：
+BottomSheet 用于：
 
 - Interview Evidence；
 - Filters；
-- 其他短时操作。
+- 短时选择操作。
 
-`Reading Directory` 不再使用 BottomSheet。
+Reading Directory 专用 Right-side Drawer。
 
-长文章目录统一使用：
-
-```text
-Right-side Reading Drawer
-Scale Domain Grouping
-Sticky Domain Context
-Ordered Knowledge Spine
-Sticky Interview Result Context
-```
+两者不混用。
 
 ---
 
-## 16. Code Block
-
-只有真实代码、SQL、配置、命令使用 CodeBlock。
-
-不得使用黑色代码块表达普通流程与架构说明。
-
----
-
-## 17. Technical Diagram
+## 15. Technical Diagram
 
 Diagram 是 Secondary Learning Aid。
 
-简单线性关系优先文本：
+简单线性关系优先文字：
 
 ```text
 Snapshot
@@ -477,21 +443,19 @@ Snapshot
 → M Data Files
 ```
 
-只有非线性、并发、状态转换等确实需要时才使用图。
+只有以下关系明显难以用文字追踪时才使用图：
+
+- Non-linear Branch；
+- Concurrent Flow；
+- State Transition；
+- Retry / Rollback；
+- Many-to-Many Dependency。
 
 ---
 
-## 18. Motion
+## 16. Accessibility
 
-动效只表达状态，不做装饰。
-
-目录 Drawer 只使用轻量进入 / 退出 Transition。
-
-Reduced Motion 必须关闭非必要 Transition。
-
----
-
-## 19. Accessibility
+必须：
 
 - Touch Target >= 44px；
 - Focus Visible；
@@ -501,130 +465,67 @@ Reduced Motion 必须关闭非必要 Transition。
 - `aria-current`；
 - Progress `role=progressbar`；
 - 不能只靠颜色表达状态；
-- Mobile Drawer 至少提供一种不依赖顶部按钮的关闭方式。
+- viewport 支持 `viewport-fit=cover`。
 
 ---
 
-## 20. Reading Continuity Principles
-
-DataRoadmap 仍然保护：
+## 17. Truth Boundary
 
 ```text
-Continuity
-连贯性
+Learn
+= reusable knowledge
 
-Causal Model
-因果模型
-
-Fast Positioning
-快速定位
-
-Structure
-结构性
-
-Truthfulness
-准确性
-```
-
-但这些原则**不等于把所有页面都视觉化成流程或进度轨道**。
-
-### 连贯性是“需要时提供定位”
-
-用户真正容易断片的地方才增加定位工具：
-
-- 长文章：悬浮目录 + 当前小节高亮；
-- Learn：Continue Learning + Stage 顺序 + 上一节 / 下一节；
-- Interview：搜索、技术与筛选；
-- Scale：领域与训练主题分层。
-
-如果原有页面已经能清楚表达结构，不额外增加序号、轨道、Sticky Header 或状态标签。
-
-### Learn
-
-Learn Home 与 Stage List 保持原来的安静列表结构。
-
-知识的前后依赖主要由内容本身和：
-
-```text
-Continue Learning
-Previous / Next
-Reading Directory
-```
-
-表达。
-
-Stage 页面不使用人为的“01 → 02 → 03”视觉轨道来证明知识有顺序。
-
-### Interview
-
-Interview 保持原来的 Search / Technology / Filter 体验。
-
-除非未来真实题量证明必要，不额外增加 Sticky Result Context。
-
-### Scale
-
-Scale 才需要新的结构层，因为场景会跨多个技术领域持续增长。
-
-冻结层级：
-
-```text
 Scale
-→ Domain（领域）
-→ Training Theme（训练主题）
-→ Scenario（具体场景）
+= hypothetical production-pressure training
+
+Interview
+= evidence-backed interview content
 ```
 
-当前 Lakehouse：
+Project / Resume / Personal Case 仅属于 Backstage Editorial Context。
 
-```text
-湖仓
-├─ 容量与回填
-│  └─ 100 亿行历史回填
-├─ 持续写入与表健康
-│  └─ 10 秒级提交后的文件膨胀
-└─ 并发提交与恢复
-   └─ 100 个 Writer 并发提交
-```
+旧 `ProjectsPage` 源码即使暂时保留，也不得：
 
-只有真实出现多个 Domain 时：
-
-- 才显示领域筛选；
-- 才允许 Domain Header 使用 Sticky Context。
-
-不提前为未来复杂度增加当前用户负担。
+- 出现在 Route；
+- 出现在 Mobile Navigation；
+- 出现在 Desktop Navigation；
+- 成为公共 Cross-Tab 目标。
 
 ---
 
-## 21. V1.8.1 Freeze Rules
+## 18. V1.9 Frozen Rules
 
-V1.8.1 冻结：
+Iceberg V1 UI 冻结：
 
 ```text
-Three-Tab Navigation
+Three-Tab Public Navigation
+Calm Editorial Visual Language
+Original Learn Home / Stage Presentation
+Original Interview Discovery Presentation
+Scale Domain → Theme → Scenario Hierarchy
 Left-edge Reading Control
 Right-side Reading Drawer
 Directory Current Section Highlight
-Directory without row dividers
+Directory without Row Dividers
 Contextual Section Relations
 Bottom Navigation Separation
-Scale Domain → Theme → Scenario hierarchy
+Secondary Metadata Grammar
 ```
 
-明确不冻结：
-
-```text
-Ordered Knowledge Spine UI
-Sticky Interview Result Context
-Single-domain Sticky Scale Header
-```
-
-后续 UI Review 不再重新引入：
+后续不得因为“看起来更完整”重新加入：
 
 - Projects 前台 Tab；
-- 横向 Quick Navigation 作为长文目录；
-- Top-right-only Reading Directory；
-- 大块 Footer Cross-link 列表作为主要关系入口；
+- 横向 Quick Navigation 作为长文主目录；
+- Top-right-only Directory；
+- Stage 序号轨道；
+- 单领域 Sticky Scale Header；
+- Interview Sticky Result Header；
+- Footer 大块 Cross-link；
 - Heavy Shadow；
 - Card Wall；
-- 为了表达“连贯性”而重复制造视觉进度结构。
+- 为了表达连贯性而重复制造视觉进度结构。
 
+只有两类原因可以重新打开 Iceberg UI：
+
+1. 明确的可用性问题；
+2. 明确的视觉 / 交互 Bug。

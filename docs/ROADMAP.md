@@ -59,36 +59,33 @@
 - [x] Contextual section relations
 - [x] Bottom navigation separation
 
-#### V0.6.7.2 Three-Tab Page Polish
-- [x] Initial three-tab page review
-- [x] Identified Scale flat-list scalability problem
-- [x] Superseded Learn / Stage / Interview over-structuring in V0.6.7.2.1
+#### V0.6.7.2 Three-Tab Page Review
+- [x] Identify over-structuring
+- [x] Restore Learn / Stage / Interview presentation
+- [x] Keep continuity as a content-first principle
 
 #### V0.6.7.2.1 Scale Hierarchy Correction
-- [x] Restore Learn Home to V0.6.7.1.2 presentation
-- [x] Restore Stage Detail to V0.6.7.1.2 presentation
-- [x] Restore Interview discovery to V0.6.7.1.2 presentation
-- [x] Keep one-hand Reading Directory and contextual relations
-- [x] Define Scale navigation as Domain -> Training Theme -> Scenario
-- [x] Add Scale navigation taxonomy as content
-- [x] Lakehouse: Capacity & Backfill
-- [x] Lakehouse: Continuous Write & Table Health
-- [x] Lakehouse: Commit Concurrency & Recovery
-- [x] Domain filter only when multiple domains actually exist
-- [x] Sticky Domain context only when multiple domains actually exist
-- [x] Correct Design System to V1.8.1
+- [x] Domain -> Training Theme -> Scenario
+- [x] Scale navigation taxonomy
+- [x] Lakehouse training themes
+- [x] Future-only domain filter
+- [x] Future-only Sticky Domain context
 
-#### Next: V0.6.7.3 UI Conformance & Freeze
-- [ ] 390px full-path review
-- [ ] iOS safe-area review
-- [ ] Left-hand one-thumb reach review
-- [ ] Sticky header collision review
-- [ ] Touch target review
-- [ ] Typography / spacing token conformance
-- [ ] Cross-link priority review
-- [ ] Remove remaining legacy Projects frontstage source
-- [ ] Freeze Iceberg V1 UI
+#### V0.6.7.3 UI Conformance & Freeze
+- [x] 390px full-path review
+- [x] iOS Safe Area review
+- [x] Left-hand one-thumb reach review
+- [x] Sticky header collision review
+- [x] Touch Target review
+- [x] Typography / spacing token conformance
+- [x] Cross-link priority review
+- [x] Isolate legacy Projects frontstage source
+- [x] Normalize Desktop Scale naming
+- [x] Fix future multi-domain page-padding token
+- [x] Consolidate Design System V1.9
+- [x] Freeze Iceberg V1 UI
 
-### After UI Freeze
+### Next
 - [ ] Select next technology vertical slice
-- [ ] Reuse frozen Learn / Interview / Scale architecture
+- [ ] Reuse frozen Learn / Interview / Scale contract
+- [ ] Keep Iceberg frozen unless a verified bug is found

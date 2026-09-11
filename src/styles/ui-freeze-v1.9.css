@@ -1,0 +1,22 @@
+/* V1.9 UI Conformance Freeze */
+
+/*
+ * Keep the public navigation contract explicit in the final cascade.
+ * app.css still contains an old four-column declaration from the historical
+ * four-tab phase; this final layer is the canonical three-tab rule.
+ */
+.bottom-nav {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/*
+ * Future multi-domain Scale pages use the existing mobile page-padding token.
+ * The previous rule referenced --page-padding, which does not exist.
+ */
+.scale-library[data-multi-domain="true"]
+  .scale-domain-group__header {
+  margin-right: calc(var(--page-padding-mobile) * -1);
+  margin-left: calc(var(--page-padding-mobile) * -1);
+  padding-right: var(--page-padding-mobile);
+  padding-left: var(--page-padding-mobile);
+}

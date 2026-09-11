@@ -9,10 +9,16 @@ interface DesktopNavigationProps {
 const items = [
   { key: 'learn', label: 'Learn', Icon: LearnIcon },
   { key: 'interview', label: 'Interview', Icon: InterviewIcon },
-  { key: 'scale', label: 'Scale Lab', Icon: ScaleIcon },
-] satisfies Array<{ key: RouteKey; label: string; Icon: typeof LearnIcon }>
+  { key: 'scale', label: 'Scale', Icon: ScaleIcon },
+] satisfies Array<{
+  key: RouteKey
+  label: string
+  Icon: typeof LearnIcon
+}>
 
-export function DesktopNavigation({ active }: DesktopNavigationProps) {
+export function DesktopNavigation({
+  active,
+}: DesktopNavigationProps) {
   return (
     <aside className="desktop-nav">
       <div className="desktop-nav__brand">
@@ -23,6 +29,7 @@ export function DesktopNavigation({ active }: DesktopNavigationProps) {
       <nav aria-label="主导航">
         {items.map(({ key, label, Icon }) => {
           const selected = active === key
+
           return (
             <button
               key={key}
