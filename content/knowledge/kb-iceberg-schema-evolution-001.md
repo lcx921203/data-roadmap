@@ -3,25 +3,24 @@ id: kb-iceberg-schema-evolution-001
 type: knowledge
 title: Schema Evolution & Field ID
 title_cn: Schema 演进与 Field ID
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 6
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Iceberg 用稳定 Field ID 识别字段，使 Add、Drop、Rename、Reorder 与安全类型扩宽不依赖列名或物理位置；存储层兼容仍不等于下游语义自动兼容。"
+summary: Iceberg 用稳定 Field ID 识别字段，使 Add、Drop、Rename、Reorder 与安全类型扩宽不依赖列名或物理位置；存储层兼容仍不等于下游语义自动兼容。
 prerequisites:
-  - kb-iceberg-partition-evolution-001
+- kb-iceberg-partition-evolution-001
 related:
-  - kb-iceberg-trino-read-path-001
-  - kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-trino-read-path-001
+- kb-iceberg-write-distribution-ordering-001
 ---
-
 # Schema Evolution & Field ID
 
 ## 30 秒理解

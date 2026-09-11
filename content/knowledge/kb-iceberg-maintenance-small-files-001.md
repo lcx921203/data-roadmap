@@ -3,26 +3,26 @@ id: kb-iceberg-maintenance-small-files-001
 type: knowledge
 title: Maintenance & Metadata Growth
 title_cn: 维护与元数据增长
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 10
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_write_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Maintenance 不是一种 Compaction：Data File、Manifest、Snapshot/Metadata 与 Orphan 分别有不同增长机制和治理动作。"
+summary: Maintenance 不是一种 Compaction：Data File、Manifest、Snapshot/Metadata 与 Orphan
+  分别有不同增长机制和治理动作。
 prerequisites:
-  - kb-iceberg-commit-concurrency-001
+- kb-iceberg-commit-concurrency-001
 related:
-  - kb-iceberg-production-troubleshooting-001
+- kb-iceberg-production-troubleshooting-001
 scale_scenarios:
-  - sc-iceberg-streaming-small-files-001
+- sc-iceberg-streaming-small-files-001
 ---
-
 # Maintenance & Metadata Growth
 
 ## 30 秒理解
@@ -74,7 +74,7 @@ Rewrite Manifests 不重写业务数据，而是重新组织 Metadata Index。
 - Partition Clustering；
 - Planning Selectivity。
 
-Apache Iceberg 会按 Manifest / File 被加入的顺序自动进行 Manifest Compact；当写入顺序与常用查询过滤模式一致时，这种自然聚集就比较有效。
+Iceberg 会按 Manifest 被加入 Metadata Tree 的顺序自动做 Manifest Compaction；当写入模式与常用查询过滤模式一致时，这种顺序通常也更利于查询裁剪。
 
 如果写入模式与查询模式长期不一致，可以显式执行 `rewriteManifests`，重新把 Data File 分组到更适合查询裁剪的 Manifest。
 

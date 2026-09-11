@@ -3,25 +3,25 @@ id: kb-iceberg-write-distribution-ordering-001
 type: knowledge
 title: Write Distribution & Write Ordering
 title_cn: 写入分布与写入排序
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 8
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_write_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Distribution 决定 Row 进入哪个 Writer Task，Ordering 决定 Row 怎样聚集与排序；它们先决定 Data File 布局，再间接影响 Manifest 数量、查询裁剪和后续 Maintenance。"
+summary: Distribution 决定 Row 进入哪个 Writer Task，Ordering 决定 Row 怎样聚集与排序；它们先决定 Data File
+  布局，再间接影响 Manifest 数量、查询裁剪和后续 Maintenance。
 prerequisites:
-  - kb-iceberg-trino-read-path-001
+- kb-iceberg-trino-read-path-001
 related:
-  - kb-iceberg-commit-concurrency-001
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-commit-concurrency-001
+- kb-iceberg-maintenance-small-files-001
 ---
-
 # Write Distribution & Write Ordering
 
 ## 30 秒理解
@@ -54,7 +54,7 @@ Spark 写 Iceberg 常见三种 Distribution Mode：
 - **hash**：按 Partition Key 做 Hash Exchange；
 - **range**：按 Partition / Sort Key 做 Range Exchange。
 
-Spark + Iceberg 从 Iceberg 1.2.0 起，`hash` 是常见默认写入分布策略。
+在 Spark 写 Iceberg 时，从 Iceberg 1.2.0 起通常默认请求 `hash` Distribution；如果表定义了 Sort Order，Spark 写入会默认使用 `range` 来满足排序分布需求。
 
 ### none
 

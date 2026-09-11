@@ -3,26 +3,26 @@ id: kb-iceberg-row-level-changes-001
 type: knowledge
 title: Data Files, Delete Files & Row-level Changes
 title_cn: Data File、Delete File 与行级变更
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 4
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Data File 保存真实行数据；V2 可用 Position / Equality Delete 表达行级删除；V3 增加 Deletion Vector，Reader 将数据与适用删除信息合并成当前可见结果。"
+summary: Data File 保存真实行数据；V2 可用 Position / Equality Delete 表达行级删除；V3 增加 Deletion
+  Vector，Reader 将数据与适用删除信息合并成当前可见结果。
 prerequisites:
-  - kb-iceberg-manifest-tree-001
+- kb-iceberg-manifest-tree-001
 related:
-  - kb-iceberg-partition-evolution-001
-  - kb-iceberg-trino-read-path-001
-  - kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-partition-evolution-001
+- kb-iceberg-trino-read-path-001
+- kb-iceberg-write-distribution-ordering-001
 ---
-
 # Data Files, Delete Files & Row-level Changes
 
 ## 30 秒理解
@@ -104,16 +104,13 @@ Deletion Vector 是 V3 引入的位置删除表示。
 
 Reader 不能把所有 Delete 信息无条件套到所有 Data File。
 
-它需要根据不同 Delete 类型检查适用范围，包括：
+不同 Delete 类型的 Scope（作用范围）不同：
 
-- Data Sequence Number；
-- Partition Spec 与 Partition Value；
-- Position Delete / DV 的目标 Data File；
-- Equality Delete 的匹配字段和值。
+- **Deletion Vector**：目标 Data File 必须匹配 `referenced_data_file`，Partition Spec / Value 必须相同，并且 Data Sequence Number ≤ Delete Sequence Number；
+- **Position Delete File**：按 File Path + Position 精确删除，同样受 Partition 与 Sequence Number 约束；
+- **Equality Delete File**：通常只应用到更旧的数据，也就是 Data Sequence Number < Delete Sequence Number；同时要求相同 Partition，只有使用 Unpartitioned Spec 的 Equality Delete 才可以作为 Global Delete（全局删除）。
 
-所以 Sequence Number（序列号）的作用之一，就是帮助判断 Data 和 Delete 的相对新旧。
-
-更精确地说，Equality Delete 通常应用到比它更旧的数据；Position Delete / Deletion Vector 可以精确定位目标 Data File。
+所以 Sequence Number（序列号）不是普通版本号，它参与判断一份 Delete 到底能不能作用到某个 Data File。
 
 ## Copy-on-Write 与 Merge-on-Read
 

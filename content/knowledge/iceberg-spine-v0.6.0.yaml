@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: iceberg
 learning_depth: L5
-status: structure_revised
+status: frozen_v1
 nodes:
 - order: 1
   id: kb-iceberg-overview-001
@@ -43,3 +43,5 @@ truthfulness:
   production_pattern: publishable_as_knowledge
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
+frozen_at: 0.6.1.3
+content_standard: correctness_and_knowledge_structure_first

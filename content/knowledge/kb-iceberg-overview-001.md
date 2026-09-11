@@ -3,28 +3,27 @@ id: kb-iceberg-overview-001
 type: knowledge
 title: Apache Iceberg
 title_cn: Iceberg 总览
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 1
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "先建立 Iceberg 的核心心智模型：Catalog 定位当前表状态，Snapshot 固定一个逻辑版本，再通过 Manifest 元数据找到真正的数据与删除信息。"
+summary: 先建立 Iceberg 的核心心智模型：Catalog 定位当前表状态，Snapshot 固定一个逻辑版本，再通过 Manifest 元数据找到真正的数据与删除信息。
 prerequisites:
-  - kb-storage-file-formats
+- kb-storage-file-formats
 related:
-  - kb-iceberg-metadata-snapshot-001
-  - kb-iceberg-manifest-tree-001
+- kb-iceberg-metadata-snapshot-001
+- kb-iceberg-manifest-tree-001
 scale_scenarios:
-  - sc-iceberg-10b-backfill-001
-  - sc-iceberg-streaming-small-files-001
+- sc-iceberg-10b-backfill-001
+- sc-iceberg-streaming-small-files-001
 ---
-
 # Apache Iceberg
 
 ## 30 秒理解
@@ -37,7 +36,7 @@ Parquet 解决“一个文件怎么存”；Iceberg 解决“一张表当前由�
 
 **Catalog → Table Metadata → Snapshot → Manifest List → Manifest → Data / Delete Content**
 
-后面 6 节只是在把这条链逐层拆开。
+接下来前半段会把这条链逐层拆开，再用 Trino Read Path 把它重新串起来。
 
 ## Iceberg 到底解决什么问题
 

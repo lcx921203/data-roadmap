@@ -3,31 +3,30 @@ id: kb-iceberg-production-troubleshooting-001
 type: knowledge
 title: Iceberg Production Troubleshooting
 title_cn: Iceberg 生产排障与容量思维
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 11
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_write_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "把线上问题按 Write、Commit、Metadata、Planning、Scan、Maintenance 六层定位，再用 SLI/SLO 与容量指标判断根因和治理优先级。"
+summary: 把线上问题按 Write、Commit、Metadata、Planning、Scan、Maintenance 六层定位，再用 SLI/SLO 与容量指标判断根因和治理优先级。
 prerequisites:
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-maintenance-small-files-001
 related:
-  - kb-iceberg-overview-001
+- kb-iceberg-overview-001
 scale_scenarios:
-  - sc-iceberg-10b-backfill-001
-  - sc-iceberg-streaming-small-files-001
-  - sc-iceberg-concurrent-commit-001
+- sc-iceberg-10b-backfill-001
+- sc-iceberg-streaming-small-files-001
+- sc-iceberg-concurrent-commit-001
 interview_relevance:
-  - iq-lake-vs-warehouse-001
-  - iq-large-dataset-tech-selection-001
+- iq-lake-vs-warehouse-001
+- iq-large-dataset-tech-selection-001
 ---
-
 # Iceberg Production Troubleshooting
 
 ## 30 秒理解

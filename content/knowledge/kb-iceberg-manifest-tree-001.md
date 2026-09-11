@@ -3,26 +3,26 @@ id: kb-iceberg-manifest-tree-001
 type: knowledge
 title: Manifest List & Manifest
 title_cn: Manifest List 与 Manifest
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 3
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Snapshot 通过 Manifest List 引用多个 Manifest；一个 Manifest 只追踪一种 Content、只对应一个 Partition Spec，但可覆盖该 Spec 下多个 Partition Value。"
+summary: Snapshot 通过 Manifest List 引用多个 Manifest；一个 Manifest 只追踪一种 Content、只对应一个 Partition
+  Spec，但可覆盖该 Spec 下多个 Partition Value。
 prerequisites:
-  - kb-iceberg-metadata-snapshot-001
+- kb-iceberg-metadata-snapshot-001
 related:
-  - kb-iceberg-row-level-changes-001
-  - kb-iceberg-partition-evolution-001
-  - kb-iceberg-trino-read-path-001
+- kb-iceberg-row-level-changes-001
+- kb-iceberg-partition-evolution-001
+- kb-iceberg-trino-read-path-001
 ---
-
 # Manifest List & Manifest
 
 ## 30 秒理解

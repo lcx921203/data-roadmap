@@ -3,25 +3,24 @@ id: kb-iceberg-metadata-snapshot-001
 type: knowledge
 title: Table Metadata & Snapshot
 title_cn: 表元数据与快照
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 2
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Catalog 定位当前 Table Metadata；Table Metadata 指向当前 Snapshot；Snapshot 是不可变的逻辑表版本，而不是一份全量数据副本。"
+summary: Catalog 定位当前 Table Metadata；Table Metadata 指向当前 Snapshot；Snapshot 是不可变的逻辑表版本，而不是一份全量数据副本。
 prerequisites:
-  - kb-iceberg-overview-001
+- kb-iceberg-overview-001
 related:
-  - kb-iceberg-manifest-tree-001
-  - kb-iceberg-commit-concurrency-001
+- kb-iceberg-manifest-tree-001
+- kb-iceberg-commit-concurrency-001
 ---
-
 # Table Metadata & Snapshot
 
 ## 30 秒理解

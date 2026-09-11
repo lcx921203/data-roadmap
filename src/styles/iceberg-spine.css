@@ -1,8 +1,8 @@
 .quick-navigation {
-  margin: 20px calc(var(--page-padding-mobile) * -1) 0;
+  margin: 16px calc(var(--page-padding-mobile) * -1) 0;
   padding: 0 var(--page-padding-mobile);
   display: flex;
-  gap: 8px;
+  gap: 18px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -13,21 +13,74 @@
 
 .quick-navigation a {
   min-height: 44px;
-  padding: 0 11px;
+  padding: 0 2px;
   display: inline-flex;
   flex: none;
   align-items: center;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-full);
-  background: var(--color-surface-raised);
-  color: var(--color-ink-soft);
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-ink-muted);
   font-size: 12px;
   font-weight: 650;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.quick-navigation a:active {
+  border-bottom-color: var(--color-signal);
+  color: var(--color-signal-strong);
 }
 
 .article-section {
   scroll-margin-top: calc(var(--top-bar-height) + 16px);
+}
+
+.quick-answer {
+  margin-top: 18px;
+  padding: 16px;
+}
+
+.quick-answer__label {
+  margin-bottom: 10px;
+}
+
+.quick-answer p,
+.quick-answer li {
+  font-size: 16px;
+  line-height: 1.64;
+}
+
+.quick-answer p {
+  margin: 0 0 10px;
+}
+
+.quick-answer ul,
+.quick-answer ol {
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+.quick-answer li + li {
+  margin-top: 4px;
+}
+
+.quick-answer strong {
+  color: var(--color-ink);
+  font-size: inherit;
+  font-weight: 720;
+}
+
+.quick-answer blockquote {
+  margin: 12px 0;
+  padding: 0 0 0 12px;
+  border-left: 2px solid color-mix(in srgb, var(--color-signal) 36%, var(--color-hairline));
+}
+
+.quick-answer blockquote p {
+  margin: 0;
+  color: var(--color-ink-soft);
 }
 
 .knowledge-sequence {
@@ -87,81 +140,6 @@
 .truth-boundary-inline p {
   margin: 5px 0 0;
   font-size: 14px;
-}
-
-
-/* V0.6.1.1 — Reading density refinement.
-   Quick navigation stays touch-friendly but visually quiet.
-   Quick Answer resets browser blockquote/list defaults to avoid narrow,
-   over-indented text on iPhone Safari. */
-
-.quick-navigation {
-  margin-top: 16px;
-  gap: 18px;
-}
-
-.quick-navigation a {
-  min-height: 44px;
-  padding: 0 2px;
-  border: 0;
-  border-bottom: 1px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: var(--color-ink-muted);
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.quick-navigation a:active {
-  border-bottom-color: var(--color-signal);
-  color: var(--color-signal-strong);
-}
-
-.quick-answer {
-  margin-top: 18px;
-  padding: 16px;
-}
-
-.quick-answer__label {
-  margin-bottom: 10px;
-}
-
-.quick-answer p,
-.quick-answer li {
-  font-size: 16px;
-  line-height: 1.64;
-}
-
-.quick-answer p {
-  margin: 0 0 10px;
-}
-
-.quick-answer ul,
-.quick-answer ol {
-  margin: 8px 0 12px;
-  padding-left: 20px;
-}
-
-.quick-answer li + li {
-  margin-top: 4px;
-}
-
-.quick-answer strong {
-  color: var(--color-ink);
-  font-size: inherit;
-  font-weight: 720;
-}
-
-.quick-answer blockquote {
-  margin: 12px 0;
-  padding: 0 0 0 12px;
-  border-left: 2px solid color-mix(in srgb, var(--color-signal) 36%, var(--color-hairline));
-}
-
-.quick-answer blockquote p {
-  margin: 0;
-  color: var(--color-ink-soft);
 }
 
 @media (min-width: 720px) {

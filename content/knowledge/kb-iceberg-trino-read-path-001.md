@@ -3,25 +3,25 @@ id: kb-iceberg-trino-read-path-001
 type: knowledge
 title: Trino Read Path on Iceberg
 title_cn: Trino 读取 Iceberg 的路径
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 7
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_read_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Trino 先固定 Iceberg 表状态，再按 Manifest、Partition 与 File Metrics 缩小候选文件，规划适用 Delete，最后生成 Split 给 Worker 扫描。"
+summary: Trino 先固定 Iceberg 表状态，再按 Manifest、Partition 与 File Metrics 缩小候选文件，规划适用 Delete，最后生成
+  Split 给 Worker 扫描。
 prerequisites:
-  - kb-iceberg-schema-evolution-001
+- kb-iceberg-schema-evolution-001
 related:
-  - kb-iceberg-write-distribution-ordering-001
-  - kb-iceberg-production-troubleshooting-001
+- kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-production-troubleshooting-001
 ---
-
 # Trino Read Path on Iceberg
 
 ## 30 秒理解

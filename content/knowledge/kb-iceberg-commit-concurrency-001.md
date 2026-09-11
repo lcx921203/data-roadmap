@@ -3,26 +3,26 @@ id: kb-iceberg-commit-concurrency-001
 type: knowledge
 title: Optimistic Commit, Conflict & Recovery
 title_cn: 乐观提交、冲突与恢复
-stage_id: "04"
+stage_id: '04'
 domain: lakehouse
 topic: iceberg
 order: 9
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: v0.6.1_write_model
+content_status: iceberg_l5_v1
 project_relevance:
-  - north-america
+- north-america
 project_fact_status: needs_fact_check
-summary: "Writer 先准备不可变文件，再基于一个 Base Metadata 做 Validation，最后由 Catalog 原子切换 Current Metadata Pointer；冲突后能否 Retry 取决于操作语义。"
+summary: Writer 先准备不可变文件，再基于一个 Base Metadata 做 Validation，最后由 Catalog 原子切换 Current
+  Metadata Pointer；冲突后能否 Retry 取决于操作语义。
 prerequisites:
-  - kb-iceberg-write-distribution-ordering-001
+- kb-iceberg-write-distribution-ordering-001
 related:
-  - kb-iceberg-maintenance-small-files-001
+- kb-iceberg-maintenance-small-files-001
 scale_scenarios:
-  - sc-iceberg-concurrent-commit-001
+- sc-iceberg-concurrent-commit-001
 ---
-
 # Optimistic Commit, Conflict & Recovery
 
 ## 30 秒理解
