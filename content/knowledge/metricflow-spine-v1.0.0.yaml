@@ -1,0 +1,400 @@
+version: 1.0.0
+type: knowledge_spine
+stage_id: '06'
+topic: metricflow
+title: MetricFlow / Semantic Layer
+learning_depth: L5
+status: spine_frozen_bodies_unwritten
+technical_baseline:
+  validation_date: '2026-09-12'
+  current_semantic_spec: dbt v1.12+ latest semantic model / metric YAML spec
+  next_generation_context: dbt v2 release tracks and dbt platform Semantic Layer
+  metricflow_version_rule: Do not freeze one standalone MetricFlow package version as the curriculum truth. Teach the current
+    semantic specification and revalidate command/support details before publication.
+  current_spec_corrections:
+  - 'Measures are deprecated in the latest spec; use type: simple metrics instead.'
+  - Current metric types are simple, ratio, derived, cumulative, and conversion.
+  - Semantic models are defined with semantic_model metadata on dbt model definitions in the current v1.12+ spec.
+  - Semantic graph relationships are not the same thing as dbt transformation DAG dependencies.
+  - Current multi-hop join behavior and platform support are version-sensitive and must be revalidated before exact claims.
+product_boundary:
+  metricflow_owns:
+  - semantic_model_metadata
+  - entities_and_semantic_join_keys
+  - dimensions_and_time_dimensions
+  - simple_and_advanced_metric_definitions
+  - semantic_graph_and_valid_join_paths
+  - time_spine_based_metric_semantics
+  - metric_query_generation
+  - semantic_validation
+  - saved_queries_and_semantic_consumption_contracts
+  - semantic_layer_level_reconciliation_and_production_diagnostics
+  dbt_boundary:
+    stage_05_owns:
+    - physical_model_sql
+    - ref_source_dependency_dag
+    - materialization_and_incremental_state
+    - model_tests_contracts_versions
+    - dbt_build_ci_and_artifacts
+    metricflow_rule: Stage 06 consumes tested/contracted dbt models and adds semantic meaning. It must not reteach dbt physical
+      transformation engineering.
+  dimensional_modeling_boundary:
+    stage_03_owns:
+    - fact_dimension_grain_theory
+    - business_key_design
+    - star_snowflake_modeling
+    - scd_business_modeling
+    - generic_measure_metric_concepts
+    metricflow_rule: MetricFlow teaches how current semantic objects encode business meaning and safe metric queries; it does
+      not claim to invent dimensional-modeling theory.
+  serving_boundary:
+    stage_09_owns:
+    - serving_tables
+    - physical_precomputation
+    - olap_serving_infrastructure
+    - cache_invalidation_and_hot_key_runtime
+    - query_sla_capacity
+    metricflow_rule: Stage 06 may teach Saved Queries, exports, Semantic Layer cache concepts and consumer interfaces, but
+      physical serving architecture and OLAP capacity remain Stage 09.
+  governance_boundary:
+    stage_08_owns:
+    - enterprise_catalog
+    - cross_platform_lineage
+    - ownership_and_glossary
+    - enterprise_governance_operations
+    metricflow_rule: MetricFlow owns metric/semantic metadata needed to define governed queries; DataHub owns enterprise-wide
+      governance and discovery.
+  agent_boundary:
+    stage_10_owns:
+    - agent_planning_and_routing
+    - tool_registry
+    - semantic_query_tool_execution
+    - governed_agentic_rag
+    metricflow_rule: Stage 06 defines the governed semantic query surface that an Agent may consume. It does not teach Agent
+      runtime internals.
+  query_engine_boundary:
+    warehouse_or_engine_owns:
+    - physical_sql_optimizer
+    - scan_join_shuffle_runtime
+    - memory_spill_and_resource_management
+    metricflow_rule: MetricFlow generates semantic-query SQL. The target data platform still owns the physical execution plan.
+  platform_support_guardrail: Do not claim that the managed dbt Semantic Layer supports Trino unless the current official
+    support matrix explicitly says so. Treat supported data platforms as version-sensitive.
+content_principles:
+  progression: causal
+  content_first_continuity: true
+  current_spec_first: true
+  legacy_measure_syntax_only_as_migration_context: true
+  avoid_yaml_encyclopedia: true
+  avoid_cli_encyclopedia: true
+  code_examples_required_in_article_bodies: true
+  generated_sql_examples_required_where_useful: true
+  production_first: true
+  project_actual: backstage_only
+  production_pattern: publishable_as_knowledge
+  scale_lab: hypothetical_only
+  interview_frequency: evidence_only
+interview_seed_ids:
+- iq-data-quality-diagnosis-001
+- iq-realtime-offline-consistency-001
+- iq-dimensional-fact-dimension-design-001
+- iq-dimensional-primary-key-001
+- iq-data-product-system-design-001
+- iq-data-governance-framework-001
+interview_policy:
+  no_verified_metricflow_specific_question_yet: true
+  mapping_means_relevance_not_metricflow_frequency: true
+  do_not_create_fake_metricflow_specific_frequency: true
+  preserve_canonical_evidence_counts: true
+nodes:
+- order: 1
+  id: kb-metricflow-overview-001
+  title: Semantic Layer & MetricFlow Mental Model
+  title_cn: 语义层与 MetricFlow 心智模型
+  responsibility: 建立为什么需要 Semantic Layer：把散落在 BI / SQL / App / Agent 中的指标定义集中成可复用语义，并理解 MetricFlow 是 SQL Query Generation
+    / Semantic Graph Engine，而不是新的数据仓库或计算引擎。
+  prerequisites: []
+  must_explain:
+  - why_semantic_layer
+  - metric_definition_duplication_problem
+  - metricflow_positioning
+  - dbt_semantic_layer_vs_metricflow
+  - semantic_query_high_level
+  - semantic_graph_vs_physical_data
+  - consumer_consistency_bi_app_agent
+  must_not_cover:
+  - entity_type_details
+  - metric_type_details
+  - join_algorithm_details
+  - serving_infrastructure
+  - agent_runtime
+  handoff_to: kb-metricflow-semantic-model-001
+- order: 2
+  id: kb-metricflow-semantic-model-001
+  title: dbt Model to Semantic Model & Current Spec
+  title_cn: dbt Model → Semantic Model 与当前语义规范
+  responsibility: 解释 Semantic Model 如何建立在已有 dbt Model 上，当前 v1.12+ YAML 规范如何把 semantic_model、columns、entities、dimensions 和
+    simple metrics 绑定到模型定义，并明确物理模型与语义模型不是同一层。
+  prerequisites:
+  - kb-metricflow-overview-001
+  must_explain:
+  - dbt_model_as_physical_logical_relation
+  - semantic_model_as_semantic_annotation
+  - current_embedded_semantic_model_spec
+  - semantic_model_name_and_model_mapping
+  - semantic_manifest_high_level
+  - legacy_spec_migration_awareness
+  must_not_cover:
+  - reteach_dbt_model_build
+  - legacy_semantic_models_yaml_as_primary_current_syntax
+  - measure_as_current_primary_object
+  - all_config_keys
+  handoff_to: kb-metricflow-entities-grain-001
+- order: 3
+  id: kb-metricflow-entities-grain-001
+  title: Entities, Semantic Grain & Join Keys
+  title_cn: Entities、语义粒度与 Join Key
+  responsibility: 解释 Entity 是业务对象与语义图连接键，Primary / Unique / Foreign / Natural 类型如何表达关系方向，以及错误的 Entity / Grain 声明为什么会导致不可用
+    Join 或指标重复。
+  prerequisites:
+  - kb-metricflow-semantic-model-001
+  must_explain:
+  - entity_business_concept
+  - entity_as_join_key
+  - primary_unique_foreign_natural
+  - single_and_composite_entities
+  - semantic_grain_connection
+  - entity_as_grouping_dimension_high_level
+  - grain_vs_entity_type_correctness
+  must_not_cover:
+  - full_join_graph_path_selection
+  - dimension_catalog
+  - dimensional_modeling_grain_theory_from_zero
+  - database_constraint_equivalence
+  handoff_to: kb-metricflow-dimensions-time-001
+- order: 4
+  id: kb-metricflow-dimensions-time-001
+  title: Dimensions, Time Dimensions & Aggregation Time
+  title_cn: Dimensions、Time Dimension 与 Aggregation Time
+  responsibility: 解释 Dimension 是指标的 Group By / Slice 语义，区分 Categorical 与 Time Dimension，理解实体限定维度名称、Granularity 与 agg_time_dimension
+    如何确定指标默认时间语义。
+  prerequisites:
+  - kb-metricflow-entities-grain-001
+  must_explain:
+  - categorical_dimension
+  - time_dimension
+  - dimension_scoped_to_entity
+  - fully_qualified_dimension_name
+  - time_granularity
+  - agg_time_dimension
+  - derived_semantics_awareness
+  must_not_cover:
+  - time_spine_deep_dive
+  - cumulative_window
+  - join_path_algorithm
+  - date_dimension_modeling_from_zero
+  handoff_to: kb-metricflow-simple-metrics-001
+- order: 5
+  id: kb-metricflow-simple-metrics-001
+  title: Simple Metrics, Aggregation & Additivity
+  title_cn: Simple Metrics、聚合与可加性
+  responsibility: 建立当前 MetricFlow 的基础指标对象：Simple Metric 直接对语义模型中的表达式做聚合，并明确旧 Measures 已弃用。理解 sum/count/count_distinct/average
+    等聚合与 Additive / Non-additive 风险。
+  prerequisites:
+  - kb-metricflow-dimensions-time-001
+  must_explain:
+  - simple_metric_current_role
+  - measures_deprecated_migration_boundary
+  - agg_and_expr
+  - metric_filter_high_level
+  - non_additive_dimension
+  - fill_nulls_and_join_to_timespine_awareness
+  - simple_metric_as_building_block
+  must_not_cover:
+  - teach_measures_as_current_spec
+  - ratio_derived_formulas
+  - cumulative_window
+  - conversion_event_matching
+  handoff_to: kb-metricflow-semantic-graph-joins-001
+- order: 6
+  id: kb-metricflow-semantic-graph-joins-001
+  title: Semantic Graph, Join Logic & Fan-out Safety
+  title_cn: Semantic Graph、Join Logic 与 Fan-out 安全
+  responsibility: 解释 Semantic Model 作为 Node、Entity Relationship 作为 Edge 的语义图，MetricFlow 如何据此自动生成合法 Join，为什么 Primary/Unique/Foreign
+    类型可以阻止 Fan-out / Chasm，并理解 Multi-hop 与 Ambiguous Path 边界。
+  prerequisites:
+  - kb-metricflow-entities-grain-001
+  - kb-metricflow-simple-metrics-001
+  must_explain:
+  - semantic_graph_vs_dbt_dag
+  - entity_based_join_generation
+  - left_join_high_level
+  - multi_fact_full_outer_join_high_level
+  - fan_out
+  - chasm_join
+  - allowed_vs_disallowed_entity_relationships
+  - multi_hop_join
+  - ambiguous_path_validation
+  - current_two_hop_limit_as_version_sensitive
+  must_not_cover:
+  - database_physical_join_algorithm
+  - claim_arbitrary_many_to_many_is_safe
+  - freeze_multi_hop_limit_as_timeless
+  - reteach_star_schema
+  handoff_to: kb-metricflow-ratio-derived-001
+- order: 7
+  id: kb-metricflow-ratio-derived-001
+  title: Ratio & Derived Metrics
+  title_cn: Ratio 与 Derived Metrics
+  responsibility: 解释如何在基础 Simple Metrics 上组合业务指标：Ratio 用 numerator / denominator 表达比率，Derived 用其他 Metric 的表达式、Alias、Filter
+    与 Offset 构建二次业务计算。
+  prerequisites:
+  - kb-metricflow-simple-metrics-001
+  - kb-metricflow-semantic-graph-joins-001
+  must_explain:
+  - ratio_metric
+  - numerator_denominator
+  - derived_metric
+  - input_metrics
+  - metric_dependency
+  - metric_level_filters
+  - offset_window_awareness
+  - cross_semantic_model_metric_composition
+  must_not_cover:
+  - time_spine_internals
+  - conversion_entity_matching
+  - business_metric_catalog_governance
+  handoff_to: kb-metricflow-time-spine-cumulative-001
+- order: 8
+  id: kb-metricflow-time-spine-cumulative-001
+  title: Time Spine, Metric Time & Cumulative Metrics
+  title_cn: Time Spine、Metric Time 与 Cumulative Metrics
+  responsibility: 解释为什么部分时间型指标需要连续时间骨架，Time Spine 如何支撑缺失日期填充、Offset 和 Cumulative 计算，以及 Window 与 Grain-to-date 的语义差异。
+  prerequisites:
+  - kb-metricflow-dimensions-time-001
+  - kb-metricflow-ratio-derived-001
+  must_explain:
+  - time_spine_purpose
+  - metric_time
+  - time_granularity
+  - join_to_timespine
+  - cumulative_metric
+  - window
+  - grain_to_date
+  - missing_period_semantics
+  must_not_cover:
+  - date_dimension_business_modeling_from_zero
+  - conversion_metric_deep_dive
+  - serving_cache
+  handoff_to: kb-metricflow-conversion-metrics-001
+- order: 9
+  id: kb-metricflow-conversion-metrics-001
+  title: Conversion Metrics & Entity-Time Matching
+  title_cn: Conversion Metrics 与 Entity-Time Matching
+  responsibility: 解释 Conversion Metric 如何把 Base Event 与 Conversion Event 按同一 Entity 和时间窗口匹配，为什么它不是普通 Ratio，以及 Conversion Window、Constant
+    Properties 与事件粒度怎样影响正确性。
+  prerequisites:
+  - kb-metricflow-time-spine-cumulative-001
+  - kb-metricflow-semantic-graph-joins-001
+  must_explain:
+  - base_metric
+  - conversion_metric
+  - conversion_entity
+  - conversion_window
+  - conversion_calculation
+  - constant_properties
+  - pre_aggregation_entity_join
+  - conversion_vs_ratio
+  - conversion_validation_risks
+  must_not_cover:
+  - marketing_attribution_platform
+  - event_ingestion_internals
+  - agent_funnel_tool
+  handoff_to: kb-metricflow-query-validation-001
+- order: 10
+  id: kb-metricflow-query-validation-001
+  title: Metric Query Generation, Commands & Validation
+  title_cn: Metric Query Generation、Commands 与 Validation
+  responsibility: 从“定义指标”进入“真正查询指标”：MetricFlow 如何接收 Metric / Group By / Filter，沿语义图选取可用维度与 Join，生成 SQL，并通过 Parsing / Semantic
+    / Data Platform Validation 发现非法定义与歧义路径。
+  prerequisites:
+  - kb-metricflow-ratio-derived-001
+  - kb-metricflow-conversion-metrics-001
+  must_explain:
+  - query_metric
+  - group_by_dimensions
+  - metric_filters
+  - dimension_values_high_level
+  - compiled_sql_as_debugging_surface
+  - dbt_sl_vs_mf_command_boundary
+  - parsing_validation
+  - semantic_validation
+  - data_platform_validation
+  - explain_query_validation
+  must_not_cover:
+  - cli_command_encyclopedia
+  - target_engine_optimizer_internals
+  - claim_all_validation_modes_available_everywhere
+  handoff_to: kb-metricflow-saved-queries-serving-001
+- order: 11
+  id: kb-metricflow-saved-queries-serving-001
+  title: Saved Queries, Exports, Cache & Consumption
+  title_cn: Saved Queries、Exports、Cache 与消费接口
+  responsibility: 解释如何把常用 Metric + Dimension + Filter 组合保存为可复用 Semantic Query，以及 Exports / Cache / Semantic Layer API 如何连接
+    BI、应用与 Agent，同时明确它们与物理 Serving Layer 的边界。
+  prerequisites:
+  - kb-metricflow-query-validation-001
+  must_explain:
+  - saved_query
+  - common_dimension_requirement_for_multi_metric_query
+  - export_table_view_high_level
+  - semantic_cache_high_level
+  - semantic_layer_api
+  - bi_consumption
+  - application_consumption
+  - agent_semantic_query_handoff
+  - serving_table_vs_semantic_query_boundary
+  must_not_cover:
+  - olap_engine_capacity
+  - cache_invalidation_deep_dive
+  - agent_planner_router_executor
+  - claim_exports_are_required_for_all_semantic_queries
+  handoff_to: kb-metricflow-production-closure-001
+- order: 12
+  id: kb-metricflow-production-closure-001
+  title: Production Quality, Reconciliation & Semantic Operations
+  title_cn: 生产质量、Reconciliation 与 Semantic Operations
+  responsibility: 把 MetricFlow 的生产问题收口成可排查链：上游 dbt Model 是否正确、Semantic Definition 是否有效、Join Path 是否安全、Generated SQL 是否符合预期、Target
+    Engine 是否高成本、Metric Result 是否能与可信基准对账，并处理指标变更与消费影响。
+  prerequisites:
+  - kb-metricflow-query-validation-001
+  - kb-metricflow-saved-queries-serving-001
+  must_explain:
+  - metric_correctness_layers
+  - semantic_reconciliation
+  - source_model_vs_semantic_result
+  - join_path_diagnosis
+  - generated_sql_diagnosis
+  - metric_change_impact
+  - semantic_metadata_governance_handoff
+  - query_cost_and_latency_boundary
+  - supported_platform_matrix_version_sensitivity
+  - trino_support_guardrail
+  must_not_cover:
+  - invent_project_production_metrics
+  - claim_metricflow_guarantees_business_correctness
+  - enterprise_catalog_internals
+  - olap_serving_capacity_deep_dive
+  - freeze_platform_support_forever
+  handoff_to: null
+freeze:
+  structure_frozen: true
+  article_bodies_written: false
+  published_nodes: 0
+  remaining_nodes: 12
+  body_status: unwritten_0_of_12
+  next_milestone: V1.0.1 Semantic Foundation
+  reopen_spine_only_for:
+  - verified_technical_error
+  - causal_progression_gap
+  - current_spec_correction

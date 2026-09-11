@@ -320,15 +320,57 @@
 
 ## V1.0 Fifth Vertical Slice — MetricFlow / Semantic Layer
 
-### Next: V1.0.0 MetricFlow Knowledge Spine Freeze
-- [ ] Keep MetricFlow / Semantic Layer in Stage 06 / L5 Core
-- [ ] Validate current dbt Semantic Layer / MetricFlow release baseline
-- [ ] Freeze the causal Learn spine before writing article bodies
-- [ ] Freeze dbt Model / Semantic Model / Entity / Dimension / Measure / Metric boundaries
-- [ ] Freeze multi-hop join / metric query / serving responsibility boundaries
-- [ ] Register only evidence-backed Interview seeds
-- [ ] Reuse the frozen Learn / Interview / Scale UI contract
-- [ ] Keep UI unchanged
+### V1.0.0 MetricFlow Knowledge Spine Freeze
+- [x] Keep MetricFlow / Semantic Layer in Stage 06 / L5 Core
+- [x] Validate against current dbt v1.12+ Semantic Layer / MetricFlow specification
+- [x] Freeze a 12-node causal Learn spine before writing article bodies
+- [x] Correct old Measure-first taxonomy: Measures are deprecated; current spec uses Simple Metrics
+- [x] Freeze dbt Model / Semantic Model / Entity / Dimension / Metric boundaries
+- [x] Freeze Semantic Graph vs dbt DAG responsibility boundary
+- [x] Freeze Entity-based Join / Fan-out / Chasm / Multi-hop boundaries
+- [x] Freeze Time Spine / Cumulative / Conversion progression
+- [x] Freeze Metric Query / Validation / Saved Query / Serving handoffs
+- [x] Preserve dbt / Dimensional Modeling / DataHub / Serving / Agent boundaries
+- [x] Add explicit Trino support guardrail; do not infer platform support
+- [x] Register only existing evidence-backed Interview seeds
+- [x] Explicitly record that no verified MetricFlow-specific Interview question exists yet
+- [x] Reuse the frozen Learn / Interview / Scale + Light / Dark UI contract
+- [x] Keep all MetricFlow article bodies unwritten
+- [x] Keep UI unchanged
+
+### Next: V1.0.1 MetricFlow Semantic Foundation
+- [ ] 01 Semantic Layer & MetricFlow Mental Model
+- [ ] 02 dbt Model -> Semantic Model & Current Spec
+- [ ] 03 Entities / Semantic Grain / Join Keys
+- [ ] 04 Dimensions / Time Dimensions / Aggregation Time
+
+### V1.0.2 MetricFlow Metrics & Semantic Graph
+- [ ] 05 Simple Metrics / Aggregation / Additivity
+- [ ] 06 Semantic Graph / Join Logic / Fan-out Safety
+- [ ] 07 Ratio / Derived Metrics
+- [ ] 08 Time Spine / Cumulative Metrics
+- [ ] 09 Conversion Metrics
+
+### V1.0.3 MetricFlow Query & Consumption
+- [ ] 10 Metric Query Generation / Commands / Validation
+- [ ] 11 Saved Queries / Exports / Cache / Consumption
+
+### V1.0.4 MetricFlow Production Closure
+- [ ] 12 Production Quality / Reconciliation / Semantic Operations
+- [ ] Knowledge progression audit
+- [ ] Technical correctness audit
+
+### V1.0.5 MetricFlow Scale & Interview Integration
+- [ ] Add only justified hypothetical Semantic Layer Scale scenarios
+- [ ] Map only existing evidence-backed Interview questions
+- [ ] Do not invent MetricFlow-specific frequency
+- [ ] Add contextual cross-tab relations
+
+### V1.0.6 MetricFlow Vertical Slice Freeze
+- [ ] Three-tab closure audit
+- [ ] Light / Dark reading audit for Semantic Layer content
+- [ ] Truth / evidence / platform-support audit
+- [ ] Freeze MetricFlow V1
 
 ### Deferred vertical
 - [ ] Flink — resume after MetricFlow unless priorities change
