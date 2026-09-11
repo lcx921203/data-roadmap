@@ -43,7 +43,7 @@ interface InterviewKnowledgeMapping {
   knowledge: string[]
 }
 
-interface IcebergCrossNavigationFile {
+interface CrossNavigationFile {
   version: string
   topic: string
   cross_navigation?: {
@@ -56,8 +56,18 @@ export const projectMapping = loadYaml<ProjectMappingFile>(
   'content/project-mapping.yaml',
 )
 
-const icebergCrossNavigation = loadYaml<IcebergCrossNavigationFile>(
-  'content/mappings/iceberg-v0.6.0.yaml',
+const crossNavigationRegistries = [
+  loadYaml<CrossNavigationFile>(
+    'content/mappings/iceberg-v0.6.0.yaml',
+  ),
+  loadYaml<CrossNavigationFile>(
+    'content/mappings/trino-v0.7.6.yaml',
+  ),
+]
+
+const interviewKnowledgeMappings = crossNavigationRegistries.flatMap(
+  (registry) =>
+    registry.cross_navigation?.interview_to_knowledge ?? [],
 )
 
 const firstInterviewBank = loadYaml<InterviewBankFile>(
@@ -227,10 +237,7 @@ export function getInterviewIdsForKnowledge(
 ): string[] {
   const ids = new Set<string>()
 
-  for (
-    const mapping of
-      icebergCrossNavigation.cross_navigation?.interview_to_knowledge ?? []
-  ) {
+  for (const mapping of interviewKnowledgeMappings) {
     if (mapping.knowledge.includes(knowledgeId)) {
       ids.add(mapping.interview)
     }
@@ -243,9 +250,7 @@ export function getKnowledgeForInterview(
   interviewId: string,
 ): MarkdownDocument<KnowledgeFrontMatter>[] {
   const configuredIds = new Set(
-    (
-      icebergCrossNavigation.cross_navigation?.interview_to_knowledge ?? []
-    ).flatMap((mapping) =>
+    interviewKnowledgeMappings.flatMap((mapping) =>
       mapping.interview === interviewId ? mapping.knowledge : [],
     ),
   )

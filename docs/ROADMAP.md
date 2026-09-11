@@ -117,10 +117,20 @@
 - [x] Do not claim Trino-specific frequency
 - [x] Keep Interview answers pending where no curated answer exists
 
-### Next: V0.7.6 Trino Vertical Slice Freeze
-- [ ] Three-tab closure audit
-- [ ] Mobile reading audit
-- [ ] Freeze Trino V1
+### V0.7.6 Trino Vertical Slice Freeze
+- [x] Three-tab closure audit
+- [x] Add direct Interview -> Knowledge Trino mappings
+- [x] Generalize Interview / Knowledge registry from Iceberg-only to multi-topic
+- [x] Preserve scenario-owned Scale relations
+- [x] 390px shared-reading implementation audit
+- [x] One-hand directory / safe-area contract audit
+- [x] Truth-boundary and evidence audit
+- [x] Freeze Trino V1
+
+### Next Vertical Slice
+- [ ] Select the next technology from the existing roadmap / taxonomy
+- [ ] Reuse the frozen Learn / Interview / Scale architecture
+- [ ] Do not redesign the frozen UI without a verified issue
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found

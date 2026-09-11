@@ -1,0 +1,42 @@
+version: 0.7.6
+topic: trino
+
+interview:
+  evidence_policy: direct_evidence_only
+  mapped_existing_questions:
+    - iq-olap-engine-selection-001
+    - iq-sql-performance-plan-index-001
+    - iq-etl-join-slowdown-001
+    - iq-system-concurrency-fault-tolerance-001
+  trino_specific_frequency: not_claimed_without_direct_evidence
+
+cross_navigation:
+  interview_to_knowledge:
+    - interview: iq-olap-engine-selection-001
+      knowledge:
+        - kb-trino-overview-001
+
+    - interview: iq-sql-performance-plan-index-001
+      knowledge:
+        - kb-trino-production-troubleshooting-001
+
+    - interview: iq-etl-join-slowdown-001
+      knowledge:
+        - kb-trino-cbo-join-dynamic-filtering-001
+        - kb-trino-production-troubleshooting-001
+
+    - interview: iq-system-concurrency-fault-tolerance-001
+      knowledge:
+        - kb-trino-concurrency-resource-groups-001
+        - kb-trino-fault-tolerant-execution-001
+
+  policy:
+    interview_to_knowledge: explicit_curated_mapping
+    knowledge_to_interview: derived_from_interview_to_knowledge
+    knowledge_to_scale: derived_from_scale_scenario_knowledge
+    scale_to_knowledge: scale_scenario_owns_knowledge_ids
+    interview_to_scale: derived_from_scale_scenario_interviews
+    scale_to_interview: scale_scenario_owns_interview_ids
+    reverse_links: derived_not_duplicated
+    mapping_precision: do_not_force_direct_links_for_graph_completeness
+    relation_is_not_frequency_claim: true

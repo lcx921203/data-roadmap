@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: trino
 learning_depth: L5
-status: scale_interview_integrated
+status: frozen_trino_v1
 product_boundary:
   previous_vertical: iceberg
   handoff_from:
@@ -322,3 +322,12 @@ freeze:
   - sc-trino-heavy-join-pressure-001
   - sc-trino-fte-batch-recovery-001
   interview_integration: evidence_backed_relations_v0.7.5
+  vertical_slice_frozen: true
+  frozen_at: 0.7.6
+  three_tab_closure_audit: passed_v0.7.6
+  mobile_reading_audit: passed_shared_ui_static_audit_v0.7.6
+  cross_navigation_registry: multi_topic_v0.7.6
+  reopen_vertical_only_for:
+  - verified_technical_error
+  - verified_usability_or_interaction_bug
+  - broken_cross_tab_relation
