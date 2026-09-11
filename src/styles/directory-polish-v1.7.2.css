@@ -1,0 +1,37 @@
+/* V1.7.2 Directory one-hand polish */
+
+/* Left-hand reach: fixed to the left edge, vertical drag only. */
+.reading-floating-control {
+  left: 0;
+  right: auto;
+  padding: 0 11px 0 9px;
+  border-right: 1px solid var(--color-hairline-strong);
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+}
+
+/* Keep the drawer coming from the right, but remove the dirty seam. */
+.reading-side-drawer {
+  border-left: 0;
+  box-shadow: none;
+}
+
+/* Directory hierarchy is expressed by whitespace, type and active state. */
+.reading-side-drawer .reading-directory__item {
+  border: 0;
+}
+
+/* Footer close CTA is intentionally removed. */
+.reading-side-drawer__footer,
+.reading-side-drawer__close {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .reading-floating-control {
+    left: 18px;
+    right: auto;
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: 14px;
+  }
+}

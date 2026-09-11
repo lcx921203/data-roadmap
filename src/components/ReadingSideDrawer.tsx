@@ -180,10 +180,7 @@ export function ReadingSideDrawer({
         onPointerCancel={onGestureEnd}
       >
         <header className="reading-side-drawer__header">
-          <div>
-            <h2 id={titleId}>目录</h2>
-            <p>向右滑动或点击左侧空白区域可收起</p>
-          </div>
+          <h2 id={titleId}>目录</h2>
         </header>
 
         <div className="reading-directory__progress">
@@ -229,16 +226,6 @@ export function ReadingSideDrawer({
             )
           })}
         </nav>
-
-        <footer className="reading-side-drawer__footer">
-          <button
-            className="reading-side-drawer__close"
-            type="button"
-            onClick={onClose}
-          >
-            收起目录
-          </button>
-        </footer>
       </aside>
     </div>
   )

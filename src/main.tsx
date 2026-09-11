@@ -18,6 +18,7 @@ import './styles/interview-integration-v1.css'
 import './styles/cross-navigation-v1.css'
 import './styles/reading-navigation-v1.7.css'
 import './styles/one-hand-reading-v1.7.1.css'
+import './styles/directory-polish-v1.7.2.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
