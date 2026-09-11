@@ -1,0 +1,143 @@
+version: '1.7'
+frozen_at: 0.6.7.1
+status: active
+viewport_baseline:
+  width: 390
+  height: 844
+
+principles:
+  row_over_card: true
+  single_accent: true
+  default_shadow: none
+  body_min_px: 16
+  tap_target_min_px: 44
+  mobile_first: true
+  evidence_visible: true
+  runtime_ai_answers: false
+  content_correctness_first: true
+  three_public_tabs_only: true
+  same_tab_continuation_before_cross_tab: true
+  descriptive_metadata_uses_middle_dot: true
+  horizontal_quick_nav_for_long_reading: false
+  reading_directory_for_long_reading: true
+
+components:
+- id: app-shell
+  status: frozen
+  anatomy:
+  - top_bar
+  - content
+  - bottom_navigation
+
+- id: bottom-navigation
+  status: frozen_v1_7
+  tabs:
+  - learn
+  - interview
+  - scale
+  rules:
+  - raised_surface
+  - strong_hairline_top_boundary
+  - no_heavy_shadow
+  - safe_area_inside_navigation
+  - active_signal_only
+  - quiet_two_pixel_active_indicator_allowed
+  - content_has_extra_breathing_space
+
+- id: detail-top-bar
+  status: frozen_v1_7
+  anatomy:
+  - back
+  - context
+  - directory_action
+  rules:
+  - directory_action_fixed_reachable
+  - no_floating_overlay_button
+  - touch_target_min_44
+
+- id: reading-directory
+  status: frozen_v1_7
+  mobile_container: bottom_sheet
+  anatomy:
+  - reading_progress
+  - current_section
+  - section_tree
+  supports:
+  - h2
+  - h3
+  rules:
+  - replaces_horizontal_quick_navigation
+  - active_uses_signal_soft
+  - no_card_wall
+  - no_shadow
+  - aria_current
+  - progressbar_semantics
+
+- id: secondary-metadata-line
+  status: frozen_v1_7
+  format: A · B · C
+  rules:
+  - descriptive_only
+  - not_a_chip
+  - same_semantics_same_visual_grammar
+
+- id: continue-learning
+  status: frozen
+  rules:
+  - whole_surface_clickable
+  - signal_soft_current_state
+  - no_separate_cta
+  - dynamic_position
+  - position_not_completion
+  - reduced_motion_static_fallback
+
+- id: question-row
+  status: frozen
+  rules:
+  - question_is_primary
+  - evidence_visible
+  - dynamic_counts
+
+- id: evidence-disclosure
+  status: frozen
+  mobile_container: bottom_sheet
+  grouping: company
+  rules:
+  - evidence_not_internal_debug_data
+  - source_url_not_frontstage
+  - reliability_not_frontstage
+
+- id: reading-segment
+  status: frozen_v1_7
+  labels:
+  - 面试回答
+  - 深入理解
+  rules:
+  - local_reading_mode_not_top_level_navigation
+
+- id: code-block
+  status: frozen
+  rules:
+  - only_for_code_config_command_sql
+  - horizontal_scroll
+  - copy_action
+
+- id: technical-diagram
+  status: frozen
+  usage_policy: exception_only_when_text_is_less_clear
+  rules:
+  - mobile_first_390
+  - real_dom_text
+  - no_default_shadow
+  - figcaption_required
+  - color_not_only_semantic
+  - simple_linear_relation_prefers_text
+  - must_reduce_cognitive_load
+
+- id: cross-tab-extension
+  status: frozen_v1_7
+  priority: secondary
+  rules:
+  - same_tab_continuation_first
+  - relation_is_not_frequency_claim
+  - relation_is_not_project_fact

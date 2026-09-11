@@ -1,26 +1,29 @@
-version: '1.7'
-frozen_at: 0.6.7.1
-status: active
+version: '1.6'
+frozen_at: 0.6.0.10
+status: frozen
 viewport_baseline:
   width: 390
   height: 844
-
 principles:
   row_over_card: true
   single_accent: true
   default_shadow: none
   body_min_px: 16
   tap_target_min_px: 44
-  mobile_first: true
   evidence_visible: true
+  dynamic_counts_from_content: true
   runtime_ai_answers: false
-  content_correctness_first: true
-  three_public_tabs_only: true
-  same_tab_continuation_before_cross_tab: true
+  interview_scale_is_not_top_level_scale: true
+  motion_is_stateful_not_decorative: true
   descriptive_metadata_uses_middle_dot: true
-  horizontal_quick_nav_for_long_reading: false
-  reading_directory_for_long_reading: true
-
+  technical_diagrams_mobile_first: true
+  diagram_text_is_real_dom_text: true
+  diagram_relation_is_semantic: true
+  embedded_diagram_avoids_nested_card: true
+  diagram_palette_stable_within_domain: true
+  content_correctness_first: true
+  knowledge_structure_before_visualization: true
+  diagram_is_optional_secondary: true
 components:
 - id: app-shell
   status: frozen
@@ -28,116 +31,160 @@ components:
   - top_bar
   - content
   - bottom_navigation
-
-- id: bottom-navigation
-  status: frozen_v1_7
-  tabs:
-  - learn
-  - interview
-  - scale
-  rules:
-  - raised_surface
-  - strong_hairline_top_boundary
-  - no_heavy_shadow
-  - safe_area_inside_navigation
-  - active_signal_only
-  - quiet_two_pixel_active_indicator_allowed
-  - content_has_extra_breathing_space
-
-- id: detail-top-bar
-  status: frozen_v1_7
-  anatomy:
-  - back
-  - context
-  - directory_action
-  rules:
-  - directory_action_fixed_reachable
-  - no_floating_overlay_button
-  - touch_target_min_44
-
-- id: reading-directory
-  status: frozen_v1_7
-  mobile_container: bottom_sheet
-  anatomy:
-  - reading_progress
-  - current_section
-  - section_tree
-  supports:
-  - h2
-  - h3
-  rules:
-  - replaces_horizontal_quick_navigation
-  - active_uses_signal_soft
-  - no_card_wall
-  - no_shadow
-  - aria_current
-  - progressbar_semantics
-
-- id: secondary-metadata-line
-  status: frozen_v1_7
-  format: A · B · C
-  rules:
-  - descriptive_only
-  - not_a_chip
-  - same_semantics_same_visual_grammar
-
 - id: continue-learning
   status: frozen
   rules:
   - whole_surface_clickable
   - signal_soft_current_state
+  - signal_family_hairline
   - no_separate_cta
   - dynamic_position
   - position_not_completion
+  - signal_border_moving_highlight_allowed
+  - motion_period_7_to_9_seconds
+  - border_only_no_outer_glow
   - reduced_motion_static_fallback
-
 - id: question-row
   status: frozen
   rules:
   - question_is_primary
   - evidence_visible
   - dynamic_counts
-
 - id: evidence-disclosure
   status: frozen
   mobile_container: bottom_sheet
   grouping: company
+  sorting:
+  - company_record_count_desc
+  - records_published_at_desc
+  backstage_only_fields:
+  - source_url
+  - reliability_grade
+  - mapping_type
+  - independence_group
+  - review_status
+- id: scale-followup-section
+  status: frozen
+  frontstage_title: 规模追问
+  scope: current_interview_question_only
   rules:
-  - evidence_not_internal_debug_data
-  - source_url_not_frontstage
-  - reliability_not_frontstage
-
-- id: reading-segment
-  status: frozen_v1_7
-  labels:
-  - 面试回答
-  - 深入理解
+  - not_top_level_scale_lab
+  - text_fence_renders_as_semantic_rows
+  - no_copy_action_for_scale_parameters
+  - no_code_surface_for_plain_constraints
+  - no_internal_english_kicker
+  - ascii_tree_converts_to_visual_hierarchy
+- id: followup-disclosure
+  status: frozen
+  frontstage_title: 关联追问
   rules:
-  - local_reading_mode_not_top_level_navigation
-
+  - accordion
+  - default_collapsed
+  - one_open_at_a_time
+  - curated_extension_not_frequency_claim
+  - canonical_question_can_link_internally
+  - pending_answer_labeled
+  - no_runtime_ai
+  - whole_row_is_click_target
+  - indicator_is_quiet_no_circle
 - id: code-block
   status: frozen
   rules:
   - only_for_code_config_command_sql
+  - long_code_collapsible
   - horizontal_scroll
   - copy_action
-
+  - inline_block_style_separation
+- id: bottom-sheet
+  status: frozen
+  accessibility:
+  - aria_modal
+  - focus_trap
+  - escape_close
+  - restore_focus
+  mobile:
+    max_height: 82vh
+    top_radius: 14px
+- id: secondary-metadata-line
+  status: frozen
+  format: A · B · C
+  rules:
+  - descriptive_only
+  - not_a_chip
+  - middle_dot_with_spaces
+  - same_semantics_same_visual_grammar
+- id: current-state-motion
+  status: frozen
+  allowed_on:
+  - continue-learning
+  rules:
+  - signal_family_only
+  - border_only
+  - period_7_to_9_seconds
+  - no_outer_glow
+  - no_shadow
+  - no_multicolor_neon
+  - reduced_motion_off
+  - static_hairline_fallback
 - id: technical-diagram
   status: frozen
-  usage_policy: exception_only_when_text_is_less_clear
+  anatomy:
+  - header
+  - canvas
+  - caption
   rules:
   - mobile_first_390
-  - real_dom_text
+  - same_component_responsive
+  - no_raster_text
   - no_default_shadow
   - figcaption_required
   - color_not_only_semantic
+  - diagram_directive_from_markdown
+  - header_title_only_no_type_badge
+  - mobile_density_compact
+  - embedded_in_surface_flattens_outer_frame
+  - caption_preferred_over_extra_callout
+  - split_if_single_concept_becomes_too_tall
+  - not_default_learning_surface
   - simple_linear_relation_prefers_text
   - must_reduce_cognitive_load
-
-- id: cross-tab-extension
-  status: frozen_v1_7
-  priority: secondary
+  - must_not_omit_key_constraints
+  usage_policy: exception_only_when_text_is_less_clear
+- id: diagram-node
+  status: frozen
   rules:
-  - same_tab_continuation_first
-  - relation_is_not_frequency_claim
-  - relation_is_not_project_fact
+  - real_dom_text
+  - one_pixel_border
+  - ten_pixel_radius
+  - short_subtitle_optional
+  - semantic_palette_diagram_only
+  - mobile_primary_height_52_to_56
+  - mobile_compact_height_48_to_52
+  - semantic_color_stable_within_domain
+- id: diagram-arrow
+  status: frozen
+  rules:
+  - thin_hairline
+  - label_optional
+  - direction_must_be_unambiguous
+  - directional_relation_requires_arrowhead
+  - mobile_gap_30_to_34
+- id: diagram-branch
+  status: frozen
+  rules:
+  - mobile_max_two_visible_columns
+  - one_to_many_must_be_visually_explicit
+  - ellipsis_allowed_for_repetition
+  - directional_fork_requires_arrowheads
+  - fork_means_one_to_many
+- id: diagram-relation-grammar
+  status: frozen
+  relations:
+    solid_arrow: reference_call_flow_sequence
+    forked_arrow: one_to_many_reference_or_split
+    dashed_arrow: retry_rollback_optional
+    bracket_no_arrow: grouping_containment_only
+  rules:
+  - line_style_must_express_meaning
+  - directional_relationship_has_arrowhead
+  - color_not_required_to_understand_relation
