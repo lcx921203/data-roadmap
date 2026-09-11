@@ -428,19 +428,32 @@
 - [x] Keep current platform / cache product behavior version-sensitive
 - [x] Keep UI / green Light-Dark palette unchanged
 
-### Next: V1.0.6 MetricFlow Vertical Slice Freeze
-- [ ] Three-tab closure audit
-- [ ] Light / Dark reading audit for Semantic Layer content
-- [ ] Truth / evidence / platform-support audit
-- [ ] Freeze MetricFlow V1
+### V1.0.6 MetricFlow Vertical Slice Freeze
+- [x] Deployed-main integrity audit
+- [x] Three-tab closure audit
+- [x] Fourth Scale domain / Semantic Layer implementation audit
+- [x] 390px / one-hand reading static implementation audit
+- [x] Light / Dark + green signal palette audit
+- [x] Validate all 15 MetricFlow contextual relation anchors
+- [x] Truth / evidence / platform-support audit
+- [x] Freeze MetricFlow V1
 
-### Deferred vertical
-- [ ] Flink — resume after MetricFlow unless priorities change
+## V1.1 Sixth Vertical Slice — Flink
+
+### Next: V1.1.0 Flink Knowledge Spine Freeze
+- [ ] Validate the current Apache Flink production baseline
+- [ ] Keep Flink in Stage 02 / L5 Core
+- [ ] Freeze a causal Knowledge spine before writing bodies
+- [ ] Freeze Spark / Flink responsibility boundaries
+- [ ] Register only existing evidence-backed Interview seeds
+- [ ] Keep the frozen Learn / Interview / Scale UI contract
+- [ ] Keep article bodies unwritten in the spine-freeze step
 
 ### Product Rule
 - [x] Keep Iceberg frozen unless a verified bug is found
 - [x] Keep Trino frozen unless a verified bug is found
 - [x] Keep Spark frozen unless a verified bug is found
 - [x] Keep dbt frozen unless a verified bug is found
+- [x] Keep MetricFlow frozen unless a verified bug or current-spec correction is found
 - [x] Reuse frozen Learn / Interview / Scale UI contract
 - [x] Do not force every technology into the same node count
