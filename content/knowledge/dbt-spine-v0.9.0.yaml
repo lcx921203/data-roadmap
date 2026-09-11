@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '05'
 topic: dbt
 learning_depth: L5
-status: materialization_stateful_partial
+status: quality_contracts_metadata_partial
 technical_baseline:
   validation_date: '2026-09-11'
   stable_production_track: dbt Core v1.12.2
@@ -381,6 +381,6 @@ freeze:
   - verified_technical_error
   - proven_progression_break
   - major_stable_dbt_v2_semantic_change_before_body_publication
-  body_status: partial_7_of_12
-  published_nodes: 7
-  remaining_nodes: 5
+  body_status: partial_10_of_12
+  published_nodes: 10
+  remaining_nodes: 2

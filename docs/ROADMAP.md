@@ -249,12 +249,21 @@
 - [x] Use current snapshot timestamp / check / hard_deletes semantics
 - [x] Preserve Stage 03 SCD theory ownership
 
-### Next: V0.9.3 dbt Quality, Contracts & Metadata
-- [ ] 08 Data Tests / Unit Tests / Freshness / Reconciliation
-- [ ] 09 Model Contracts / Versions / Change Safety
-- [ ] 10 Docs / Artifacts / Lineage / Metadata Integration
+### V0.9.3 dbt Quality, Contracts & Metadata
+- [x] 08 Data Tests / Unit Tests / Freshness / Reconciliation
+- [x] 09 Model Contracts / Versions / Change Safety
+- [x] 10 Docs / Artifacts / Lineage / Metadata Integration
+- [x] Separate Data Test from Unit Test
+- [x] Separate Source Freshness from dbt build
+- [x] Treat Reconciliation as a business validation pattern, not a built-in test type
+- [x] Separate Contract shape guarantees from row-level Data Tests
+- [x] Keep platform constraint enforcement adapter-sensitive
+- [x] Use Model Versions only for intentional breaking-change migration
+- [x] Separate Project Graph / Runtime / Catalog artifact responsibilities
+- [x] Keep Artifact schemas version-sensitive
+- [x] Preserve DataHub enterprise-governance ownership
 
-### V0.9.4 dbt CI & Production Closure
+### Next: V0.9.4 dbt CI & Production Closure
 - [ ] 11 Selection / State / Defer / CI
 - [ ] 12 Production Troubleshooting / Cost / Orchestration Boundary
 - [ ] Knowledge progression audit
