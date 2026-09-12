@@ -10,12 +10,11 @@ order: 4
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: iceberg_l5_v1
+content_status: iceberg_l5_v1_1_refactor
 project_relevance:
 - north-america
 project_fact_status: needs_fact_check
-summary: Data File 保存真实行数据；V2 可用 Position / Equality Delete 表达行级删除；V3 增加 Deletion
-  Vector，Reader 将数据与适用删除信息合并成当前可见结果。
+summary: Data File 保存真实行数据；行级删除可以通过重写 Data File，或通过 Position Delete、Equality Delete、Deletion Vector 等删除信息表达。第一次学习先抓住 Target、Partition、Sequence Number 三个适用维度，再在 Read Path 中看精确规则。
 prerequisites:
 - kb-iceberg-manifest-tree-001
 related:
@@ -23,129 +22,320 @@ related:
 - kb-iceberg-trino-read-path-001
 - kb-iceberg-write-distribution-ordering-001
 ---
-# Data Files, Delete Files & Row-level Changes
+# Data File、Delete File 与行级变更
 
 ## 30 秒理解
 
-**Data File 保存真实行数据；Delete 信息描述哪些行在当前表状态中不可见。**
+先不要记三套删除规则。
 
-Iceberg V2 支持两类行级删除：
+这一节先建立一个主模型：
 
-- Position Delete：按文件路径 + 行位置删除；
-- Equality Delete：按一个或多个字段值匹配删除。
+**Data File 保存原始行；Delete 信息决定其中哪些行在当前表状态里不可见。**
 
-Iceberg V3 又增加 **Deletion Vector（删除向量）** 来表达位置删除。
+所以：
 
-这一节先建立“Data 与 Delete 怎样表达”的模型。
+**文件还存在 ≠ 文件里的每一行都可见。**
 
-**Delete 到底怎样判断是否适用于某个 Data File，等学完 Partition 和 Schema 后，在 Trino Read Path 一次讲完整。**
+Row-level Change（行级变更）大体可以有两条路：
 
-## 为什么 Data File 还在，行却可以“没了”
+```text
+Copy-on-Write（写时重写）
+→ 重写受影响 Data File
 
-Parquet、ORC 这类 Data File 写完以后通常作为不可变文件使用。
+Merge-on-Read（读时合并）
+→ 保留旧 Data File
+→ 额外记录 Delete 信息
+→ Reader 读取时合并
+```
 
-如果只删除其中几行，Iceberg 不一定马上重写整个 Data File。
+## 为什么删除一行不一定要立刻重写 Parquet
 
-它可以保留原 Data File，再额外记录删除信息。
+假设一个 512 MB Parquet 里有 300 万行。
 
-因此：
+现在只删除其中 3 行。
 
-**对象存储里的 Data File 仍存在 ≠ 里面每一行在当前 Snapshot 中都可见。**
+如果每次都立刻：
 
-Reader 最终看到的是：
+```text
+读取整个旧文件
+→ 去掉 3 行
+→ 重写整个新文件
+```
 
-**当前 Data Files − 适用的删除信息**
+写放大会很高。
 
-## Position Delete
+另一种思路是：
 
-Position Delete 直接指定：
+```text
+旧 Data File 保留
++
+额外写一份“哪些行已删除”的信息
+```
 
-- 目标 Data File；
-- 目标行在该文件中的 Position（位置）。
+Reader 最终看到：
 
-例如概念上可以理解为：
+**Data Rows − Applicable Deletes（适用删除）**
 
-`file_path = .../data-001.parquet, position = 128`
+这就是 Merge-on-Read 的基本思路。
 
-在 V2 中，这类删除通常编码在 Position Delete File 中。
+## Position Delete 是什么
 
-在 V3 中，新增的位置删除应使用 Deletion Vector；升级自 V2 的表仍然可能包含旧 Position Delete File。
+Position Delete（位置删除）通过：
 
-## Equality Delete
+```text
+Data File
++
+Row Position（行位置）
+```
 
-Equality Delete 不直接保存物理行位置，而是保存用于匹配的字段和值。
+直接指定某一行。
 
-例如按 `id` 删除：
+概念上类似：
 
-`id = 1001`
+```text
+file = data-001.parquet
+position = 128
+```
 
-Reader 需要拿 Equality Field ID（等值删除字段 ID）对应的列和值，与 Data File 中的行做匹配。
+它的优点是目标明确。
 
-因此它表达的是：
+在 Iceberg V2 中，Position Delete File 是常见表达方式。
 
-**符合这些字段值、并且处于这份 Delete 作用范围内的数据行不可见。**
+## Equality Delete 是什么
 
-这里先不要背它和 Data File 的精确新旧比较规则，后面的 Read Path 会统一讲。
+Equality Delete（等值删除）不是按物理行号，而是按字段值匹配。
 
-## Deletion Vector
+例如：
 
-Deletion Vector 是 V3 引入的位置删除表示。
+```text
+id = 1001
+```
 
-它针对一个 Data File，用 Bitmap（位图）记录哪些行 Position 已删除。
+它会记录用于匹配的 Equality Field IDs（等值字段 ID）和值。
 
-和 Position Delete File 相比，它更适合执行阶段快速判断某个位置是否被删除。
+Reader 再把它和 Data File 中的行进行匹配。
 
-一个 Snapshot 中，对同一个 Data File 最多有一个适用的 Deletion Vector。
+所以它表达的是：
 
-## Data Manifest 与 Delete Manifest
+> 满足某些业务字段值的旧行，在这份 Delete 的有效范围内不可见。
 
-在 Manifest 层，Data 和 Delete 也分开组织：
+这里 Field ID 很重要，因为删除语义同样不能只依赖列名。
 
-- **Data Manifest** 追踪 Data Files；
-- **Delete Manifest** 追踪 Delete Files / Deletion Vector Metadata。
+## Deletion Vector 是什么
 
-同一个 Manifest 不会同时混放 Data 与 Delete Content；但同一个 Snapshot 的 Manifest List 可以同时引用 Data Manifest 和 Delete Manifest。
+Deletion Vector（删除向量）是 Iceberg V3 的位置删除表示。
 
-这正好把上一节的 Manifest 结构和这一节的 Row-level Delete 串起来。
+它针对一个 Data File，用 Bitmap（位图）记录哪些 Row Position 已经删除。
 
-## Delete Applicability 这一节先记什么
+可以先理解成：
 
-现在只记三个维度，不在这里提前背完整规则：
+> 把大量 Position Delete 更紧凑地组织成针对某个 Data File 的位图。
 
-1. **Target（目标）**：Position Delete / Deletion Vector 会和具体 Data File 建立更直接的关系；
-2. **Partition（分区）**：Delete 通常不会无条件跨任意 Partition 生效；
-3. **Sequence Number（序列号）**：它表达文件内容的相对新旧，Reader 会用它判断一份 Delete 是否应该作用到某份 Data。
+第一次学习不需要记底层编码格式。
 
-所以不是：
+重点是：
 
-**看到 Delete → 对所有 Data File 都应用。**
+**它仍然是“旧 Data File 保留，Reader 应用删除信息”的思想。**
+
+## 三种 Delete 先不要背完整条件
+
+第一次学习只记三个判断维度：
+
+### 1. Target（目标）
+
+这份 Delete 到底针对哪个 Data File / 哪类数据？
+
+Position Delete 和 Deletion Vector 与具体 Data File 的联系更直接。
+
+### 2. Partition（分区）
+
+一份 Delete 通常不会无条件作用到全表所有文件。
+
+Reader 需要判断 Data 与 Delete 是否处于兼容的 Partition Scope（分区作用范围）。
+
+### 3. Sequence Number（序列号）
+
+Sequence Number 可以先理解成：
+
+> 文件内容在表状态演进里的相对新旧标记。
+
+Reader 会用它判断：
+
+> 这份 Delete 是不是应该作用到这份 Data？
+
+所以核心不是：
+
+```text
+看到 Delete
+→ 应用到所有文件
+```
 
 而是：
 
-**候选 Data File + 满足 Scope 的 Delete → 当前可见行。**
+```text
+候选 Data File
++
+满足 Target / Partition / Sequence 条件的 Delete
+→ 当前可见行
+```
 
-下一节先把 Partition Spec / Partition Value 学完整；第 7 节 Read Path 再把精确适用条件一次讲完。
+三种删除方式的精确 `≤` / `<` 规则统一放到第 7 节 Read Path，避免现在就把主模型打碎。
 
-## Copy-on-Write 与 Merge-on-Read
+## Data Manifest 和 Delete Manifest 怎样连接
 
-行级 Update / Delete 可以从两个方向理解。
+上一节已经学过：
 
-**Copy-on-Write（写时重写）**
+```text
+Data Manifest
+→ Data Files
 
-把受影响的旧 Data File 读出来，生成新的 Data File，再替换旧文件。
+Delete Manifest
+→ Delete Files / Deletion Vector Metadata
+```
 
-读取更简单，但小范围更新也可能产生较大的 Rewrite 成本。
+所以一个 Snapshot 的读取，不只是：
 
-**Merge-on-Read（读时合并）**
+> 找 Data File。
 
-保留旧 Data File，额外记录 Delete File / Deletion Vector，读取时再合并。
+还可能需要：
 
-写入更轻，但删除信息长期积累会增加 Planning 和 Scan 成本。
+> 找出真正影响这些 Data File 的 Delete 信息。
 
-实际 Spark、Flink、Trino 支持哪些模式，要看对应 Connector 与 Iceberg Format Version。
+这就是为什么 Row-level Delete 会增加 Read Planning（读取规划）复杂度。
 
-## 关联知识
+## Copy-on-Write 和 Merge-on-Read 怎么选
 
-现在已经知道 Data / Delete Content 都会携带 Partition 信息。
+### Copy-on-Write（写时重写）
 
-下一节进入 **Hidden Partitioning 与 Partition Evolution**，解释 Partition Spec 是什么，以及为什么分区策略改变后历史文件仍然可以被正确解释。
+思路：
+
+```text
+读旧 Data File
+→ 应用 Update / Delete
+→ 写新 Data File
+→ 新 Snapshot 替换旧文件
+```
+
+优势：
+
+- Reader 简单；
+- 后续查询不需要长期合并大量 Delete。
+
+代价：
+
+- 小范围变更也可能重写大文件；
+- 写放大明显。
+
+### Merge-on-Read（读时合并）
+
+思路：
+
+```text
+保留旧 Data File
++
+写 Delete 信息
+```
+
+优势：
+
+- Update / Delete 写入更轻；
+- 避免频繁大文件重写。
+
+代价：
+
+- Reader 要做 Delete Planning / Apply；
+- Delete 积累过多会形成 Read Amplification（读放大）。
+
+所以它不是：
+
+> “Merge-on-Read 一定更快。”
+
+而是：
+
+> **把一部分写成本移动到了读取侧。**
+
+## 一个生产问题：更新很多，查询越来越慢
+
+假设一个 CDC 表持续产生 Equality Delete。
+
+一开始：
+
+```text
+Data File 数量正常
+Delete File 很少
+```
+
+几周以后：
+
+```text
+Data File 没明显增加
+Delete File / Delete Metadata 明显增多
+Query Planning 和 Scan 都变慢
+```
+
+这时不能只看：
+
+> Parquet 文件是不是太小。
+
+还需要看：
+
+- Delete File Count；
+- Delete / Data Ratio；
+- 读取时需要合并多少 Delete；
+- 是否需要相应 Maintenance；
+- 当前 Engine 对 Row-level Delete 的支持与性能表现。
+
+## Format Version 为什么重要
+
+Iceberg V1、V2、V3 支持的行级变更能力不同。
+
+例如：
+
+- V2 引入 Row-level Delete；
+- V3 增加 Deletion Vector 等能力。
+
+但生产设计不能只看 Spec 支持。
+
+还要确认：
+
+```text
+Table Format Version
++
+Spark / Flink / Trino Connector Version
++
+Writer Mode
++
+Reader Compatibility
+```
+
+所以以后看到：
+
+> “Iceberg 支持某功能”
+
+先问：
+
+> **我的表版本和实际 Engine 版本真的支持吗？**
+
+## 这一节真正要掌握什么
+
+必须掌握：
+
+- Data File 存在不等于其中每行都可见；
+- Copy-on-Write 与 Merge-on-Read 是两种成本分配思路；
+- Position Delete、Equality Delete、Deletion Vector 分别是什么；
+- Delete Applicability 先抓 Target / Partition / Sequence Number。
+
+生产上要会判断：
+
+- 查询慢是不是 Delete 积累造成；
+- Update / Delete 多的表为什么需要额外 Maintenance；
+- “Format Spec 支持”为什么不等于“当前 Engine 一定支持”。
+
+了解即可：
+
+- 三种 Delete 的完整底层编码；
+- 第一次阅读就背所有 Sequence Number 比较规则。
+
+下一节先补齐：
+
+**Partition Spec 到底怎样描述数据布局，以及它为什么可以在不重写历史数据的情况下演进。**

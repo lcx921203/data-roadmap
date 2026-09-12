@@ -1,28 +1,28 @@
-version: 0.6.1
+version: 0.6.2
 type: knowledge_spine
 stage_id: '04'
 topic: iceberg
 learning_depth: L5
-status: frozen_iceberg_v1
+status: learning_refactor_phase_1
 nodes:
 - order: 1
   id: kb-iceberg-overview-001
   focus: system mental model
 - order: 2
   id: kb-iceberg-metadata-snapshot-001
-  focus: table state and snapshot
+  focus: table state snapshot history and time travel
 - order: 3
   id: kb-iceberg-manifest-tree-001
-  focus: manifest list and manifest
+  focus: manifest list manifest reuse and metadata pruning
 - order: 4
   id: kb-iceberg-row-level-changes-001
-  focus: data files delete files and row-level changes
+  focus: data files delete information and row-level change cost model
 - order: 5
   id: kb-iceberg-partition-evolution-001
-  focus: hidden partitioning and evolution
+  focus: hidden partitioning partition evolution and source field identity
 - order: 6
   id: kb-iceberg-schema-evolution-001
-  focus: schema evolution and field id
+  focus: schema id field id historical schema and safe evolution
 - order: 7
   id: kb-iceberg-trino-read-path-001
   focus: query planning pruning delete applicability and read path
@@ -43,5 +43,21 @@ truthfulness:
   production_pattern: publishable_as_knowledge
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
-frozen_at: 0.6.6
-content_standard: progressive_learning_single_relation_owner_truth_boundary_frozen
+refactor:
+  baseline_main: df62f808f4ebf127beee7bd2476e2efcfa35375e
+  goal: learning_quality_over_content_volume
+  phase_1:
+    status: complete
+    nodes: [1, 2, 3, 4, 5, 6]
+    priorities:
+    - causal_progression
+    - important_vs_optional_layering
+    - production_problem_context
+    - chinese_first_bilingual_terms
+    - reduced_first_read_cognitive_load
+  phase_2:
+    status: pending
+    nodes: [7, 8, 9, 10, 11]
+  structure_rule: keep_11_node_spine
+  no_ui_redesign: true
+content_standard: progressive_learning_production_relevance_priority_layering_truth_boundary

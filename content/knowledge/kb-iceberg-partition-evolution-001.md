@@ -2,7 +2,7 @@
 id: kb-iceberg-partition-evolution-001
 type: knowledge
 title: Hidden Partitioning & Partition Evolution
-title_cn: 隐藏分区与分区演进
+title_cn: 隐藏分区与 Partition Evolution
 stage_id: '04'
 domain: lakehouse
 topic: iceberg
@@ -10,40 +10,63 @@ order: 5
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: iceberg_l5_v1
+content_status: iceberg_l5_v1_1_refactor
 project_relevance:
 - north-america
 project_fact_status: needs_fact_check
-summary: Iceberg 用 Partition Spec 和 Transform 描述逻辑分区；查询写业务字段，由引擎推导分区裁剪；新旧 Partition
-  Spec 可以在同一张表中共存。
+summary: Iceberg 用 Partition Spec 与 Transform 定义逻辑分区，Reader 通过 Source Field ID 和 Spec ID 正确解释新旧文件。Partition Evolution 主要改变未来写入布局，旧文件继续保持旧 Spec，不需要因为改分区而全量重写。
 prerequisites:
 - kb-iceberg-row-level-changes-001
 related:
 - kb-iceberg-schema-evolution-001
 - kb-iceberg-trino-read-path-001
 ---
-# Hidden Partitioning & Partition Evolution
+# Hidden Partitioning 与 Partition Evolution
 
 ## 30 秒理解
 
-Iceberg 的 Partition（分区）首先是 **逻辑 Metadata**，不是目录命名规则。
+Iceberg 的 Partition（分区）不是目录命名规则，而是显式 Metadata（元数据）。
 
-Partition Spec 定义“业务字段怎样转换成分区值”，例如 `days(event_time)`、`bucket(64, user_id)`。
+Partition Spec（分区规则）定义：
 
-查询写业务字段，Engine 根据 Transform 推导可裁剪的 Partition，这就是 Hidden Partitioning（隐藏分区）。
+> 哪个业务字段，通过什么 Transform（转换），生成怎样的 Partition Value（分区值）。
 
-Partition Spec 改变后，**旧文件继续使用旧 Spec，新文件使用新 Spec**，不要求为了改分区而重写全部历史数据。
+例如：
 
-## Partition Spec 与 Transform
+```text
+days(event_time)
+bucket(64, user_id)
+```
 
-Partition Spec 由一个或多个 Partition Field 组成。
+最重要的是：
 
-每个 Partition Field 都会把 Source Column（源列）通过 Transform（转换）映射成 Partition Value。
+**旧文件可以继续使用旧 Partition Spec，新文件使用新 Partition Spec。**
 
-常见 Transform 包括：
+所以分区策略演进时，不要求为了“改分区”就重写整张历史表。
+
+## Partition Spec 到底是什么
+
+一个 Partition Spec 由多个 Partition Field（分区字段）组成。
+
+每个 Partition Field 会记录：
+
+- Source Field ID（源字段 ID）；
+- Transform（转换规则）；
+- Partition Field ID；
+- Partition Field Name。
+
+这里先抓最关键的一点：
+
+> **Partition Spec 不是只记业务列名，而是通过稳定的 Source Field ID 关联源字段。**
+
+这会和下一节 Schema Evolution 直接连接起来。
+
+## Transform 是什么
+
+常见 Transform 有：
 
 - `identity`：直接使用原值；
-- `year / month / day / hour`：从时间字段得到时间粒度；
+- `year / month / day / hour`：按时间粒度转换；
 - `bucket(N, col)`：Hash 后映射到固定桶；
 - `truncate(W, col)`：按宽度截断。
 
@@ -60,76 +83,232 @@ USING iceberg
 PARTITIONED BY (days(event_time), bucket(64, user_id));
 ```
 
-这里 Query 仍然可以写 `event_time` 和 `user_id`，不要求业务 SQL 手工维护物理分区列。
+这不意味着业务查询必须手工写物理分区列。
 
-## Hidden Partitioning 隐藏的是什么
+Query 仍然可以直接按：
 
-隐藏的不是“没有分区”。
+```text
+event_time
+user_id
+```
 
-而是：
+过滤。
 
-**业务查询不需要把物理 Partition Value 当成业务字段来维护。**
+Engine / Connector 根据 Partition Spec 推导哪些 Partition Value 不可能命中。
 
-Engine / Connector 根据表里的 Partition Spec 和查询 Predicate（谓词），判断 Predicate 能否转换到 Partition Transform，从而排除不相关分区。
+这就是 Hidden Partitioning（隐藏分区）。
 
-完整 Pruning 链路到第 7 节统一讲。
+## Hidden Partitioning 到底隐藏了什么
 
-## Partition Evolution 为什么不用重写历史文件
+隐藏的不是：
 
-假设最开始使用：
-
-**Spec 0：days(event_time)**
-
-随着数据量增长，后面改成：
-
-**Spec 1：hours(event_time)**
-
-Iceberg 不要求把所有旧 Data File 重新写成小时分区。
+> 表没有分区。
 
 而是：
 
-- 旧文件继续带着 Spec 0 的语义；
-- 新文件按照 Spec 1 产生 Partition Value；
-- Reader 根据每个 Manifest / File 对应的 Spec 正确解释。
+> **业务 SQL 不需要长期维护物理分区列和目录规则。**
 
-因此 Partition Evolution 改变的是**未来数据布局**，不是强制重写全部历史布局。
+Iceberg 更希望 Query 表达业务谓词，再由 Reader 根据 Transform 推导可裁剪范围。
 
-## 它和 Manifest 的关系
+所以业务逻辑和物理分区布局的耦合更低。
 
-上一节已经讲过：
+## Partition Evolution 为什么不用重写历史
 
-**一个 Manifest 只对应一个 Partition Spec。**
+假设一开始：
 
-因此当 Partition Spec 从 Spec 0 演进到 Spec 1 后，不会把两种不同 Spec 的文件混进同一个 Manifest。
+```text
+Spec 0
+= days(event_time)
+```
 
-但在同一个 Spec 内，一个 Manifest 可以覆盖多个 Partition Value。
+后来单日数据量太大，改成：
 
-这就是：
+```text
+Spec 1
+= hours(event_time)
+```
 
-**Partition Spec ≠ Partition Value ≠ Manifest**
+Iceberg 不会要求：
 
-三个概念必须分开。
+> 把过去几年的所有 Daily File 重写成 Hourly File。
 
-## 分区设计真正要平衡什么
+而是：
 
-Partition 不是越细越好。
+```text
+旧 Data File
+→ 继续由 Spec 0 解释
 
-设计时至少同时考虑：
+新 Data File
+→ 按 Spec 1 写入
+```
 
-- 主查询过滤条件；
-- 每个 Partition 的数据量；
-- File Count；
-- Writer Distribution；
-- 热分区；
-- Metadata 数量；
-- Maintenance 成本。
+Reader 在规划时，根据每个 Manifest 对应的 Spec ID，知道应该怎样解释那些 Partition Data。
 
-例如高基数用户 ID 直接做 Identity Partition，通常会制造大量小 Partition 和小文件；过细的时间分区也可能让 Metadata 和 Writer 压力迅速增加。
+所以同一张 Iceberg 表可以同时存在：
 
-## 关联知识
+```text
+历史 Spec 0 文件
++
+新 Spec 1 文件
+```
 
-Partition Evolution 解决的是“数据怎么分组和裁剪”。
+## 为什么一个 Manifest 只对应一个 Partition Spec
 
-下一节进入 **Schema Evolution & Field ID**，解决另一个问题：
+上一节已经学过：
 
-**字段改名、调整顺序、增加删除列以后，旧文件和新 Schema 怎样仍然保持字段语义一致。**
+> 一个 Manifest 只对应一个 Partition Spec。
+
+现在原因就更清楚了。
+
+如果同一个 Manifest 里混入两套不同 Partition Struct（分区结构），Reader 很难用统一的 Partition Summary 做正确裁剪。
+
+所以：
+
+```text
+Spec 演进
+→ 新旧 Spec 可以共存
+→ 但不会在同一个 Manifest 里混成一套分区语义
+```
+
+## Partition Evolution 和 Schema Rename 为什么可以一起工作
+
+假设：
+
+```text
+Field ID 17
+name = event_time
+```
+
+Partition Spec 通过 Source Field ID：
+
+```text
+17
+```
+
+引用这个字段。
+
+后来把列 Rename（改名）为：
+
+```text
+occurred_at
+```
+
+只要它仍然是：
+
+```text
+Field ID 17
+```
+
+Partition Spec 的 Source 关系仍然指向同一个逻辑字段。
+
+这就是稳定 ID 带来的价值：
+
+**名字可以变，字段身份不变，Partition Source 关系不需要靠名字猜。**
+
+更复杂的 Drop / Rebuild 需要同时协调 Schema 与 Partition Spec，生产变更时要按实际 Engine 能力验证。
+
+## 一个生产问题：Daily 要不要改 Hourly
+
+假设每天：
+
+```text
+5 TB
+```
+
+都进入：
+
+```text
+days(event_time)
+```
+
+单日 Partition 太大，查询和 Writer 压力明显。
+
+把它改成 Hourly 可能带来：
+
+```text
+更细裁剪
++
+更好的写入并行
+```
+
+但也可能带来：
+
+```text
+Partition 数量增加
++
+每个 Partition 数据更少
++
+小文件风险增加
++
+Manifest / Metadata 对象更多
+```
+
+所以 Partition Evolution 不是：
+
+> “越细越先进”。
+
+真正要平衡：
+
+- 查询最常见 Predicate；
+- 每个 Partition 数据量；
+- Active Partition Count（活跃分区数）；
+- Writer 并发；
+- File Size；
+- Metadata Growth（元数据增长）；
+- Maintenance Cost（维护成本）。
+
+## Partition Evolution 改的是未来布局，不是自动优化历史
+
+这句话非常重要。
+
+从 Daily 改成 Hourly 后：
+
+```text
+新写入
+→ Hourly
+
+旧历史
+→ 仍然 Daily
+```
+
+如果你还希望历史几年也重新变成 Hourly，那已经不是单纯 Metadata Evolution。
+
+那是：
+
+> **Data Rewrite（数据重写）**
+
+属于另一种成本级别。
+
+所以要能区分：
+
+```text
+Partition Evolution
+≠
+Historical Repartition Rewrite
+```
+
+## 这一节真正要掌握什么
+
+必须掌握：
+
+- Partition Spec / Transform / Partition Value 三者区别；
+- Hidden Partitioning 为什么降低业务 SQL 与物理分区耦合；
+- 新旧 Partition Spec 可以共存；
+- 一个 Manifest 只对应一个 Spec；
+- Partition Spec 通过 Source Field ID 绑定源字段；
+- Partition Evolution 默认主要改变未来写入。
+
+生产上要会判断：
+
+- Daily → Hourly 是否值得；
+- 分区过细为什么会制造小文件与 Metadata 压力；
+- 为什么改 Partition 不等于历史数据自动重写。
+
+了解即可：
+
+- 所有 Transform 的哈希 / 截断实现细节；
+- Partition Spec JSON 的所有字段。
+
+下一节进入另一条 Evolution 主线：
+
+**Schema 改名、加列、删列以后，历史 Data File 为什么仍然不会被读串？**
