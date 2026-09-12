@@ -2,7 +2,7 @@
 id: kb-iceberg-commit-concurrency-001
 type: knowledge
 title: Optimistic Commit, Conflict & Recovery
-title_cn: 乐观提交、冲突与恢复
+title_cn: 乐观提交、并发冲突与恢复
 stage_id: '04'
 domain: lakehouse
 topic: iceberg
@@ -10,12 +10,11 @@ order: 9
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: iceberg_l5_v1
+content_status: iceberg_l5_v1_1_refactor
 project_relevance:
 - north-america
 project_fact_status: needs_fact_check
-summary: Writer 先准备不可变文件，再基于一个 Base Metadata 做 Validation，最后由 Catalog 原子切换 Current
-  Metadata Pointer；冲突后能否 Retry 取决于操作语义。
+summary: Iceberg Writer 先基于 Base Metadata 生成候选不可变文件和新元数据，最终由 Catalog 原子更新当前 Table Metadata。并发 Writer 失败后需要 Refresh + Validation，再决定能否安全 Retry；Commit Retry、业务幂等和事故恢复是三个不同层次。
 prerequisites:
 - kb-iceberg-write-distribution-ordering-001
 related:
@@ -23,121 +22,317 @@ related:
 scale_scenarios:
 - sc-iceberg-concurrent-commit-001
 ---
-# Optimistic Commit, Conflict & Recovery
+# 乐观提交、并发冲突与恢复
 
 ## 30 秒理解
 
-Iceberg 不靠长期全局锁保护整张表。
+Iceberg 不靠“长期锁住整张表”来防止并发 Writer。
 
-Writer 先基于一个已读取的 Base Metadata 准备新文件和新元数据，然后：
+更接近：
 
-**Validate 当前表状态 → 尝试原子更新 Current Metadata Pointer**
+```text
+读取 Base Metadata
+↓
+在表外准备新 Data / Manifest / Snapshot / Metadata
+↓
+提交前 Validation（校验）
+↓
+Catalog 原子更新当前 Table Metadata
+```
 
-如果别的 Writer 已经先提交，当前 Writer 不能静默覆盖它。
+如果另一个 Writer 已经先 Commit：
 
-它必须 Refresh，再判断自己的操作还能不能安全 Retry。
+> 当前 Writer 不能静默把它覆盖掉。
 
-## Commit 前已经发生了什么
+必须：
 
-到进入 Commit 阶段时，Writer 往往已经写出了：
+**Refresh（刷新最新状态） → Validation（判断语义是否仍安全） → Retry / Fail**
 
-- Data / Delete File；
-- 新 Manifest；
-- 新 Manifest List；
-- 新 Snapshot；
+这就是 Optimistic Concurrency（乐观并发）的核心。
+
+## Commit 前其实已经写了很多东西
+
+进入最终 Commit 之前，Writer 往往已经生成：
+
+- Data File / Delete File；
+- Manifest；
+- Manifest List；
+- Snapshot；
 - 新 Table Metadata。
 
-这些对象本身都是“候选新状态”。
+这些都是：
 
-真正决定它们是否成为当前表状态的是最后的 Catalog Commit。
+**Candidate State（候选状态）**
 
-所以：
+只有最后 Catalog Commit 成功以后，它们才成为：
+
+**Visible Table State（可见表状态）**
+
+所以再强调一次：
 
 **文件写成功 ≠ 表提交成功。**
 
+这条是处理生产故障时最重要的事实之一。
+
 ## Atomic Commit 原子在哪里
 
-Iceberg 的高层语义是：
+Iceberg 要求的高层语义是：
 
-**Current Table Metadata 从旧版本原子切换到新版本。**
+> **新的 Table Metadata 必须基于旧的 Table Metadata 做原子替换。**
 
-具体原子能力由 Catalog 提供，例如 Compare-and-Swap、事务条件更新或等价的版本校验机制。
+Catalog 可以通过：
 
-成功以后，新 Metadata 中的 Current Snapshot 才成为新的可见状态。
+- Compare-and-Swap；
+- 条件事务更新；
+- 版本校验；
+- 等价原子机制
 
-失败时，旧 Current State 仍然成立。
+实现。
+
+重点不是记 Catalog 内部 API。
+
+而是记：
+
+```text
+Base Metadata = M10
+↓
+尝试提交 M11
+↓
+只有在 Current 仍满足预期时才能成功
+```
+
+这样另一个 Writer 不能把已经提交的新状态“无声覆盖”。
 
 ## 两个 Writer 同时提交会怎样
 
-假设 A 和 B 都从同一个 Base Metadata 开始。
+假设：
 
-A 先成功更新 Current Metadata。
+```text
+Writer A
+Base = M10
 
-B 再提交时发现 Base 已经过期。
+Writer B
+Base = M10
+```
 
-这里不是简单一句“冲突就重试”，而是分两步：
+A 先 Commit 成功：
 
-**Refresh 最新状态 → Validation 判断自己的操作是否仍然语义安全**
+```text
+Current
+M10 → M11
+```
 
-只有 Validation 通过，才可以把自己的变更重新应用到更新后的 Base 上。
+B 再提交时发现：
+
+```text
+Current 已不是 M10
+```
+
+B 不能简单地：
+
+> “再提交一次同样的新 Metadata”。
+
+它需要：
+
+```text
+Refresh M11
+↓
+检查 A 的变化
+↓
+判断 B 的操作是否仍然成立
+```
+
+如果仍然安全：
+
+```text
+Rebase / Retry
+```
+
+如果已经破坏 B 的语义前提：
+
+```text
+Fail / Recompute
+```
 
 ## 为什么 Append 通常更容易 Retry
 
-两个独立 Append 往往只是各自新增文件。
+假设 A：
 
-如果 A 先提交，B Refresh 后发现 A 只是增加了另一批文件，那么 B 的新增文件通常仍然可以安全挂到最新表状态上。
+```text
+Append File A1
+```
 
-所以 Append 经常可以 Rebase / Retry，而不需要重写已经生成的 Data File。
+B：
 
-但 Overwrite、Rewrite、DELETE、MERGE 等操作可能依赖“某些旧文件仍然存在”或“某个 Predicate 范围没有被别人改过”。
+```text
+Append File B1
+```
 
-这类操作必须做更严格的 Conflict Validation。
+A 先提交以后，B Refresh 发现：
 
-## Conflict Detection 的核心
+> A 只是新增了与自己不冲突的文件。
 
-真正要判断的是：
+B 通常仍可以把自己的新文件挂到最新表状态上。
 
-**从 Base Snapshot 到 Current Snapshot 之间，是否发生了会破坏当前操作语义的变化。**
+而且 Iceberg 的 Sequence Number（序列号）设计允许很多情况下复用已经写好的 Manifest，只需要重新生成与最新提交顺序相关的元数据。
 
-例如一个 Rewrite 计划要替换 File A。
+所以 Append 经常比 Overwrite / Rewrite 更容易重试。
 
-如果别的 Writer 已经先把 File A 替换了，再盲目提交原 Rewrite 结果就可能覆盖合法变化。
+## 为什么 Overwrite / Rewrite / DELETE / MERGE 更敏感
 
-因此：
+这些操作通常带着更强的前提。
 
-- 可以证明仍然安全 → Retry；
-- 无法证明安全 → Fail / Recompute；
-- 不应该靠无限重试掩盖语义冲突。
+例如 Rewrite：
+
+```text
+我要替换 File A
+```
+
+如果另一个 Writer 已经先：
+
+```text
+把 File A 替换掉
+```
+
+那原 Rewrite 计划就可能已经失效。
+
+再比如 Predicate Overwrite：
+
+```text
+我要覆盖 date = 2026-09-12
+```
+
+如果别人刚在这个范围插入了新数据，
+
+是否允许继续提交，取决于：
+
+- 操作语义；
+- Isolation Level（隔离级别）；
+- Validation 规则；
+- Engine / API 实现。
+
+所以并发冲突不是：
+
+> “所有失败都多重试几次”。
+
+真正问题是：
+
+> **Base 到 Current 之间发生的变化，会不会让本次操作变得不再正确？**
+
+## Serializable 和 Snapshot Isolation 要理解到什么程度
+
+Iceberg 支持的写入隔离语义里，常见会看到：
+
+- Serializable Isolation（可串行化隔离）；
+- Snapshot Isolation（快照隔离）。
+
+第一次学习不用背每个操作的所有 Validation API。
+
+只需要理解：
+
+**Serializable 更严格地防止并发变化破坏当前写入的逻辑范围。**
+
+**Snapshot Isolation 对部分并发插入更宽松，但仍会保护关键删除 / 替换冲突。**
+
+具体 DELETE / UPDATE / MERGE 在某个 Engine 的默认值，要以实际版本配置为准。
 
 ## Commit Retry 和业务重跑不是一回事
 
-Iceberg Commit Retry 主要处理 Metadata Commit 竞争。
+这是生产事故里非常重要的边界。
 
-它不等于“整个 Spark / Flink 业务任务随便从头再跑一次”。
+### Commit Retry
 
-如果业务重跑会再次产生相同业务数据，还必须另外考虑上游幂等键、CDC Offset、Batch ID 等业务语义。
+处理：
+
+> Metadata Commit 竞争、短暂 Catalog Failure 等。
+
+重点是重新确认：
+
+```text
+我的候选变化还能不能安全提交到最新状态？
+```
+
+### 业务重跑
+
+处理：
+
+> 整个 Spark / Flink Job 要不要重新执行。
+
+这会涉及：
+
+- CDC Offset；
+- Batch ID；
+- 业务幂等键；
+- Source Replay；
+- Downstream Side Effect。
 
 所以：
 
 **Metadata Commit Retry ≠ End-to-end Idempotency（端到端幂等）**
 
+不能因为 Iceberg Commit 可重试，就认为整个业务任务可以随便重跑。
+
 ## Partial Failure 怎么判断
 
-写入失败要先判断发生在哪一层。
+写入失败先判断发生在哪一层。
 
-**Data File 写入阶段就失败**
+### Data File 还没写完就失败
 
-没有成功 Commit，新文件不会进入 Current Table State。
+没有成功 Commit。
 
-**文件已经写完，但 Catalog Commit 永久失败**
+这些部分文件不会自动成为 Current Table State。
 
-这些文件可能成为 Orphan File（孤儿文件）。
+后续可能需要 Orphan Cleanup（孤儿文件清理）。
 
-**Catalog Commit 已成功，但 Client 超时没收到响应**
+### Data / Metadata 都写完，但 Catalog Commit 永久失败
 
-结果可能是 Ambiguous Outcome（结果不确定）。
+候选文件已经存在，但没有进入有效表状态。
 
-这时不能直接假设“提交没发生”再写一次，而应该先 Refresh 表状态，确认本次 Snapshot / Commit 是否已经生效。
+它们也可能成为 Orphan File（孤儿文件）。
+
+### Catalog Commit 实际成功，但 Client 超时
+
+这是最危险的一类：
+
+**Ambiguous Outcome（结果不确定）**
+
+Client 看到超时，不代表：
+
+> Commit 一定失败。
+
+正确动作首先是：
+
+```text
+Refresh Table Metadata
+↓
+确认目标 Snapshot / Commit 是否已经成为有效状态
+```
+
+如果直接重跑，可能产生重复业务数据。
+
+## Time Travel 在恢复里先做什么
+
+第 2 节已经学过 Time Travel。
+
+事故发生时它首先是：
+
+**Diagnosis（诊断）**
+
+例如：
+
+```text
+S20 正常
+S21 错误写入
+S22 当前
+```
+
+可以先 Time Travel 到 S20 / S21：
+
+- 验证错误从哪个 Snapshot 开始；
+- 对比受影响范围；
+- 判断 Current 以后有没有合法数据。
+
+这一步只读历史，不改变 Current State。
 
 ## Forward Fix 为什么比盲目 Rollback 更安全
 
@@ -145,40 +340,114 @@ Iceberg Commit Retry 主要处理 Metadata Commit 竞争。
 
 **S10 正常 → S11 坏数据 → S12 又有合法数据**
 
-如果直接 Rollback 到 S10，会把 S12 的合法变化也一起丢掉。
+如果直接 Rollback 到 S10：
 
-Forward Fix（向前修复）是在当前最新状态上：
+> S12 的合法变化也会一起失去。
 
-**识别坏影响 → 生成修复数据 / 删除 → 提交新的 S13**
+Forward Fix（向前修复）则是：
 
-它不是所有事故的唯一答案，但当坏 Snapshot 后面还有合法提交时，通常比“回到旧版本”更符合数据保全原则。
+```text
+从 Current S12 出发
+↓
+识别 S11 的错误影响
+↓
+生成补偿 / 删除 / 修正
+↓
+Commit 新 S13
+```
+
+它不是所有事故唯一答案。
+
+但一旦坏 Snapshot 后面已有合法 Commit：
+
+> **Rollback 就不再是默认最安全动作。**
 
 ## 高并发为什么会出现 Retry Storm
 
-Writer 越多，不代表吞吐一定线性增加。
+Writer 越多，并不代表同一张热表 Commit 吞吐会线性提高。
 
-当大量 Writer 同时提交同一张热表时，瓶颈可能转移到：
+大量 Writer 同时竞争，瓶颈可能转移到：
 
-- Catalog Pointer Contention；
+- Catalog Pointer Contention（目录指针竞争）；
 - Metadata Refresh；
 - Conflict Validation；
 - Commit Retry；
 - Manifest Merge。
 
-如果所有 Writer 失败后立刻同时重试，就会形成 Retry Storm（重试风暴）。
+如果所有 Writer 失败后：
 
-因此生产上需要：
+```text
+立即
+同一时间
+再次重试
+```
 
-- 有界重试；
+就会形成 Retry Storm（重试风暴）。
+
+生产上至少要有：
+
+- Bounded Retry（有界重试）；
 - Exponential Backoff（指数退避）；
 - Jitter（随机抖动）；
-- Total Timeout；
+- Total Timeout（总超时）；
 - Conflict / Retry 指标。
 
-## 关联知识
+## 一个生产问题：为什么“加 Retry 次数”可能更糟
 
-成功 Commit 会不断产生 Snapshot、Manifest 和文件历史。
+假设一张热表每秒大量 Writer 提交。
 
-下一节进入 Maintenance：
+Commit Conflict 已经达到很高比例。
 
-**哪些增长是正常历史，哪些已经变成小文件、Manifest 碎片、Snapshot 膨胀和 Orphan，需要怎样分别治理？**
+如果只是把：
+
+```text
+max retries
+5 → 50
+```
+
+可能得到：
+
+```text
+更多 Catalog 请求
+更多 Metadata Refresh
+更多冲突
+更长尾延迟
+```
+
+反而形成自激式压力。
+
+这时真正要考虑的可能是：
+
+- 合并 Micro-batch；
+- 降低 Commit Frequency（提交频率）；
+- 减少同表并发 Writer；
+- 拆热点；
+- 调度隔离；
+- 用 Branch / WAP（Write-Audit-Publish，写入-审计-发布）等模式隔离部分工作流。
+
+## 这一节真正要掌握什么
+
+必须掌握：
+
+- 最终原子性发生在 Table Metadata Commit；
+- Candidate File 存在不代表表状态可见；
+- 并发失败后是 Refresh + Validation，不是盲 Retry；
+- Append 和 Rewrite 的冲突敏感度不同；
+- Commit Retry 和业务幂等是两个层次；
+- Ambiguous Outcome 必须先确认真实提交状态；
+- Rollback 前要确认后续合法 Snapshot。
+
+生产上要会判断：
+
+- Retry Storm 为什么发生；
+- 为什么 Commit 超时不能直接重跑；
+- 什么场景 Forward Fix 比 Rollback 更安全。
+
+了解即可：
+
+- 每个 Java Validation API；
+- 各 Catalog 的内部 CAS / Transaction 实现细节。
+
+下一节进入生命周期治理：
+
+**Commit 成功以后，Data File、Manifest、Snapshot 和 Orphan 会持续增长，哪些该保留，哪些该重写，哪些才能安全删除？**

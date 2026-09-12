@@ -2,7 +2,7 @@
 id: kb-iceberg-trino-read-path-001
 type: knowledge
 title: Trino Read Path on Iceberg
-title_cn: Trino 读取 Iceberg 的路径
+title_cn: Trino 读取 Iceberg 的完整路径
 stage_id: '04'
 domain: lakehouse
 topic: iceberg
@@ -10,172 +10,311 @@ order: 7
 learning_depth: L5
 stack_role: core
 difficulty: advanced
-content_status: iceberg_l5_v1
+content_status: iceberg_l5_v1_1_refactor
 project_relevance:
 - north-america
 project_fact_status: needs_fact_check
-summary: Trino 先固定 Iceberg 表状态，再按 Manifest、Partition 与 File Metrics 缩小候选文件，规划适用 Delete，最后生成
-  Split 给 Worker 扫描。
+summary: Trino 读取 Iceberg 时，先固定 Snapshot，再通过 Manifest 与 Partition / File Metrics 缩小候选文件，最后把适用 Delete 规划到 Scan 中并生成 Split。第一次学习先掌握“版本 → 元数据裁剪 → 文件裁剪 → Delete 适用性 → 扫描”的主链，精确 Delete 规则作为第二层深入。
 prerequisites:
 - kb-iceberg-schema-evolution-001
 related:
 - kb-iceberg-write-distribution-ordering-001
 - kb-iceberg-production-troubleshooting-001
 ---
-# Trino Read Path on Iceberg
+# Trino 读取 Iceberg 的完整路径
 
 ## 30 秒理解
 
-前面 6 节可以在这里第一次完整串起来：
+前 6 节到这里第一次真正合起来：
 
-**Catalog → Table Metadata → Snapshot → Manifest List → Manifest → 候选 Data Files + 适用 Delete → Splits → Worker Scan**
+**Catalog（目录服务） → Table Metadata（表元数据） → Snapshot（快照） → Manifest List（清单列表） → Manifest（清单文件） → 候选 Data File + 适用 Delete → Split（扫描分片） → Worker Scan（工作节点扫描）**
 
-所以 Trino 查询 Iceberg 时要区分两个阶段：
+第一次阅读先只抓两阶段：
 
-**Planning（规划）**：先决定“需要读哪些文件”。
+**查询规划（Planning）**：决定“这次到底要读哪些文件、应用哪些 Delete”。
 
-**Execution（执行）**：Worker 再真正读取这些文件和需要的列。
+**执行扫描（Execution）**：Worker 真正打开 Parquet / ORC 并读取需要的列和行。
 
-## 第一步：固定表状态
+很多 Iceberg 性能问题的关键，就是先分清：
 
-Trino Iceberg Connector 先通过 Catalog 找到当前 Table Metadata，再确定这次查询使用哪个 Snapshot。
+> 慢在“找文件”，还是慢在“读文件”。
 
-从这一刻开始，本次 Query Planning 针对的是一个明确的逻辑版本。
+## 第一步：先固定一个表版本
 
-这就是前面 Table Metadata & Snapshot 那一节在真实查询里的作用。
+Trino Iceberg Connector 首先通过 Catalog 找到当前 Table Metadata。
 
-## 第二步：Manifest 级裁剪
+普通查询通常选择 Current Snapshot；Time Travel（时间旅行）查询则选择指定的历史 Snapshot。
 
-有了 Snapshot 后，Reader 找到 Manifest List。
+一旦这次查询固定到：
 
-Manifest List 中有 Manifest 级的 Partition Summary 和其他摘要信息。
+```text
+Snapshot S120
+```
 
-如果 Query Predicate 能明确排除某个 Manifest 覆盖的范围，这个 Manifest 就不需要继续展开。
+后面的 Manifest、Data File、Delete、Schema 都围绕这个逻辑版本进行规划。
 
-这是第一层 Metadata Pruning（元数据裁剪）。
+所以第 2 节学的 Snapshot 并不是“历史管理附加功能”。
 
-## 第三步：File 级裁剪
+它首先决定：
 
-对于不能在 Manifest 层排除的范围，Reader 再进入 Manifest。
+> **这次查询到底在读哪一个稳定表状态。**
 
-Manifest Entry 中保存每个 Content File 的：
+## 第二步：先在 Manifest 层缩小范围
 
-- Partition Data；
-- Lower / Upper Bounds；
-- Null Count；
-- Record Count；
-- 其他 Column Metrics。
+Snapshot 指向 Manifest List。
 
-因此 Query 即使已经进入某个 Manifest，也不代表这个 Manifest 中所有 Data File 都要读取。
+Manifest List 里有 Manifest 级摘要，例如 Partition Summary（分区摘要）。
 
-Reader 还可以继续排除不可能命中 Predicate 的文件。
+假设 Query：
+
+```sql
+WHERE event_time >= TIMESTAMP '2026-09-12 00:00:00'
+```
+
+如果某个 Manifest 的分区摘要可以证明：
+
+> 它覆盖的数据一定不可能命中这个 Predicate（谓词），
+
+那这个 Manifest 根本不需要打开。
+
+这一步叫：
+
+**元数据裁剪（Metadata Pruning）**
+
+它发生在真正读取 Data File 之前。
+
+## 第三步：进入 Manifest 后继续裁剪 Data File
+
+剩余 Manifest 中的 Entry 会记录具体 Content File 的：
+
+- Partition Data（分区值）；
+- Lower / Upper Bounds（上下界）；
+- Null Count（空值数）；
+- Record Count（记录数）；
+- File Size（文件大小）；
+- 其他 Column Metrics（列统计）。
+
+所以：
+
+> 一个 Manifest 被保留下来，不代表其中所有 Data File 都必须扫描。
+
+Reader 还可以继续根据文件级统计排除不可能命中的 Data File。
+
+这一步可以理解为：
+
+**文件裁剪（File Pruning）**
+
+最终目标是：
+
+```text
+100 万个 Data File
+↓
+先裁 Manifest
+↓
+再裁 File
+↓
+只留下真正有可能命中的候选文件
+```
 
 ## Partition Pruning 和 File Pruning 的区别
 
-**Partition Pruning（分区裁剪）**
+**分区裁剪（Partition Pruning）**
 
-利用 Partition Spec、Transform 和 Partition Value 排除不相关范围。
+主要利用：
 
-**File Pruning（文件裁剪）**
+```text
+Partition Spec
++
+Transform
++
+Partition Value
+```
 
-利用 Manifest 中的文件级 Column Metrics 排除具体 Data File。
+排除不相关分区范围。
 
-两者不是同一个层次。
+**文件裁剪（File Pruning）**
 
-所以 Iceberg 的查询优化不能只理解成“有没有分区”。
+主要利用 Manifest Entry 中的：
 
-## 第四步：把 Delete 应用关系规划进去
+```text
+Lower / Upper Bounds
+Null Count
+其他 File Metrics
+```
 
-如果 Snapshot 中存在 Delete Manifest，Reader 还需要判断哪些 Delete File / Deletion Vector 适用于哪些候选 Data File。
+进一步排除具体文件。
 
-到这里前面已经学过：
+所以 Iceberg 查询优化绝不只是：
 
-- Data / Delete Content；
-- Partition Spec / Partition Value；
-- Schema / Field ID。
+> “有没有 Partition？”
 
-还差一个概念：**Sequence Number（序列号）**。
+更准确的是：
 
-这里把它先理解成“文件内容的相对新旧标记”；它在成功 Commit 时怎样获得，后面的 Commit 章节再解释。
+**Partition + Metadata Index + File Metrics 一起决定能跳过多少文件。**
 
-最终 Scan Planning 要形成：
+## 第四步：判断哪些 Delete 真正适用
 
-**候选 Data File + 对它真正生效的 Delete 信息**
+如果 Snapshot 中包含 Delete Content，Reader 还不能简单地：
 
-## Delete Applicability 在这里一次讲完整
+> 找到 Delete File → 对所有 Data File 应用。
 
-现在再看三种删除信息的精确 Scope（作用范围）。
+第 4 节已经先建立了三个判断维度：
 
-### Deletion Vector
+```text
+Target（目标）
++
+Partition（分区）
++
+Sequence Number（序列号）
+```
 
-一份 Deletion Vector 适用于某个 Data File，需要同时满足：
+这里把它们放回真实读取流程。
+
+Reader 要为每个候选 Data File 找出：
+
+> **真正对它生效的 Delete 信息。**
+
+最后形成类似：
+
+```text
+Data File A
++ Delete X
++ Delete Y
+
+Data File B
++ no delete
+```
+
+再交给 Worker 执行。
+
+## Sequence Number 为什么在读取时重要
+
+Sequence Number 可以理解成：
+
+> 一次成功 Commit 后，内容在表演进中的相对顺序。
+
+它帮助 Reader 回答：
+
+> 这份 Delete 是在这份 Data 之前产生，还是之后产生？
+
+例如 Equality Delete（等值删除）不能去删除比它更新的数据。
+
+否则一份历史删除条件可能误伤未来新插入、但值相同的记录。
+
+所以 Sequence Number 解决的是：
+
+**Delete 的时间作用范围。**
+
+## 进阶：Delete Applicability 在这里一次讲完整
+
+下面这一块属于 **第二层深入**。
+
+第一次学习只要掌握上一节的 Target / Partition / Sequence Number 就够。
+
+### Deletion Vector（删除向量）
+
+一份 Deletion Vector 适用于某个 Data File，需要满足：
 
 - `referenced_data_file` 指向这个 Data File；
 - Data File 的 Data Sequence Number ≤ Deletion Vector 的 Data Sequence Number；
-- 两者的 Partition Spec 和 Partition Value 一致。
+- Partition Spec 与 Partition Value 一致。
 
-### Position Delete File
+### Position Delete File（位置删除文件）
 
-一份 Position Delete File 适用于某个 Data File，核心条件是：
+核心条件：
 
-- 如果它声明了 `referenced_data_file`，目标文件必须匹配；
+- 如果声明 `referenced_data_file`，目标文件必须匹配；
 - Data File 的 Data Sequence Number ≤ Delete File 的 Data Sequence Number；
-- Partition Spec 和 Partition Value 一致；
-- 如果同一个 Data File 已经存在应该应用的 Deletion Vector，Reader 不能再重复应用被 DV 覆盖的位置删除。
+- Partition Spec 与 Partition Value 一致；
+- 如果同一个 Data File 已经有必须应用的 Deletion Vector，就不能再重复应用被它覆盖的位置删除。
 
-### Equality Delete File
+### Equality Delete File（等值删除文件）
 
-Equality Delete 的新旧规则更严格：
+它的新旧关系更严格：
 
 - Data File 的 Data Sequence Number **必须小于** Equality Delete 的 Data Sequence Number；
 - 通常要求相同 Partition Spec / Partition Value；
-- 如果 Equality Delete 使用 Unpartitioned Spec，可以作为 Global Delete（全局删除）。
+- Unpartitioned Spec（无分区规则）的 Equality Delete 可以作为 Global Delete（全局删除）。
 
-所以第 4 节那句话现在可以补完整：
+这里真正要理解的是：
 
-**不是“有 Delete 就应用”，而是先按 Target、Partition、Sequence Number 判断 Scope，再把真正适用的 Delete 合并进 Scan。**
+> **Position 类删除可以作用于同一次 Commit 中的数据；Equality Delete 必须只作用于更旧数据。**
 
-## 第五步：生成 Split，交给 Worker 扫描
+不要只背 `<` 和 `≤`，要理解它在防止什么错误。
 
-Coordinator 完成文件规划后，生成可调度的 Split。
+## 第五步：Coordinator 生成 Split
 
-Worker 才真正读取 Parquet / ORC / Avro，并继续利用：
+Coordinator（协调节点）完成文件规划后，会把需要读取的工作拆成 Split（扫描分片）。
 
-- Column Projection（列裁剪）；
-- Parquet Statistics；
-- Predicate Pushdown（谓词下推）；
-- Dynamic Filtering（动态过滤）；
-- Delete 应用。
+然后 Worker 才真正：
 
-所以“Planning 慢”和“Scan 慢”是两类问题。
+- 打开 Parquet / ORC；
+- 做列裁剪（Column Projection）；
+- 做谓词下推（Predicate Pushdown）；
+- 利用底层文件统计；
+- 应用 Delete；
+- 返回数据给后续算子。
+
+到这一步，Iceberg 的主要 Metadata Planning 已经完成。
+
+后面的 Join、Shuffle、Spill 等更多属于 Trino Runtime（运行时）。
+
+## 一个生产问题：查询还没开始扫数据就卡很久
+
+如果 UI / Query Profile 显示：
+
+> 很长时间都在 Planning，Worker Scan 还没真正跑起来，
+
+优先看：
+
+- Manifest Count；
+- Data File Count；
+- Partition Predicate 是否可推导；
+- File Metrics 是否有选择性；
+- Metadata Load；
+- Delete Planning 是否过重。
+
+这时候“加 Worker”通常不是第一答案。
+
+因为 Worker 是执行扫描的。
+
+而瓶颈可能在：
+
+> **Coordinator 决定到底要读哪些文件。**
 
 ## Planning 慢和 Execution 慢怎么区分
 
-如果 **Planning 慢**，优先看：
+如果 **Planning（规划）慢**，优先看：
 
-- Manifest 是否太多；
-- Data File 是否太多；
-- Predicate 是否能有效推导到 Partition；
+- Manifest 是否过多；
+- Data File 是否过多；
+- Predicate 是否能有效映射到 Partition；
 - Manifest / File Metrics 是否有选择性；
-- Metadata Load 是否变重。
+- Delete Metadata 是否膨胀；
+- Metadata 读取是否变重。
 
 增加 Worker 通常不能直接解决这些问题。
 
-如果 **Execution 慢**，再更多看：
+如果 **Execution（执行）慢**，再更多看：
 
-- 实际 Scan Bytes；
+- Bytes Scanned（扫描字节数）；
+- Split Count；
 - File Size；
 - Column Projection；
+- Object Storage Latency（对象存储延迟）；
 - Join / Shuffle；
-- Spill；
-- Worker Memory；
-- Object Storage Latency。
+- Spill（落盘）；
+- Worker Memory。
 
-## Metadata Tables 怎么帮助排查
+一句话：
 
-Trino Iceberg Connector 可以通过 Metadata Tables 查看文件、分区和表属性等信息。具体表名和字段以实际 Trino Connector 版本为准。
+**Planning 慢先查 Iceberg Metadata；Execution 慢再更多查 Trino Runtime。**
 
-例如：
+## Metadata Table 怎么帮助排查
+
+Trino Iceberg Connector 可以暴露 Metadata Table（元数据表）。
+
+例如常见的：
 
 ```sql
 SELECT * FROM "orders$files";
@@ -183,27 +322,38 @@ SELECT * FROM "orders$partitions";
 SELECT * FROM "orders$properties";
 ```
 
-这些信息可以帮助回答：
+它们适合回答：
 
-- 到底有多少文件；
-- 文件尺寸是否健康；
-- 分区数据怎样分布；
-- 当前表属性是什么。
+- 文件到底有多少；
+- 文件大小是否健康；
+- Partition 怎么分布；
+- 当前 Table Property 是什么。
 
-## 前 7 节到这里形成什么模型
+具体 Metadata Table 名称和字段仍以实际 Trino Connector 版本为准。
 
-到这里，Read Model（读取心智模型）已经完整：
+## 这一节真正要掌握什么
 
-**表状态决定“哪个版本”**
+必须掌握：
 
-**Manifest 决定“哪些文件可能相关”**
+- 查询先固定 Snapshot，再规划文件；
+- Manifest Pruning 和 File Pruning 是两层；
+- Partition 只是裁剪能力的一部分；
+- Delete 必须经过适用性判断；
+- Planning 与 Execution 是两种不同性能问题。
 
-**Partition / Metrics 决定“哪些文件可以跳过”**
+生产上要会判断：
 
-**Delete Scope 决定“哪些删除信息真正作用到候选 Data File”**
+- Query 慢应该先加 Worker，还是先查 Manifest / File Count；
+- Delete 积累为什么既可能拖慢 Planning，也可能拖慢 Scan；
+- Time Travel 查询为什么仍然沿同一套 Read Path，只是起始 Snapshot 不同。
 
-**Worker 最后才真正扫描数据**
+了解即可：
 
-下一节回到写入侧：
+- 第一次阅读就背三种 Delete 的所有精确比较符；
+- Trino 每种 Metadata Table 的完整字段列表。
 
-**这些 Data File、Manifest 和 Snapshot 是怎样被 Writer 一步步产生出来的？**
+到这里读取主链完整闭合。
+
+下一节转到 Writer：
+
+**这些被 Reader 读取的 Data File，最初应该怎样分布和排序，才能不从源头制造小文件和低效布局？**

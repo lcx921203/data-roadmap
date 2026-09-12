@@ -3,7 +3,7 @@ type: knowledge_spine
 stage_id: '04'
 topic: iceberg
 learning_depth: L5
-status: learning_refactor_phase_1
+status: frozen_iceberg_v1_1
 nodes:
 - order: 1
   id: kb-iceberg-overview-001
@@ -28,23 +28,23 @@ nodes:
   focus: query planning pruning delete applicability and read path
 - order: 8
   id: kb-iceberg-write-distribution-ordering-001
-  focus: writer layout and manifest creation
+  focus: writer distribution ordering and healthy file layout
 - order: 9
   id: kb-iceberg-commit-concurrency-001
-  focus: optimistic commit conflict and recovery
+  focus: optimistic commit conflict ambiguous outcome and recovery
 - order: 10
   id: kb-iceberg-maintenance-small-files-001
-  focus: file and metadata maintenance
+  focus: data manifest snapshot metadata and orphan lifecycle
 - order: 11
   id: kb-iceberg-production-troubleshooting-001
-  focus: production troubleshooting and capacity
+  focus: layered production troubleshooting recovery and capacity
 truthfulness:
   project_actual: backstage_only
   production_pattern: publishable_as_knowledge
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
 refactor:
-  baseline_main: 6e5aa308618cef28b594793f6f555d7b1dbb89e6
+  baseline_main_phase_2: 155df9f9f85e0f48ac8be32a5ed98669d71c7126
   goal: learning_quality_over_content_volume
   phase_1:
     status: complete
@@ -55,21 +55,29 @@ refactor:
     - 4
     - 5
     - 6
-    priorities:
-    - causal_progression
-    - important_vs_optional_layering
-    - production_problem_context
-    - chinese_first_bilingual_terms
-    - reduced_first_read_cognitive_load
   phase_2:
-    status: pending
+    status: complete
     nodes:
     - 7
     - 8
     - 9
     - 10
     - 11
+  audits:
+    causal_progression: passed_v1.0.8
+    important_vs_optional_layering: passed_v1.0.8
+    production_problem_context: passed_v1.0.8
+    chinese_first_bilingual_terms: passed_v1.0.8
+    reading_cognitive_load: passed_v1.0.8
+    cross_tab_anchor_preservation: passed_v1.0.8
+    validator_contract: passed_v1.0.8
   structure_rule: keep_11_node_spine
   validator_contract: iceberg_spine_version_must_remain_0.6.1
   no_ui_redesign: true
+  reopen_only_for:
+  - verified_technical_error
+  - material_current_spec_change
+  - verified_learning_quality_problem
+  - broken_cross_tab_relation
+  - verified_usability_bug
 content_standard: progressive_learning_production_relevance_priority_layering_truth_boundary
