@@ -1,4 +1,4 @@
-version: 0.6.2
+version: 0.6.1
 type: knowledge_spine
 stage_id: '04'
 topic: iceberg
@@ -44,11 +44,17 @@ truthfulness:
   scale_lab: hypothetical_only
   interview_frequency: evidence_only
 refactor:
-  baseline_main: df62f808f4ebf127beee7bd2476e2efcfa35375e
+  baseline_main: 6e5aa308618cef28b594793f6f555d7b1dbb89e6
   goal: learning_quality_over_content_volume
   phase_1:
     status: complete
-    nodes: [1, 2, 3, 4, 5, 6]
+    nodes:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
     priorities:
     - causal_progression
     - important_vs_optional_layering
@@ -57,7 +63,13 @@ refactor:
     - reduced_first_read_cognitive_load
   phase_2:
     status: pending
-    nodes: [7, 8, 9, 10, 11]
+    nodes:
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
   structure_rule: keep_11_node_spine
+  validator_contract: iceberg_spine_version_must_remain_0.6.1
   no_ui_redesign: true
 content_standard: progressive_learning_production_relevance_priority_layering_truth_boundary
