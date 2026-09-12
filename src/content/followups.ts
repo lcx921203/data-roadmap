@@ -19,13 +19,23 @@ interface CuratedFollowUpRegistry {
   questions: CuratedFollowUpQuestion[]
 }
 
-const registry = loadYaml<CuratedFollowUpRegistry>(
-  'content/interviews/followups/curated-followups-v1.yaml',
-)
+const registries = [
+  loadYaml<CuratedFollowUpRegistry>(
+    'content/interviews/followups/curated-followups-v1.yaml',
+  ),
+  loadYaml<CuratedFollowUpRegistry>(
+    'content/interviews/followups/iceberg-followups-v1.1.yaml',
+  ),
+]
 
-const byQuestionId = new Map(
-  registry.questions.map((question) => [question.id, question.items]),
-)
+const byQuestionId = new Map<string, CuratedFollowUpItem[]>()
+
+for (const registry of registries) {
+  for (const question of registry.questions) {
+    const existing = byQuestionId.get(question.id) ?? []
+    byQuestionId.set(question.id, [...existing, ...question.items])
+  }
+}
 
 export function getCuratedFollowUps(
   questionId: string,

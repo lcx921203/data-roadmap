@@ -1,7 +1,6 @@
-version: "0.6.7.1.1"
+version: 0.6.7.1.1
 type: section_relation_registry
 topic: iceberg
-
 policy:
   relation_scope: contextual_reading
   source_anchor: visible_section_or_item_title
@@ -9,106 +8,128 @@ policy:
   relation_is_not_project_fact: true
   prefer_local_context_over_end_of_article_blocks: true
   do_not_force_relationships_for_graph_completeness: true
-
 relations:
-  - source_type: knowledge
-    source_id: kb-iceberg-overview-001
-    anchor: Iceberg 到底解决什么问题
-    targets:
-      - type: interview
-        id: iq-lake-vs-warehouse-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-write-distribution-ordering-001
-    anchor: Distribution Mode
-    targets:
-      - type: scale
-        id: sc-iceberg-10b-backfill-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-write-distribution-ordering-001
-    anchor: 小文件问题应该先从哪里治
-    targets:
-      - type: scale
-        id: sc-iceberg-streaming-small-files-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-commit-concurrency-001
-    anchor: 两个 Writer 同时提交会怎样
-    targets:
-      - type: interview
-        id: iq-system-concurrency-fault-tolerance-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-commit-concurrency-001
-    anchor: 高并发为什么会出现 Retry Storm
-    targets:
-      - type: scale
-        id: sc-iceberg-concurrent-commit-001
-      - type: interview
-        id: iq-system-concurrency-fault-tolerance-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-maintenance-small-files-001
-    anchor: 为什么小 Data File 会一路放大成本
-    targets:
-      - type: scale
-        id: sc-iceberg-streaming-small-files-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-maintenance-small-files-001
-    anchor: Rewrite Data Files
-    targets:
-      - type: scale
-        id: sc-iceberg-10b-backfill-001
-
-  - source_type: knowledge
-    source_id: kb-iceberg-trino-read-path-001
-    anchor: Planning 慢和 Execution 慢怎么区分
-    targets:
-      - type: scale
-        id: sc-iceberg-10b-backfill-001
-
-  - source_type: scale
-    source_id: sc-iceberg-10b-backfill-001
-    anchor: 小文件先拖慢读路径
-    targets:
-      - type: knowledge
-        id: kb-iceberg-maintenance-small-files-001
-
-  - source_type: scale
-    source_id: sc-iceberg-10b-backfill-001
-    anchor: Commit 频率把 Catalog 变成热点
-    targets:
-      - type: knowledge
-        id: kb-iceberg-commit-concurrency-001
-
-  - source_type: scale
-    source_id: sc-iceberg-10b-backfill-001
-    anchor: 用 Distribution 管住文件布局
-    targets:
-      - type: knowledge
-        id: kb-iceberg-write-distribution-ordering-001
-
-  - source_type: scale
-    source_id: sc-iceberg-streaming-small-files-001
-    anchor: Data File 数量持续上升
-    targets:
-      - type: knowledge
-        id: kb-iceberg-maintenance-small-files-001
-
-  - source_type: scale
-    source_id: sc-iceberg-streaming-small-files-001
-    anchor: 给 Commit 频率设置预算
-    targets:
-      - type: knowledge
-        id: kb-iceberg-commit-concurrency-001
-
-  - source_type: scale
-    source_id: sc-iceberg-concurrent-commit-001
-    anchor: Retry Storm
-    targets:
-      - type: knowledge
-        id: kb-iceberg-commit-concurrency-001
-      - type: interview
-        id: iq-system-concurrency-fault-tolerance-001
+- source_type: knowledge
+  source_id: kb-iceberg-overview-001
+  anchor: Iceberg 到底解决什么问题
+  targets:
+  - type: interview
+    id: iq-lake-vs-warehouse-001
+- source_type: knowledge
+  source_id: kb-iceberg-metadata-snapshot-001
+  anchor: Time Travel、Rollback 和 Forward Fix 不是一回事
+  targets:
+  - type: interview
+    id: iq-lake-vs-warehouse-001
+- source_type: knowledge
+  source_id: kb-iceberg-schema-evolution-001
+  anchor: Field ID 永不复用为什么非常重要
+  targets:
+  - type: interview
+    id: iq-lake-vs-warehouse-001
+- source_type: knowledge
+  source_id: kb-iceberg-schema-evolution-001
+  anchor: 旧 Data File 到底怎么被新 Schema 读取
+  targets:
+  - type: interview
+    id: iq-lake-vs-warehouse-001
+- source_type: knowledge
+  source_id: kb-iceberg-partition-evolution-001
+  anchor: Partition Evolution 为什么不用重写历史
+  targets:
+  - type: interview
+    id: iq-lake-vs-warehouse-001
+- source_type: knowledge
+  source_id: kb-iceberg-write-distribution-ordering-001
+  anchor: Distribution Mode
+  targets:
+  - type: scale
+    id: sc-iceberg-10b-backfill-001
+- source_type: knowledge
+  source_id: kb-iceberg-write-distribution-ordering-001
+  anchor: 小文件问题应该先从哪里治
+  targets:
+  - type: scale
+    id: sc-iceberg-streaming-small-files-001
+  - type: interview
+    id: iq-large-dataset-tech-selection-001
+- source_type: knowledge
+  source_id: kb-iceberg-commit-concurrency-001
+  anchor: 两个 Writer 同时提交会怎样
+  targets:
+  - type: interview
+    id: iq-system-concurrency-fault-tolerance-001
+- source_type: knowledge
+  source_id: kb-iceberg-commit-concurrency-001
+  anchor: 高并发为什么会出现 Retry Storm
+  targets:
+  - type: scale
+    id: sc-iceberg-concurrent-commit-001
+  - type: interview
+    id: iq-system-concurrency-fault-tolerance-001
+- source_type: knowledge
+  source_id: kb-iceberg-maintenance-small-files-001
+  anchor: 为什么小 Data File 会一路放大成本
+  targets:
+  - type: scale
+    id: sc-iceberg-streaming-small-files-001
+  - type: interview
+    id: iq-large-dataset-tech-selection-001
+- source_type: knowledge
+  source_id: kb-iceberg-maintenance-small-files-001
+  anchor: Rewrite Data Files
+  targets:
+  - type: scale
+    id: sc-iceberg-10b-backfill-001
+- source_type: knowledge
+  source_id: kb-iceberg-trino-read-path-001
+  anchor: Planning 慢和 Execution 慢怎么区分
+  targets:
+  - type: scale
+    id: sc-iceberg-10b-backfill-001
+  - type: interview
+    id: iq-large-dataset-tech-selection-001
+- source_type: knowledge
+  source_id: kb-iceberg-production-troubleshooting-001
+  anchor: Capacity Planning 不只是每天多少 TB
+  targets:
+  - type: interview
+    id: iq-large-dataset-tech-selection-001
+- source_type: scale
+  source_id: sc-iceberg-10b-backfill-001
+  anchor: 小文件先拖慢读路径
+  targets:
+  - type: knowledge
+    id: kb-iceberg-maintenance-small-files-001
+- source_type: scale
+  source_id: sc-iceberg-10b-backfill-001
+  anchor: Commit 频率把 Catalog 变成热点
+  targets:
+  - type: knowledge
+    id: kb-iceberg-commit-concurrency-001
+- source_type: scale
+  source_id: sc-iceberg-10b-backfill-001
+  anchor: 用 Distribution 管住文件布局
+  targets:
+  - type: knowledge
+    id: kb-iceberg-write-distribution-ordering-001
+- source_type: scale
+  source_id: sc-iceberg-streaming-small-files-001
+  anchor: Data File 数量持续上升
+  targets:
+  - type: knowledge
+    id: kb-iceberg-maintenance-small-files-001
+- source_type: scale
+  source_id: sc-iceberg-streaming-small-files-001
+  anchor: 给 Commit 频率设置预算
+  targets:
+  - type: knowledge
+    id: kb-iceberg-commit-concurrency-001
+- source_type: scale
+  source_id: sc-iceberg-concurrent-commit-001
+  anchor: Retry Storm
+  targets:
+  - type: knowledge
+    id: kb-iceberg-commit-concurrency-001
+  - type: interview
+    id: iq-system-concurrency-fault-tolerance-001

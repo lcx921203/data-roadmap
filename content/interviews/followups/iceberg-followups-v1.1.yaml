@@ -1,0 +1,58 @@
+version: '1.1'
+as_of: '2026-09-12'
+type: curated_followup_registry
+policy:
+  topic: iceberg
+  runtime_ai: false
+  default_kind: curated_extension
+  frequency_claim: none
+  rule: These are curated technical follow-ups, not independently frequency-calibrated canonical questions.
+questions:
+- id: iq-lake-vs-warehouse-001
+  items:
+  - question: Snapshot → Manifest List → Manifest → Data File 到底是什么关系？
+    answer: Snapshot（快照）表示一次已提交的表状态，并通过一个 Manifest List（清单列表）引用多个 Manifest（清单文件）；Manifest 再记录具体 Data / Delete File 及分区、统计等元数据。因此它是一条“版本
+      → 元数据索引 → 文件”的引用链，而不是 Snapshot 里复制了一整份数据。
+    kind: curated_extension
+  - question: Iceberg 的 Time Travel（时间旅行）为什么能实现？和 Rollback（回滚）有什么区别？
+    answer: Time Travel 是选择仍被保留的历史 Snapshot 读取，不改变 Current Snapshot（当前快照）；历史 Snapshot 仍能沿自己的 Manifest / File 引用链恢复当时的逻辑表状态。Rollback
+      则会改变表的当前状态，所以它是状态变更操作，不是历史只读查询。
+    kind: curated_extension
+  - question: Time Travel 到旧 Snapshot 时，到底使用当前 Schema 还是历史 Schema？
+    answer: 应按目标 Snapshot 对应的历史 Schema 解释。Snapshot 会关联创建它时的 Schema ID（模式 ID），Reader 再按 Field ID（字段 ID）把那个历史 Schema 投影到历史 Data
+      File。因此 Time Travel 不只是切换文件集合，也会回到相应的历史 Schema 语义。
+    kind: curated_extension
+  - question: Schema Evolution（模式演进）里 Rename 为什么通常不需要重写旧文件？
+    answer: 因为 Iceberg 用稳定的 Field ID 标识字段身份，而不是只依赖列名或列位置。Rename 只改变字段名称，Field ID 不变；Reader 仍能把旧文件中的同一 Field ID 投影到新列名。所以存储层通常只需更新
+      Metadata，但下游 dbt、BI、API 仍可能因为引用旧列名而需要迁移。
+    kind: curated_extension
+  - question: Drop 一个字段后再 Add 一个同名字段，为什么不是原字段“复活”？
+    answer: 因为 Iceberg 的 Field ID 在同一张表里不会复用。旧字段被 Drop 后，它原来的 Field ID 不会再分配给新字段；以后即使 Add 同名字段，也会获得新的 Field ID。这样旧文件里的历史值不会被错误映射到这个新字段。
+    kind: curated_extension
+  - question: Partition Evolution（分区演进）为什么通常不用重写全部历史数据？
+    answer: 因为每批历史文件仍由写入时对应的 Partition Spec（分区规则）解释，新写入可以使用新的 Spec。Reader 根据 Spec ID 和 Manifest 元数据同时理解新旧布局。因此“修改未来分区策略”和“把全部历史数据重新分区重写”是两件不同的事。
+    kind: curated_extension
+  - question: 两个 Writer 从同一个 Base Metadata 开始写，为什么不会互相覆盖？
+    answer: Writer 会先在表外准备候选 Data / Manifest / Snapshot，最后才通过 Catalog 原子更新当前 Table Metadata。如果另一 Writer 已先提交，当前 Writer 会发现
+      Base 已过期，需要 Refresh（刷新）并重新 Validation（校验）自己的操作是否仍然安全；安全才 Retry，否则必须失败或重新计算。
+    kind: curated_extension
+  - question: Iceberg Commit 超时后，为什么不能直接把整个任务再跑一次？
+    answer: Client 超时可能只是没收到成功响应，Catalog Commit 实际已经完成，这叫 Ambiguous Outcome（结果不确定）。正确动作是先 Refresh Table Metadata，确认目标 Snapshot
+      是否已经生效。直接业务重跑还涉及 CDC Offset、Batch ID 和业务幂等，和 Metadata Commit Retry 不是同一层问题。
+    kind: curated_extension
+  - question: 坏 Snapshot 已经提交，什么时候 Rollback，什么时候更适合 Forward Fix（向前修复）？
+    answer: 先用 Time Travel 验证错误从哪个 Snapshot 开始，并检查坏 Snapshot 后是否已有合法提交。如果没有后续合法变化，Rollback 可以评估；如果已经有合法新 Snapshot，直接回到更早版本会一起丢掉这些变化，这时通常更适合在
+      Current State 上提交新的修复 Snapshot。
+    kind: curated_extension
+  - question: 为什么小文件问题不能只靠 Compaction（文件合并）解决？
+    answer: 小文件往往首先来自过小 Micro-batch、过细 Partition、Spark Task 太碎或 Distribution 不合理。Rewrite Data Files 能治理已经产生的小文件，但如果写入布局不变，小文件会持续复发。生产上应先治
+      Writer Layout（写入布局）根因，再用 Compaction 治存量结果。
+    kind: curated_extension
+  - question: Manifest 太多为什么会让查询慢，即使实际扫描数据不多？
+    answer: Trino / Spark 在真正 Scan Data File 前，要先读取 Manifest List、展开 Manifest 并做文件规划。Manifest 和 File 数量过多会放大 Metadata Planning（元数据规划）成本，因此可能出现“数据没扫多少，但查询启动很慢”。这种问题优先查
+      Manifest / File Count 和裁剪效果，而不是先加 Worker。
+    kind: curated_extension
+  - question: 国内湖仓项目里 Iceberg、Paimon、Hudi、Delta Lake 应该怎么比较？
+    answer: 不要按“谁更先进”选，而要先看工作负载：批量分析还是高频 Upsert / CDC、是否强调流批统一、多引擎互操作、所在云或数据平台的原生支持、Catalog / Governance 集成以及团队运维能力。Iceberg
+      更强调开放表格式与多引擎分析生态；其他方案在流式更新、特定平台生态或工程集成上各有优势，最终必须按当前版本和实际平台验证。
+    kind: curated_extension
