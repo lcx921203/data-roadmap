@@ -4,9 +4,13 @@ import { formatFrequencyBand } from '../utils/format'
 
 interface QuestionRowProps {
   item: InterviewQuestionSummary
+  matchedFollowUp?: string | null
 }
 
-export function QuestionRow({ item }: QuestionRowProps) {
+export function QuestionRow({
+  item,
+  matchedFollowUp = null,
+}: QuestionRowProps) {
   const stats = getQuestionEvidenceStats(item)
 
   return (
@@ -21,10 +25,16 @@ export function QuestionRow({ item }: QuestionRowProps) {
         </span>
       </div>
       <h2>{item.question}</h2>
-      {item.answer_curated && (
+      {matchedFollowUp ? (
         <div className="question-row__footer">
-          <span>答案已整理</span>
+          <span>命中追问 · {matchedFollowUp}</span>
         </div>
+      ) : (
+        item.answer_curated && (
+          <div className="question-row__footer">
+            <span>答案已整理</span>
+          </div>
+        )
       )}
     </a>
   )

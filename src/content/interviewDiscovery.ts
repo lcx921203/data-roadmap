@@ -5,6 +5,7 @@ import type {
   InterviewDiscoveryIndex,
   InterviewFrequencyFilter,
 } from '../types/discovery'
+import { getCuratedFollowUps } from './followups'
 import { loadYaml } from './loaders'
 
 export const interviewDiscovery = loadYaml<InterviewDiscoveryIndex>(
@@ -21,22 +22,42 @@ export function getInterviewDiscoveryEntry(
   return byId.get(id) ?? null
 }
 
+function normalized(value: string): string {
+  return value.trim().toLocaleLowerCase()
+}
+
+export function getMatchingCuratedFollowUp(
+  questionId: string,
+  rawQuery: string,
+): string | null {
+  const query = normalized(rawQuery)
+  if (!query) return null
+
+  return (
+    getCuratedFollowUps(questionId).find((item) =>
+      item.question.toLocaleLowerCase().includes(query),
+    )?.question ?? null
+  )
+}
+
 export function matchesInterviewSearch(
   question: InterviewQuestionSummary,
   rawQuery: string,
 ): boolean {
-  const query = rawQuery.trim().toLocaleLowerCase()
+  const query = normalized(rawQuery)
   if (!query) return true
 
   const entry = getInterviewDiscoveryEntry(question.id)
-  const haystack = [
+  const canonicalHaystack = [
     question.question,
     ...(entry?.search_terms ?? []),
   ]
     .join(' ')
     .toLocaleLowerCase()
 
-  return haystack.includes(query)
+  if (canonicalHaystack.includes(query)) return true
+
+  return getMatchingCuratedFollowUp(question.id, query) !== null
 }
 
 export function matchesInterviewTag(
@@ -54,9 +75,7 @@ export function matchesFrequencyFilter(
 ): boolean {
   if (filter === 'all') return true
   if (filter === 'core') return effectiveBand === 'core_verified'
-  if (filter === 'repeated') {
-    return effectiveBand === 'repeated_verified'
-  }
+  if (filter === 'repeated') return effectiveBand === 'repeated_verified'
   if (filter === 'supported') {
     return (
       effectiveBand === 'supported_cross_company' ||

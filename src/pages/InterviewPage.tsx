@@ -9,6 +9,7 @@ import {
   getQuestionEvidenceStats,
 } from '../content/registry'
 import {
+  getMatchingCuratedFollowUp,
   interviewDiscovery,
   matchesAnswerFilter,
   matchesFrequencyFilter,
@@ -84,7 +85,7 @@ export function InterviewPage() {
       <div className="page page--list">
         <h1>面试题</h1>
         <p className="page-lead">
-          搜索问题、场景或关键词，也可以直接选择技术。
+          搜索主问题、追问、场景或关键词，也可以直接选择技术。
         </p>
 
         <label className="search-field interview-search">
@@ -93,12 +94,12 @@ export function InterviewPage() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索问题、场景或关键词…"
+            placeholder="搜索主问题、追问、场景或关键词…"
             aria-label="搜索面试题"
           />
         </label>
         <p className="search-example">
-          例如：数据倾斜、指标不一致、历史回填
+          例如：Time Travel、Schema Evolution、小文件
         </p>
 
         <div
@@ -165,7 +166,15 @@ export function InterviewPage() {
         {visible.length > 0 ? (
           <section className="question-list" aria-label="面试题列表">
             {visible.map((question) => (
-              <QuestionRow key={question.id} item={question} />
+              <QuestionRow
+                key={question.id}
+                item={question}
+                matchedFollowUp={
+                  query.trim()
+                    ? getMatchingCuratedFollowUp(question.id, query)
+                    : null
+                }
+              />
             ))}
           </section>
         ) : (
