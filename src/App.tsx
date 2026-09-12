@@ -25,7 +25,17 @@ function RouteContent({ route }: { route: HashRoute }) {
 
   if (route.key === 'interview') {
     if (route.segments[0]) {
-      return <InterviewDetailPage id={route.segments[0]} />
+      const focusFollowUp =
+        route.segments[1] === 'followup' && route.segments[2]
+          ? decodeURIComponent(route.segments[2])
+          : null
+
+      return (
+        <InterviewDetailPage
+          id={route.segments[0]}
+          focusFollowUp={focusFollowUp}
+        />
+      )
     }
 
     return <InterviewPage />

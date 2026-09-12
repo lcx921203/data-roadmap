@@ -28,6 +28,7 @@ import type {
 
 interface InterviewDetailPageProps {
   id: string
+  focusFollowUp?: string | null
 }
 
 const scaleTitles = new Set(['Scale Lab', '规模追问'])
@@ -78,6 +79,7 @@ function selectCoreSections(
 
 export function InterviewDetailPage({
   id,
+  focusFollowUp = null,
 }: InterviewDetailPageProps) {
   const question = appRegistry.interviewBank.questions.find(
     (item) => item.id === id,
@@ -194,12 +196,14 @@ export function InterviewDetailPage({
               />
             )}
 
-            {mode === 'interview' && followUpSection && (
-              <FollowUpDisclosure
-                markdown={followUpSection.body}
-                curated={followUps}
-              />
-            )}
+            {mode === 'interview' &&
+              (followUpSection || followUps.length > 0) && (
+                <FollowUpDisclosure
+                  markdown={followUpSection?.body ?? ''}
+                  curated={followUps}
+                  initialOpen={focusFollowUp}
+                />
+              )}
 
             {coreSections.length === 0 && mode === 'learn' && (
               <p className="empty-note">

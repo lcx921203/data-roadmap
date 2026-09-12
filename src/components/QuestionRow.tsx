@@ -12,9 +12,12 @@ export function QuestionRow({
   matchedFollowUp = null,
 }: QuestionRowProps) {
   const stats = getQuestionEvidenceStats(item)
+  const href = matchedFollowUp
+    ? `#/interview/${item.id}/followup/${encodeURIComponent(matchedFollowUp)}`
+    : `#/interview/${item.id}`
 
   return (
-    <a className="question-row" href={`#/interview/${item.id}`}>
+    <a className="question-row" href={href}>
       <div className="question-row__meta">
         <span className="question-row__rank">
           #{String(item.rank).padStart(2, '0')} ·{' '}
